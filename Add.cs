@@ -39,9 +39,65 @@ namespace ClipBox2
             lboColumns.Items.RemoveAt(lboColumns.SelectedIndex);
         }
 
+        //private void btnAddList_Click(object sender, EventArgs e)
+        //{
+        //    // Create the new XML file for the list
+        //    if (string.IsNullOrEmpty(tbListName.Text))
+        //    {
+        //        MessageBox.Show("Please enter a list name.");
+        //        return;
+        //    }
+
+        //    string newListName = tbListName.Text.Trim();
+        //    if (newListName.Length == 0)
+        //    {
+        //        MessageBox.Show("Invalid List Name.");
+        //        return;
+        //    }
+
+        //    // Build the Info object
+        //    Info data = new Info();
+        //    data.cbmz = "cbmz";
+        //    data.cbname = newListName;
+
+        //    // Gather columns
+        //    var columns = new string[lboColumns.Items.Count];
+        //    lboColumns.Items.CopyTo(columns, 0);
+        //    data.cols.AddRange(columns);
+
+        //    // No initial rows here; user can add them later in Form1 (Edit mode).
+        //    // data.strs remains empty.
+
+        //    // Path to the new XML
+        //    string xmlFilename = newListName + ".xml";
+        //    string fullPath = Environment.GetEnvironmentVariable("cbFol") + xmlFilename;
+
+        //    // Save and update Form1
+        //    try
+        //    {
+        //        SaveXML.SaveData(data, fullPath);
+        //        MessageBox.Show("List created successfully!", "Add List",
+        //                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        //        // Close this Add form
+        //        this.Close();
+
+        //        // Refresh the main form’s combo + re‐populate
+        //        if (Application.OpenForms["Form1"] != null)
+        //        {
+        //            var frm = (Form1)Application.OpenForms["Form1"];
+        //            frm.popcombo();
+        //            frm.populate(fullPath);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Error creating list: " + ex.Message);
+        //    }
+        //}
+
         private void btnAddList_Click(object sender, EventArgs e)
         {
-            // Create the new XML file for the list
             if (string.IsNullOrEmpty(tbListName.Text))
             {
                 MessageBox.Show("Please enter a list name.");
@@ -55,27 +111,34 @@ namespace ClipBox2
                 return;
             }
 
-            // Build the Info object
-            Info data = new Info();
-            data.cbmz = "cbmz";
-            data.cbname = newListName;
+            // Load the entire MasterData from the JSON
+            MasterData master = SaveJSON.LoadMasterData();
+
+            if (master.Lists.ContainsKey(newListName))
+            {
+                MessageBox.Show("That list name already exists. Choose another.");
+                return;
+            }
+
+            // Build a new Info object
+            Info data = new Info
+            {
+                cbmz = "cbmz",
+                cbname = newListName
+            };
 
             // Gather columns
             var columns = new string[lboColumns.Items.Count];
             lboColumns.Items.CopyTo(columns, 0);
             data.cols.AddRange(columns);
 
-            // No initial rows here; user can add them later in Form1 (Edit mode).
-            // data.strs remains empty.
+            // Insert it into our MasterData
+            master.Lists[newListName] = data;
 
-            // Path to the new XML
-            string xmlFilename = newListName + ".xml";
-            string fullPath = Environment.GetEnvironmentVariable("cbFol") + xmlFilename;
-
-            // Save and update Form1
+            // Save MasterData back to JSON
             try
             {
-                SaveXML.SaveData(data, fullPath);
+                SaveJSON.SaveMasterData(master);
                 MessageBox.Show("List created successfully!", "Add List",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -87,7 +150,7 @@ namespace ClipBox2
                 {
                     var frm = (Form1)Application.OpenForms["Form1"];
                     frm.popcombo();
-                    frm.populate(fullPath);
+                    frm.populate(newListName); // pass the newly added name
                 }
             }
             catch (Exception ex)
@@ -95,5 +158,6 @@ namespace ClipBox2
                 MessageBox.Show("Error creating list: " + ex.Message);
             }
         }
+
     }
 }

@@ -33,96 +33,188 @@ namespace ClipBox2
       dgv1.ReadOnly = true;
     }
 
+
+        //private void Form1_Load(object sender, EventArgs e)
+        //{
+        //  string xmlPath = Environment.GetEnvironmentVariable("cbFol") +
+        //                   Environment.GetEnvironmentVariable("fName");
+
+        //  if (File.Exists(xmlPath))
+        //  {
+        //    popcombo();
+        //    populate(xmlPath);
+        //  }
+        //  else
+        //  {
+        //    // Create a default XML file if none is found
+        //    Info info = new Info
+        //    {
+        //      cbmz = "cbmz",
+        //      cbname = "TestList"
+        //    };
+        //    info.strs.Add(new List<string> { "Text1", "Text2", "Text3" });
+        //    info.strs.Add(new List<string> { "Tezt1", "Tezt2", "Tezt3" });
+        //    info.cols.AddRange(new[] { "Col1", "Col2", "Col3" });
+
+        //    // Show first row in the DataGridView
+        //    string[] array = info.strs.FirstOrDefault()?.ToArray();
+        //    dgv1.ColumnCount = 3;
+        //    dgv1.Columns[0].Name = "Col1";
+        //    dgv1.Columns[1].Name = "Col2";
+        //    dgv1.Columns[2].Name = "Col3";
+        //    dgv1.Rows.Add(array);
+
+        //    // Save it
+        //    SaveXML.SaveData(info, xmlPath);
+        //  }
+        //}
+
+
     private void Form1_Load(object sender, EventArgs e)
     {
-      string xmlPath = Environment.GetEnvironmentVariable("cbFol") +
-                       Environment.GetEnvironmentVariable("fName");
-
-      if (File.Exists(xmlPath))
-      {
-        popcombo();
-        populate(xmlPath);
-      }
-      else
-      {
-        // Create a default XML file if none is found
-        Info info = new Info
+        MasterData master = SaveJSON.LoadMasterData();
+        // If empty, maybe we create a default list
+        if (master.Lists.Count == 0)
         {
-          cbmz = "cbmz",
-          cbname = "TestList"
-        };
-        info.strs.Add(new List<string> { "Text1", "Text2", "Text3" });
-        info.strs.Add(new List<string> { "Tezt1", "Tezt2", "Tezt3" });
-        info.cols.AddRange(new[] { "Col1", "Col2", "Col3" });
+            Info info = new Info
+            {
+                cbmz = "cbmz",
+                cbname = "TestList"
+            };
+            info.cols.AddRange(new[] { "Col1", "Col2", "Col3" });
+            info.strs.Add(new List<string> { "Text1", "Text2", "Text3" });
+            info.strs.Add(new List<string> { "Tezt1", "Tezt2", "Tezt3" });
 
-        // Show first row in the DataGridView
-        string[] array = info.strs.FirstOrDefault()?.ToArray();
-        dgv1.ColumnCount = 3;
-        dgv1.Columns[0].Name = "Col1";
-        dgv1.Columns[1].Name = "Col2";
-        dgv1.Columns[2].Name = "Col3";
-        dgv1.Rows.Add(array);
+            master.Lists["TestList"] = info;
+            SaveJSON.SaveMasterData(master);
+        }
 
-        // Save it
-        SaveXML.SaveData(info, xmlPath);
-      }
+        // Now populate the combo & show the first list
+        popcombo();
+        if (cb1.Items.Count > 0)
+        {
+            cb1.SelectedIndex = 0;
+            string listName = cb1.Text;
+            populate(listName);
+        }
     }
+
+
+    //private void cb1_SelectedIndexChanged(object sender, EventArgs e)
+    //{
+    //  // Switch to the newly selected list
+    //  Environment.SetEnvironmentVariable("fName", cb1.Text + ".xml");
+    //  string fullPath = Environment.GetEnvironmentVariable("cbFol") +
+    //                    Environment.GetEnvironmentVariable("fName");
+    //  populate(fullPath);
+    //}
 
     private void cb1_SelectedIndexChanged(object sender, EventArgs e)
     {
-      // Switch to the newly selected list
-      Environment.SetEnvironmentVariable("fName", cb1.Text + ".xml");
-      string fullPath = Environment.GetEnvironmentVariable("cbFol") +
-                        Environment.GetEnvironmentVariable("fName");
-      populate(fullPath);
+        string listName = cb1.Text;
+        populate(listName);
     }
+
 
     private void lv1_SelectedIndexChanged(object sender, EventArgs e)
+{
+    // (Unused in original code)
+}
+
+    //public void populate(string fn)
+    //{
+    //  Info data = SaveXML.GetData(fn);
+    //  dgv1.Rows.Clear();
+
+    //  int colCount = data.cols.Count;
+    //  dgv1.ColumnCount = colCount;
+
+    //  for (int i = 0; i < colCount; i++)
+    //  {
+    //    dgv1.Columns[i].Name = data.cols[i];
+    //  }
+
+    //  foreach (List<string> rowData in data.strs)
+    //  {
+    //    dgv1.Rows.Add(rowData.ToArray());
+    //  }
+    //}
+
+
+
+
+
+    //public void popcombo()
+    //{
+    //  string folder = Environment.GetEnvironmentVariable("cbFol");
+    //  string currentFile = Environment.GetEnvironmentVariable("fName");
+
+    //  cb1.Items.Clear();
+    //  foreach (string file in Directory.GetFiles(folder, "*.xml"))
+    //  {
+    //    string baseName = Path.GetFileNameWithoutExtension(file);
+    //    cb1.Items.Add(baseName);
+
+    //    if (baseName == Path.GetFileNameWithoutExtension(currentFile))
+    //      cb1.Text = baseName;
+    //  }
+    //}
+
+
+    public void populate(string listName)
     {
-      // (Unused in original code)
+        MasterData master = SaveJSON.LoadMasterData();
+        if (!master.Lists.ContainsKey(listName)) return;
+
+        Info data = master.Lists[listName];
+        dgv1.Rows.Clear();
+
+        int colCount = data.cols.Count;
+        dgv1.ColumnCount = colCount;
+
+        for (int i = 0; i < colCount; i++)
+        {
+            dgv1.Columns[i].Name = data.cols[i];
+        }
+
+        foreach (List<string> rowData in data.strs)
+        {
+            dgv1.Rows.Add(rowData.ToArray());
+        }
     }
 
-    public void populate(string fn)
-    {
-      Info data = SaveXML.GetData(fn);
-      dgv1.Rows.Clear();
-
-      int colCount = data.cols.Count;
-      dgv1.ColumnCount = colCount;
-
-      for (int i = 0; i < colCount; i++)
-      {
-        dgv1.Columns[i].Name = data.cols[i];
-      }
-
-      foreach (List<string> rowData in data.strs)
-      {
-        dgv1.Rows.Add(rowData.ToArray());
-      }
-    }
 
     public void popcombo()
     {
-      string folder = Environment.GetEnvironmentVariable("cbFol");
-      string currentFile = Environment.GetEnvironmentVariable("fName");
+        // Load the entire MasterData once
+        MasterData master = SaveJSON.LoadMasterData();
 
-      cb1.Items.Clear();
-      foreach (string file in Directory.GetFiles(folder, "*.xml"))
-      {
-        string baseName = Path.GetFileNameWithoutExtension(file);
-        cb1.Items.Add(baseName);
+        cb1.Items.Clear();
+        foreach (string listName in master.Lists.Keys)
+        {
+            cb1.Items.Add(listName);
+        }
 
-        if (baseName == Path.GetFileNameWithoutExtension(currentFile))
-          cb1.Text = baseName;
-      }
+        // If there's a "current list" in an env var, we might set that
+        // or just pick the first
+        string currentList = Environment.GetEnvironmentVariable("fName");
+        if (!string.IsNullOrEmpty(currentList))
+        {
+            // old approach was "fName" = "TestList.xml" so let's just store the base name
+            string baseName = Path.GetFileNameWithoutExtension(currentList);
+            if (master.Lists.ContainsKey(baseName))
+                cb1.Text = baseName;
+        }
     }
+
+
 
     private void addListToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      using (var frmAdd = new Add())
-      {
+        using (var frmAdd = new Add())
+        {
         frmAdd.ShowDialog();
-      }
+        }
     }
 
     private void editListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -223,40 +315,84 @@ namespace ClipBox2
       MessageBox.Show("Saved!");
     }
 
+        //private void Save()
+        //{
+        //  Info info = new Info
+        //  {
+        //    cbmz = "cbmz",
+        //    cbname = cb1.Text
+        //  };
+
+        //  // Gather columns
+        //  foreach (DataGridViewColumn column in dgv1.Columns)
+        //  {
+        //    info.cols.Add(column.Name);
+        //  }
+
+        //  // Gather each row
+        //  foreach (DataGridViewRow row in dgv1.Rows)
+        //  {
+        //    string[] rowCells = new string[row.Cells.Count];
+        //    for (int i = 0; i < row.Cells.Count; i++)
+        //    {
+        //      rowCells[i] = row.Cells[i].Value?.ToString() ?? "";
+        //    }
+        //    info.strs.Add(new List<string>(rowCells));
+        //  }
+
+        //  // Save to file
+        //  string filename = Environment.GetEnvironmentVariable("cbFol") + cb1.Text + ".xml";
+        //  SaveXML.SaveData(info, filename);
+        //}
+
+
+
     private void Save()
     {
-      Info info = new Info
-      {
-        cbmz = "cbmz",
-        cbname = cb1.Text
-      };
+        string listName = cb1.Text;
+        if (string.IsNullOrEmpty(listName)) return;
 
-      // Gather columns
-      foreach (DataGridViewColumn column in dgv1.Columns)
-      {
-        info.cols.Add(column.Name);
-      }
+        MasterData master = SaveJSON.LoadMasterData();
 
-      // Gather each row
-      foreach (DataGridViewRow row in dgv1.Rows)
-      {
-        string[] rowCells = new string[row.Cells.Count];
-        for (int i = 0; i < row.Cells.Count; i++)
+        // If the user typed a name not in the dictionary, we might add a new Info:
+        if (!master.Lists.ContainsKey(listName))
         {
-          rowCells[i] = row.Cells[i].Value?.ToString() ?? "";
+            master.Lists[listName] = new Info
+            {
+                cbmz = "cbmz",
+                cbname = listName
+            };
         }
-        info.strs.Add(new List<string>(rowCells));
-      }
 
-      // Save to file
-      string filename = Environment.GetEnvironmentVariable("cbFol") + cb1.Text + ".xml";
-      SaveXML.SaveData(info, filename);
+        Info info = master.Lists[listName];
+        info.cols.Clear();
+        info.strs.Clear();
+
+        // Gather columns
+        foreach (DataGridViewColumn column in dgv1.Columns)
+        {
+            info.cols.Add(column.Name);
+        }
+
+        // Gather each row
+        foreach (DataGridViewRow row in dgv1.Rows)
+        {
+            var rowCells = new string[row.Cells.Count];
+            for (int i = 0; i < row.Cells.Count; i++)
+            {
+                rowCells[i] = row.Cells[i].Value?.ToString() ?? "";
+            }
+            info.strs.Add(new List<string>(rowCells));
+        }
+
+        // Save entire JSON
+        SaveJSON.SaveMasterData(master);
     }
 
     private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      var about = new About();
-      about.Show();
+        var about = new About();
+        about.Show();
     }
 
     private void saveAsEncryptedToolStripMenuItem_Click(object sender, EventArgs e)

@@ -193,7 +193,7 @@ namespace ClipBox2
             this.dgv1.DefaultCellStyle = gridViewCellStyle;
             this.dgv1.EditMode = DataGridViewEditMode.EditOnKeystroke;
             this.dgv1.GridColor = SystemColors.ButtonFace;
-            this.dgv1.Location = new System.Drawing.Point(-7, 48);
+            this.dgv1.Location = new System.Drawing.Point(0, 48);
             this.dgv1.MultiSelect = false;
             this.dgv1.Name = "dgv1";
             this.dgv1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
