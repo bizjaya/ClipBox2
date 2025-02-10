@@ -1,0 +1,40 @@
+# Ignore Visual Studio clutter, build outputs, etc.
+
+## Build Results
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio Files
+.vs/
+*.user
+*.suo
+*.csproj.user
+*.sln.docstates
+
+# NuGet packages
+packages/
+*.nupkg
+# If using the newer package cache
+**/packages/*.*
+!**/packages/build/
+!**/packages/repositories.config
+
+# Resharper / Rider / JetBrains stuff
+*.DotSettings.user
+_ReSharper*/
+*.[Rr]ider/
+
+# Other
+*.log
+*.DS_Store
+*.app
+*.bak
+*.orig
+*.tmp
+*.Cache
+*.pdb
+*.mdb
+
+# OS-specific
+Thumbs.db
+desktop.ini
