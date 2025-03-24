@@ -7,18 +7,21 @@ namespace ClipBox2
     public partial class Form1
     {
         private IContainer components = null;
-        private ComboBox cb1;
+        public ComboBox cb1;
         private Label listlbl;
-        private ComboBox cb2;
+        public ComboBox cb2;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private ToolStripMenuItem addListToolStripMenuItem;
         private ToolStripMenuItem deleteListToolStripMenuItem;
         private ToolStripMenuItem editListToolStripMenuItem;
-        private CheckBox chk1;
+        private ToolStripMenuItem toolsToolStripMenuItem;
+        private ToolStripMenuItem passwordGeneratorToolStripMenuItem;
+        private ToolStripMenuItem migrateXmlToolStripMenuItem;
+        public CheckBox chk1;
         private Button btn1;
-        private DataGridView dgv1;
+        public DataGridView dgv1;
         private ToolStripMenuItem optionsToolStripMenuItem;
         private ToolStripMenuItem saveAsEncryptedToolStripMenuItem;
         private ToolStripMenuItem saveAsNormalToolStripMenuItem;
@@ -54,6 +57,9 @@ namespace ClipBox2
             this.addListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.passwordGeneratorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.migrateXmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsEncryptedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsNormalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,6 +75,7 @@ namespace ClipBox2
             // 
             // cb1
             // 
+            this.cb1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cb1.FormattingEnabled = true;
             this.cb1.Location = new System.Drawing.Point(26, 21);
             this.cb1.Name = "cb1";
@@ -87,6 +94,7 @@ namespace ClipBox2
             // 
             // cb2
             // 
+            this.cb2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cb2.FormattingEnabled = true;
             this.cb2.Location = new System.Drawing.Point(164, 21);
             this.cb2.Name = "cb2";
@@ -97,6 +105,7 @@ namespace ClipBox2
             // 
             this.menuStrip1.Items.AddRange(new ToolStripItem[] {
                 this.fileToolStripMenuItem,
+                this.toolsToolStripMenuItem,
                 this.optionsToolStripMenuItem,
                 this.aboutToolStripMenuItem
             });
@@ -136,6 +145,30 @@ namespace ClipBox2
             this.deleteListToolStripMenuItem.Name = "deleteListToolStripMenuItem";
             this.deleteListToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.deleteListToolStripMenuItem.Text = "Delete List";
+            // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
+                this.passwordGeneratorToolStripMenuItem,
+                this.migrateXmlToolStripMenuItem
+            });
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // passwordGeneratorToolStripMenuItem
+            // 
+            this.passwordGeneratorToolStripMenuItem.Name = "passwordGeneratorToolStripMenuItem";
+            this.passwordGeneratorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.passwordGeneratorToolStripMenuItem.Text = "Password Generator";
+            this.passwordGeneratorToolStripMenuItem.Click += new System.EventHandler(this.passwordGeneratorToolStripMenuItem_Click);
+            // 
+            // migrateXmlToolStripMenuItem
+            // 
+            this.migrateXmlToolStripMenuItem.Name = "migrateXmlToolStripMenuItem";
+            this.migrateXmlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.migrateXmlToolStripMenuItem.Text = "Migrate XML Files";
+            this.migrateXmlToolStripMenuItem.Click += new System.EventHandler(this.migrateXmlToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -193,13 +226,13 @@ namespace ClipBox2
             this.dgv1.DefaultCellStyle = gridViewCellStyle;
             this.dgv1.EditMode = DataGridViewEditMode.EditOnKeystroke;
             this.dgv1.GridColor = SystemColors.ButtonFace;
-            this.dgv1.Location = new System.Drawing.Point(0, 48);
+            this.dgv1.Location = new System.Drawing.Point(0, 67);
             this.dgv1.MultiSelect = false;
             this.dgv1.Name = "dgv1";
             this.dgv1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             this.dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
             this.dgv1.ShowCellErrors = false;
-            this.dgv1.Size = new System.Drawing.Size(286, 407);
+            this.dgv1.Size = new System.Drawing.Size(286, 389);
             this.dgv1.StandardTab = true;
             this.dgv1.TabIndex = 0;
             this.dgv1.TabStop = false;
@@ -210,7 +243,7 @@ namespace ClipBox2
             // 
             this.d.Image = ((System.Drawing.Image)(componentResourceManager.GetObject("d.Image")));
             this.d.ImageAlign = ContentAlignment.BottomCenter;
-            this.d.Location = new System.Drawing.Point(258, 27);
+            this.d.Location = new System.Drawing.Point(258, 46);
             this.d.Name = "d";
             this.d.Size = new System.Drawing.Size(18, 16);
             this.d.TabIndex = 9;
@@ -222,7 +255,7 @@ namespace ClipBox2
             // 
             this.U.Image = ((System.Drawing.Image)(componentResourceManager.GetObject("U.Image")));
             this.U.ImageAlign = ContentAlignment.TopCenter;
-            this.U.Location = new System.Drawing.Point(258, 12);
+            this.U.Location = new System.Drawing.Point(258, 31);
             this.U.Name = "U";
             this.U.Size = new System.Drawing.Size(18, 16);
             this.U.TabIndex = 8;
@@ -232,7 +265,7 @@ namespace ClipBox2
             // btn1
             // 
             this.btn1.Image = ((System.Drawing.Image)(componentResourceManager.GetObject("btn1.Image")));
-            this.btn1.Location = new System.Drawing.Point(237, 20);
+            this.btn1.Location = new System.Drawing.Point(237, 39);
             this.btn1.Name = "btn1";
             this.btn1.Size = new System.Drawing.Size(22, 23);
             this.btn1.TabIndex = 7;
@@ -247,7 +280,7 @@ namespace ClipBox2
             this.chk1.BackgroundImageLayout = ImageLayout.Center;
             this.chk1.ForeColor = SystemColors.Desktop;
             this.chk1.Image = ((System.Drawing.Image)(componentResourceManager.GetObject("chk1.Image")));
-            this.chk1.Location = new System.Drawing.Point(215, 20);
+            this.chk1.Location = new System.Drawing.Point(215, 39);
             this.chk1.Name = "chk1";
             this.chk1.Size = new System.Drawing.Size(22, 22);
             this.chk1.TabIndex = 6;

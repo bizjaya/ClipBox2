@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,14 +9,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
 namespace ClipBox2
 {
     public partial class Add : Form
     {
+        private Form1 mainForm;
+
         public Add()
         {
             InitializeComponent();
+            mainForm = Application.OpenForms["Form1"] as Form1;
         }
 
         private void Add_Load(object sender, EventArgs e)
@@ -39,68 +41,11 @@ namespace ClipBox2
             lboColumns.Items.RemoveAt(lboColumns.SelectedIndex);
         }
 
-        //private void btnAddList_Click(object sender, EventArgs e)
-        //{
-        //    // Create the new XML file for the list
-        //    if (string.IsNullOrEmpty(tbListName.Text))
-        //    {
-        //        MessageBox.Show("Please enter a list name.");
-        //        return;
-        //    }
-
-        //    string newListName = tbListName.Text.Trim();
-        //    if (newListName.Length == 0)
-        //    {
-        //        MessageBox.Show("Invalid List Name.");
-        //        return;
-        //    }
-
-        //    // Build the Info object
-        //    Info data = new Info();
-        //    data.cbmz = "cbmz";
-        //    data.cbname = newListName;
-
-        //    // Gather columns
-        //    var columns = new string[lboColumns.Items.Count];
-        //    lboColumns.Items.CopyTo(columns, 0);
-        //    data.cols.AddRange(columns);
-
-        //    // No initial rows here; user can add them later in Form1 (Edit mode).
-        //    // data.strs remains empty.
-
-        //    // Path to the new XML
-        //    string xmlFilename = newListName + ".xml";
-        //    string fullPath = Environment.GetEnvironmentVariable("cbFol") + xmlFilename;
-
-        //    // Save and update Form1
-        //    try
-        //    {
-        //        SaveXML.SaveData(data, fullPath);
-        //        MessageBox.Show("List created successfully!", "Add List",
-        //                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-        //        // Close this Add form
-        //        this.Close();
-
-        //        // Refresh the main form’s combo + re‐populate
-        //        if (Application.OpenForms["Form1"] != null)
-        //        {
-        //            var frm = (Form1)Application.OpenForms["Form1"];
-        //            frm.popcombo();
-        //            frm.populate(fullPath);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Error creating list: " + ex.Message);
-        //    }
-        //}
-
         private void btnAddList_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(tbListName.Text))
             {
-                MessageBox.Show("Please enter a list name.");
+                MessageBox.Show("Please enter a list name.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -108,6 +53,14 @@ namespace ClipBox2
             if (newListName.Length == 0)
             {
                 MessageBox.Show("Invalid List Name.");
+                return;
+            }
+
+            // Validate that we have at least one column
+            if (lboColumns.Items.Count == 0)
+            {
+                MessageBox.Show("Please add at least one column to the list.", "Add List", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -124,13 +77,23 @@ namespace ClipBox2
             Info data = new Info
             {
                 cbmz = "cbmz",
-                cbname = newListName
+                cbname = newListName,
+                cbdate = DateTime.Now
             };
 
-            // Gather columns
-            var columns = new string[lboColumns.Items.Count];
-            lboColumns.Items.CopyTo(columns, 0);
-            data.cols.AddRange(columns);
+            // Initialize cols list with column names
+            foreach (var item in lboColumns.Items)
+            {
+                data.cols.Add(item.ToString());
+            }
+
+            // Add an empty row with empty strings
+            var emptyRow = new List<string>();
+            for (int i = 0; i < data.cols.Count; i++)
+            {
+                emptyRow.Add("");
+            }
+            data.strs.Add(emptyRow);
 
             // Insert it into our MasterData
             master.Lists[newListName] = data;
@@ -138,26 +101,23 @@ namespace ClipBox2
             // Save MasterData back to JSON
             try
             {
+                // Add to master data and save
                 SaveJSON.SaveMasterData(master);
-                MessageBox.Show("List created successfully!", "Add List",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Close this Add form
-                this.Close();
+                MessageBox.Show("List created successfully!", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Refresh the main form’s combo + re‐populate
-                if (Application.OpenForms["Form1"] != null)
+                // Refresh the main form
+                if (mainForm != null)
                 {
-                    var frm = (Form1)Application.OpenForms["Form1"];
-                    frm.popcombo();
-                    frm.populate(newListName); // pass the newly added name
+                    mainForm.popcombo(newListName);
                 }
+
+                this.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error creating list: " + ex.Message);
             }
         }
-
     }
 }

@@ -40,8 +40,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="About.cs">
@@ -50,6 +52,8 @@
     <Compile Include="About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="App.cs" />
+    <Compile Include="DataMigrator.cs" />
     <Compile Include="Delete.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,9 +82,13 @@
     <Compile Include="Info.cs" />
     <Compile Include="col.cs" />
     <Compile Include="MasterData.cs" />
+    <Compile Include="PasswordGeneratorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="SaveJSON.cs" />
     <Compile Include="SaveXML.cs" />
+    <Compile Include="SimpleJson.cs" />
     <Compile Include="Validate.cs" />
     <Compile Include="Properties\Resources.cs" />
     <Compile Include="Properties\Settings.cs" />

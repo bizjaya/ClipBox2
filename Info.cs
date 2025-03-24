@@ -19,5 +19,7 @@ namespace ClipBox2
         // Misc. string properties
         public string cbmz { get; set; }
         public string cbname { get; set; }
+        public DateTime cbdate { get; set; }
+
     }
 }

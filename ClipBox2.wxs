@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" 
+             Name="ClipBox2" 
+             Language="1033" 
+             Version="$(var.Version)" 
+             Manufacturer="BizJaya" 
+             UpgradeCode="12345678-1234-1234-1234-123456789012">
+        
+        <Package InstallerVersion="200" 
+                 Compressed="yes" 
+                 InstallScope="perUser"
+                 InstallPrivileges="limited" />
+
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." 
+                      Schedule="afterInstallInitialize"/>
+        
+        <MediaTemplate EmbedCab="yes"/>
+
+        <!-- Application icon -->
+        <Icon Id="icon.ico" SourceFile="icon.ico"/>
+        <Property Id="ARPPRODUCTICON" Value="icon.ico"/>
+
+        <!-- Features -->
+        <Feature Id="ProductFeature" Title="ClipBox2" Level="1">
+            <ComponentGroupRef Id="ProductComponents" />
+            <ComponentRef Id="ApplicationShortcut" />
+        </Feature>
+
+        <!-- UI -->
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+        <UIRef Id="WixUI_InstallDir" />
+        
+        <!-- License -->
+        <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+    </Product>
+
+    <!-- Directory Structure -->
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="LocalAppDataFolder">
+                <Directory Id="COMPANYFOLDER" Name="BizJaya">
+                    <Directory Id="INSTALLFOLDER" Name="ClipBox2" />
+                </Directory>
+            </Directory>
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="ClipBox2"/>
+            </Directory>
+        </Directory>
+    </Fragment>
+
+    <!-- Components -->
+    <Fragment>
+        <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+            <Component Id="ProductComponent" Guid="*">
+                <File Id="ClipBox2.exe" Source="$(var.BinDir)\ClipBox2.exe" KeyPath="yes"/>
+                <RemoveFolder Id="INSTALLFOLDER" On="uninstall"/>
+            </Component>
+        </ComponentGroup>
+
+        <!-- Shortcut -->
+        <DirectoryRef Id="ApplicationProgramsFolder">
+            <Component Id="ApplicationShortcut" Guid="*">
+                <Shortcut Id="ApplicationStartMenuShortcut" 
+                          Name="ClipBox2"
+                          Description="Password Manager"
+                          Target="[#ClipBox2.exe]"
+                          WorkingDirectory="INSTALLFOLDER"/>
+                <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" 
+                             Key="Software\BizJaya\ClipBox2" 
+                             Name="installed" 
+                             Type="integer" 
+                             Value="1" 
+                             KeyPath="yes"/>
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+</Wix>

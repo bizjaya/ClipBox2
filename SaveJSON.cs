@@ -1,4 +1,3 @@
-﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,44 +6,62 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace ClipBox2
 {
     public static class SaveJSON
     {
-        // Single JSON filename (in the same folder as the .exe).
-        private static readonly string JsonPath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ClipBox2.json");
+        private static readonly string Key = "YourEncryptionKey123"; // Replace with your secure key
+        public static bool UseEncryption { get; set; } = true;
 
         /// <summary>
         /// Load the entire MasterData from one JSON file.
         /// If the file doesn't exist, returns a new, empty MasterData.
         /// </summary>
-        public static MasterData LoadMasterData()
+        public static MasterData LoadMasterData(string jsonPath = null)
         {
-            if (!File.Exists(JsonPath))
-                return new MasterData();
-
-            // If encrypt=1, then the file is encrypted.
-            bool isEncrypted = (Environment.GetEnvironmentVariable("encrypt") == "1");
-
+            App.EnsureAppDataFolderExists();
+            
             try
             {
-                string raw = File.ReadAllText(JsonPath);
-                if (isEncrypted)
+                jsonPath = jsonPath ?? App.JsonFilePath;
+                if (!File.Exists(jsonPath))
+                    return new MasterData();
+
+                string rawJson = File.ReadAllText(jsonPath);
+                
+                if (UseEncryption)
                 {
-                    raw = DecryptString(raw);
+                    rawJson = DecryptString(rawJson);
                 }
 
                 // Convert the JSON to a MasterData object
-                var data = JsonConvert.DeserializeObject<MasterData>(raw);
+                // var data = SimpleJson.DeserializeObject<MasterData>(rawJson);
+                var data = JsonConvert.DeserializeObject<MasterData>(rawJson);
                 if (data == null)
                     data = new MasterData();
 
+                // Initialize empty collections if they're null
+                if (data.Lists == null)
+                    data.Lists = new Dictionary<string, Info>();
+                
+                // Ensure each Info object has initialized collections
+                foreach (var info in data.Lists.Values)
+                {
+                    if (info.cols == null)
+                        info.cols = new List<string>();
+                    if (info.strs == null)
+                        info.strs = new List<List<string>>();
+                }
+
                 return data;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Windows.Forms.MessageBox.Show($"Error loading data: {ex.Message}", "Error", 
+                    System.Windows.Forms.MessageBoxButtons.OK, 
+                    System.Windows.Forms.MessageBoxIcon.Error);
                 // On failure, return a blank container
                 return new MasterData();
             }
@@ -52,57 +69,71 @@ namespace ClipBox2
 
         /// <summary>
         /// Save the entire MasterData to a single JSON file.
-        /// If encrypt=1, encrypt the JSON text before writing.
+        /// Uses encryption if UseEncryption is true.
         /// </summary>
-        public static void SaveMasterData(MasterData master)
+        public static void SaveMasterData(MasterData master, string jsonPath = null)
         {
-            // Convert to JSON
-            string rawJson = JsonConvert.SerializeObject(master, Newtonsoft.Json.Formatting.Indented);
-            bool isEncrypted = (Environment.GetEnvironmentVariable("encrypt") == "1");
-            if (isEncrypted)
+            App.EnsureAppDataFolderExists();
+            
+            try
             {
-                rawJson = EncryptString(rawJson);
+                jsonPath = jsonPath ?? App.JsonFilePath;
+                // string rawJson = SimpleJson.SerializeObject(master);
+                string rawJson = JsonConvert.SerializeObject(master, Newtonsoft.Json.Formatting.Indented);
+                
+                if (UseEncryption)
+                {
+                    rawJson = EncryptString(rawJson);
+                }
+                
+                File.WriteAllText(jsonPath, rawJson);
             }
-            File.WriteAllText(JsonPath, rawJson);
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Error saving data: {ex.Message}", "Error", 
+                    System.Windows.Forms.MessageBoxButtons.OK, 
+                    System.Windows.Forms.MessageBoxIcon.Error);
+            }
         }
 
-        #region Simple Encryption/Decryption Example
+        #region Encryption/Decryption
         // This uses a fixed key/IV for demo purposes.
         // In a real app, you'd do more secure key mgmt.
 
-        private static readonly byte[] AesKey = Encoding.UTF8.GetBytes("1234567890123456");
-        private static readonly byte[] AesIV = Encoding.UTF8.GetBytes("6543210987654321");
-
-        private static string EncryptString(string plainText)
+        public static string EncryptString(string text)
         {
-            using (Aes aes = Aes.Create())
+            using (var aes = Aes.Create())
             {
-                aes.Key = AesKey;
-                aes.IV = AesIV;
-                aes.Mode = CipherMode.CBC;
+                aes.Key = Encoding.UTF8.GetBytes(Key.PadRight(32));
+                aes.IV = new byte[16];  // Using a zero IV for simplicity
 
-                byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
-                using (ICryptoTransform encryptor = aes.CreateEncryptor())
+                using (var encryptor = aes.CreateEncryptor())
+                using (var msEncrypt = new MemoryStream())
                 {
-                    byte[] cipherBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
-                    return Convert.ToBase64String(cipherBytes);
+                    using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    using (var swEncrypt = new StreamWriter(csEncrypt))
+                    {
+                        swEncrypt.Write(text);
+                    }
+
+                    return Convert.ToBase64String(msEncrypt.ToArray());
                 }
             }
         }
 
-        private static string DecryptString(string cipherText)
+        public static string DecryptString(string cipherText)
         {
-            byte[] cipherBytes = Convert.FromBase64String(cipherText);
-            using (Aes aes = Aes.Create())
+            using (var aes = Aes.Create())
             {
-                aes.Key = AesKey;
-                aes.IV = AesIV;
-                aes.Mode = CipherMode.CBC;
+                aes.Key = Encoding.UTF8.GetBytes(Key.PadRight(32));
+                aes.IV = new byte[16];  // Using a zero IV for simplicity
 
-                using (ICryptoTransform decryptor = aes.CreateDecryptor())
+                using (var decryptor = aes.CreateDecryptor())
+                using (var msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
+                using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                using (var srDecrypt = new StreamReader(csDecrypt))
                 {
-                    byte[] plainBytes = decryptor.TransformFinalBlock(cipherBytes, 0, cipherBytes.Length);
-                    return Encoding.UTF8.GetString(plainBytes);
+                    return srDecrypt.ReadToEnd();
                 }
             }
         }
