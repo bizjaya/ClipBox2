@@ -19,12 +19,13 @@ namespace ClipBox2
         private ToolStripMenuItem toolsToolStripMenuItem;
         private ToolStripMenuItem passwordGeneratorToolStripMenuItem;
         private ToolStripMenuItem migrateXmlToolStripMenuItem;
-        public CheckBox chk1;
-        private Button btn1;
-        public DataGridView dgv1;
+        private ToolStripMenuItem openDataFolderToolStripMenuItem;
         private ToolStripMenuItem optionsToolStripMenuItem;
         private ToolStripMenuItem saveAsEncryptedToolStripMenuItem;
         private ToolStripMenuItem saveAsNormalToolStripMenuItem;
+        public CheckBox chk1;
+        private Button btn1;
+        public DataGridView dgv1;
         private Button U;
         private Button d;
         private Button topButton;
@@ -66,6 +67,7 @@ namespace ClipBox2
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.passwordGeneratorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.migrateXmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openDataFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsEncryptedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsNormalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -162,7 +164,8 @@ namespace ClipBox2
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
                 this.passwordGeneratorToolStripMenuItem,
-                this.migrateXmlToolStripMenuItem
+                this.migrateXmlToolStripMenuItem,
+                this.openDataFolderToolStripMenuItem
             });
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
@@ -181,6 +184,13 @@ namespace ClipBox2
             this.migrateXmlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.migrateXmlToolStripMenuItem.Text = "Migrate XML Files";
             this.migrateXmlToolStripMenuItem.Click += new System.EventHandler(this.migrateXmlToolStripMenuItem_Click);
+            // 
+            // openDataFolderToolStripMenuItem
+            // 
+            this.openDataFolderToolStripMenuItem.Name = "openDataFolderToolStripMenuItem";
+            this.openDataFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openDataFolderToolStripMenuItem.Text = "Open Data Folder";
+            this.openDataFolderToolStripMenuItem.Click += new System.EventHandler(this.openDataFolderToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 

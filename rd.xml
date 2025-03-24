@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
+  <Application>
+    <!-- Windows Forms assemblies -->
+    <Assembly Name="System.Windows.Forms" Dynamic="Required All" />
+    <Assembly Name="System.Drawing" Dynamic="Required All" />
+    
+    <!-- Newtonsoft.Json -->
+    <Assembly Name="Newtonsoft.Json" Dynamic="Required All">
+      <Type Name="Newtonsoft.Json.JsonConvert" Dynamic="Required All" />
+      <Type Name="Newtonsoft.Json.Serialization.DefaultContractResolver" Dynamic="Required All" />
+    </Assembly>
+    
+    <!-- Your application -->
+    <Assembly Name="ClipBox2" Dynamic="Required All" />
+  </Application>
+</Directives>

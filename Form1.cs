@@ -14,7 +14,7 @@ namespace ClipBox2
     public Form1()
     {
       // Initialize environment variables
-      Environment.SetEnvironmentVariable("cbFol", AppDomain.CurrentDomain.BaseDirectory);
+      Environment.SetEnvironmentVariable("cbFol", App.ExecutablePath);
       Environment.SetEnvironmentVariable("fName", "default.xml");
       Environment.SetEnvironmentVariable("encrypt", "1");
 
@@ -324,6 +324,7 @@ namespace ClipBox2
             if (chk1.Checked)
             {
                 dgv1.ReadOnly = false;
+                dgv1.AllowUserToAddRows = true;
                 dgv1.EditMode = DataGridViewEditMode.EditOnEnter;
                 editModeLabel.Text = "E";
                 editModeLabel.Visible = true;
@@ -331,6 +332,7 @@ namespace ClipBox2
             else
             {
                 dgv1.ReadOnly = true;
+                dgv1.AllowUserToAddRows = false;
                 dgv1.EditMode = DataGridViewEditMode.EditOnKeystroke;
                 editModeLabel.Visible = false;
                 
@@ -625,16 +627,22 @@ namespace ClipBox2
         }
     }
     
+
     private void ApplyFontSize(int fontSize)
     {
-        // Update DataGridView font
+        // Create new font with the selected size
         Font newFont = new Font(dgv1.Font.FontFamily, fontSize, dgv1.Font.Style);
+
+        // Update DataGridView font
         dgv1.Font = newFont;
-        
+
         // Update column headers font
         dgv1.ColumnHeadersDefaultCellStyle.Font = newFont;
+
+        // Update default cell style font for all cells
+        dgv1.DefaultCellStyle.Font = newFont;
     }
-    
+
     private int GetSelectedFontSize()
     {
         if (fontSizeComboBox.SelectedIndex >= 0)
@@ -687,6 +695,19 @@ namespace ClipBox2
 
             // Refresh the current view
             popcombo();
+        }
+    }
+
+    private void openDataFolderToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            // Open the executable directory in Windows Explorer
+            Process.Start("explorer.exe", App.ExecutablePath);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error opening data folder: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
