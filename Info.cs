@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ClipBox2
@@ -20,6 +20,8 @@ namespace ClipBox2
         public string cbmz { get; set; }
         public string cbname { get; set; }
         public DateTime cbdate { get; set; }
+        public bool pswd { get; set; } = false;
+        public int size { get; set; } = 9;
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace ClipBox2
@@ -21,7 +21,7 @@ namespace ClipBox2
             MasterData master = SaveJSON.LoadMasterData();
             if (master.Lists.Remove(listName))
             {
-                SaveJSON.SaveMasterData(master);
+                master.Save();
                 MessageBox.Show($"Deleted list {listName}");
             }
         }

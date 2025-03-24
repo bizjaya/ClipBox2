@@ -19,6 +19,16 @@ namespace ClipBox2
         {
             InitializeComponent();
             mainForm = Application.OpenForms["Form1"] as Form1;
+            
+            // Populate the font size combo box from App.FontSizes
+            foreach (var size in App.FontSizes)
+            {
+                fontSizeComboBox.Items.Add(size.Value);
+            }
+            
+            // Set default font size to 9
+            SelectFontSizeInComboBox(9);
+            fontSizeComboBox.SelectedIndexChanged += fontSizeComboBox_SelectedIndexChanged;
         }
 
         private void Add_Load(object sender, EventArgs e)
@@ -40,6 +50,77 @@ namespace ClipBox2
             if (lboColumns.SelectedIndex < 0) return;
             lboColumns.Items.RemoveAt(lboColumns.SelectedIndex);
         }
+        
+        private void btnColumnLeft_Click(object sender, EventArgs e)
+        {
+            // Move the selected column left in the list
+            if (lboColumns.SelectedIndex <= 0) return;
+            
+            int selectedIndex = lboColumns.SelectedIndex;
+            string selectedItem = lboColumns.SelectedItem.ToString();
+            
+            lboColumns.Items.RemoveAt(selectedIndex);
+            lboColumns.Items.Insert(selectedIndex - 1, selectedItem);
+            lboColumns.SelectedIndex = selectedIndex - 1;
+        }
+        
+        private void btnColumnRight_Click(object sender, EventArgs e)
+        {
+            // Move the selected column right in the list
+            if (lboColumns.SelectedIndex < 0 || lboColumns.SelectedIndex >= lboColumns.Items.Count - 1) return;
+            
+            int selectedIndex = lboColumns.SelectedIndex;
+            string selectedItem = lboColumns.SelectedItem.ToString();
+            
+            lboColumns.Items.RemoveAt(selectedIndex);
+            lboColumns.Items.Insert(selectedIndex + 1, selectedItem);
+            lboColumns.SelectedIndex = selectedIndex + 1;
+        }
+        
+        private void fontSizeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Update the font size for the list box to preview the change
+            if (fontSizeComboBox.SelectedIndex >= 0)
+            {
+                int size = GetSelectedFontSize();
+                if (size > 0)
+                {
+                    lboColumns.Font = new Font(lboColumns.Font.FontFamily, size);
+                }
+            }
+        }
+        
+        private int GetSelectedFontSize()
+        {
+            if (fontSizeComboBox.SelectedIndex >= 0)
+            {
+                string selectedText = fontSizeComboBox.SelectedItem.ToString();
+                foreach (var pair in App.FontSizes)
+                {
+                    if (pair.Value == selectedText)
+                    {
+                        return pair.Key;
+                    }
+                }
+            }
+            return 9; // Default size
+        }
+        
+        private void SelectFontSizeInComboBox(int size)
+        {
+            if (App.FontSizes.TryGetValue(size, out string sizeText))
+            {
+                fontSizeComboBox.SelectedItem = sizeText;
+            }
+            else
+            {
+                // Default to Size 9 if the specified size is not found
+                if (App.FontSizes.TryGetValue(9, out string defaultSizeText))
+                {
+                    fontSizeComboBox.SelectedItem = defaultSizeText;
+                }
+            }
+        }
 
         private void btnAddList_Click(object sender, EventArgs e)
         {
@@ -49,75 +130,45 @@ namespace ClipBox2
                 return;
             }
 
-            string newListName = tbListName.Text.Trim();
-            if (newListName.Length == 0)
-            {
-                MessageBox.Show("Invalid List Name.");
-                return;
-            }
-
-            // Validate that we have at least one column
-            if (lboColumns.Items.Count == 0)
-            {
-                MessageBox.Show("Please add at least one column to the list.", "Add List", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Load the entire MasterData from the JSON
+            string listName = tbListName.Text;
+            
+            // Create a new list with the columns
             MasterData master = SaveJSON.LoadMasterData();
-
-            if (master.Lists.ContainsKey(newListName))
+            
+            // Check if the list name already exists
+            if (master.Lists.ContainsKey(listName))
             {
-                MessageBox.Show("That list name already exists. Choose another.");
+                MessageBox.Show($"A list with the name '{listName}' already exists.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
-            // Build a new Info object
-            Info data = new Info
+            
+            // Create a new Info object for the list
+            Info info = new Info
             {
-                cbmz = "cbmz",
-                cbname = newListName,
-                cbdate = DateTime.Now
+                cols = new List<string>(),
+                strs = new List<List<string>>(),
+                pswd = chkPswd.Checked,
+                size = GetSelectedFontSize()
             };
-
-            // Initialize cols list with column names
+            
+            // Add the columns
             foreach (var item in lboColumns.Items)
             {
-                data.cols.Add(item.ToString());
+                info.cols.Add(item.ToString());
             }
-
-            // Add an empty row with empty strings
-            var emptyRow = new List<string>();
-            for (int i = 0; i < data.cols.Count; i++)
+            
+            // Add the list to the master data
+            master.Lists[listName] = info;
+            master.Save();
+            
+            // Refresh the main form's combo box
+            if (mainForm != null)
             {
-                emptyRow.Add("");
+                mainForm.populate(listName);
             }
-            data.strs.Add(emptyRow);
-
-            // Insert it into our MasterData
-            master.Lists[newListName] = data;
-
-            // Save MasterData back to JSON
-            try
-            {
-                // Add to master data and save
-                SaveJSON.SaveMasterData(master);
-
-                MessageBox.Show("List created successfully!", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // Refresh the main form
-                if (mainForm != null)
-                {
-                    mainForm.popcombo(newListName);
-                }
-
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error creating list: " + ex.Message);
-            }
+            
+            MessageBox.Show($"List '{listName}' added successfully.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Close();
         }
     }
 }

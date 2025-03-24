@@ -31,8 +31,17 @@ namespace ClipBox2
       dgv1.AllowUserToDeleteRows = false;
       dgv1.AllowUserToOrderColumns = false;
       dgv1.ReadOnly = true;
+      
+      // Populate font size combo box from App.FontSizes
+      fontSizeComboBox.Items.Clear();
+      foreach (var size in App.FontSizes)
+      {
+          fontSizeComboBox.Items.Add(size.Value);
+      }
+      
+      // Default to Size 9
+      SelectFontSizeInComboBox(9);
     }
-
 
     private void Form1_Load(object sender, EventArgs e)
     {
@@ -54,7 +63,7 @@ namespace ClipBox2
                 };
 
                 master.Lists["TestList"] = info;
-                SaveJSON.SaveMasterData(master);
+                master.Save();
             }
 
             // Now populate the combo & show the first list
@@ -65,7 +74,6 @@ namespace ClipBox2
             MessageBox.Show($"Error loading lists: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
-
 
     private void cb1_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -81,11 +89,10 @@ namespace ClipBox2
         }
     }
 
-
     private void lv1_SelectedIndexChanged(object sender, EventArgs e)
-{
-    // (Unused in original code)
-}
+    {
+        // (Unused in original code)
+    }
 
     public void populate(string listName, bool saveChanges = false)
     {
@@ -153,8 +160,32 @@ namespace ClipBox2
                 rowData.Add(string.Empty);
             }
             
+            // Create a copy of the row data for display
+            var displayData = new string[rowData.Count];
+            for (int i = 0; i < rowData.Count; i++)
+            {
+                // If password protection is enabled, mask the data with asterisks
+                if (data.pswd && i == 1) // Col2 is at index 1
+                {
+                    displayData[i] = !string.IsNullOrEmpty(rowData[i]) ? "****" : "";
+                }
+                else
+                {
+                    displayData[i] = rowData[i];
+                }
+            }
+            
             rows[rowIndex++] = new DataGridViewRow();
-            rows[rowIndex - 1].CreateCells(dgv1, rowData.ToArray());
+            rows[rowIndex - 1].CreateCells(dgv1, displayData);
+            
+            // Store the original values in the Tag property for copy operations
+            for (int i = 0; i < rowData.Count && i < uniqueColumns.Count; i++)
+            {
+                if (data.pswd && i == 1) // Col2 is at index 1
+                {
+                    rows[rowIndex - 1].Cells[i].Tag = rowData[i]; // Store original value
+                }
+            }
         }
         
         // Add all rows at once
@@ -163,28 +194,44 @@ namespace ClipBox2
         dgv1.ResumeLayout();
         this.ResumeLayout();
         
+        // Apply font size from data
+        SelectFontSizeInComboBox(data.size);
+        ApplyFontSize(data.size);
+        
         if (saveChanges)
         {
             master.Lists[listName] = data;
-            SaveJSON.SaveMasterData(master);
+            master.Save();
         }
     }
 
-
     private void addListToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        using (var frmAdd = new Add())
+        Add addForm = new Add();
+        addForm.ShowDialog();
+        
+        // Refresh the combo box
+        cb1.Items.Clear();
+        MasterData master = SaveJSON.LoadMasterData();
+        foreach (string listName in master.Lists.Keys)
         {
-        frmAdd.ShowDialog();
+            cb1.Items.Add(listName);
         }
     }
 
     private void editListToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      using (var frmEdit = new Edit())
-      {
-        frmEdit.ShowDialog();
-      }
+      string listName = cb1.Text;
+      if (string.IsNullOrEmpty(listName)) return;
+      
+      MasterData master = SaveJSON.LoadMasterData();
+      if (!master.Lists.ContainsKey(listName)) return;
+      
+      Edit editForm = new Edit(master, listName);
+      editForm.ShowDialog();
+      
+      // Refresh the current list after editing
+      populate(listName);
     }
 
     [DllImport("user32.dll", SetLastError = true)]
@@ -203,7 +250,17 @@ namespace ClipBox2
       if (chk1.Checked) return;
       if (e.RowIndex < 0) return;
 
-      string textValue = dgv1.SelectedCells[0].Value?.ToString() ?? "";
+      // Get the value, checking first if it's masked
+      string textValue;
+      if (dgv1.SelectedCells[0].Value?.ToString() == "****" && dgv1.SelectedCells[0].Tag != null)
+      {
+          // Use the original value stored in Tag
+          textValue = dgv1.SelectedCells[0].Tag.ToString();
+      }
+      else
+      {
+          textValue = dgv1.SelectedCells[0].Value?.ToString() ?? "";
+      }
 
       // 0 = Copy, 1 = Click, 2 = Point
       if (cb2.SelectedIndex == 0)
@@ -238,7 +295,19 @@ namespace ClipBox2
         {
           // Possibly send keys on lost focus
           Thread.Sleep(200);
-          string textValue = dgv1.SelectedCells[0].Value?.ToString() ?? "";
+          
+          // Get the value, checking first if it's masked
+          string textValue;
+          if (dgv1.SelectedCells[0].Value?.ToString() == "****" && dgv1.SelectedCells[0].Tag != null)
+          {
+              // Use the original value stored in Tag
+              textValue = dgv1.SelectedCells[0].Tag.ToString();
+          }
+          else
+          {
+              textValue = dgv1.SelectedCells[0].Value?.ToString() ?? "";
+          }
+          
           SendKeys.SendWait(textValue);
         }
       }
@@ -250,25 +319,29 @@ namespace ClipBox2
 
     private void chk1_CheckedChanged(object sender, EventArgs e)
     {
-      // Toggle Edit Mode in the DataGridView
-      if (chk1.Checked)
-      {
-        dgv1.ReadOnly = false;
-        dgv1.AllowUserToAddRows = true;
-        dgv1.AllowUserToDeleteRows = true;
-        dgv1.AllowUserToOrderColumns = true;
-        dgv1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-      }
-      else
-      {
-        // Save changes + lock the grid again
-        Save();
-        dgv1.ReadOnly = true;
-        dgv1.AllowUserToAddRows = false;
-        dgv1.AllowUserToDeleteRows = false;
-        dgv1.AllowUserToOrderColumns = false;
-        dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
-      }
+        try
+        {
+            if (chk1.Checked)
+            {
+                dgv1.ReadOnly = false;
+                dgv1.EditMode = DataGridViewEditMode.EditOnEnter;
+                editModeLabel.Text = "E";
+                editModeLabel.Visible = true;
+            }
+            else
+            {
+                dgv1.ReadOnly = true;
+                dgv1.EditMode = DataGridViewEditMode.EditOnKeystroke;
+                editModeLabel.Visible = false;
+                
+                // Save changes when exiting edit mode
+                Save();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error changing edit mode: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private void btn1_Click(object sender, EventArgs e)
@@ -331,7 +404,7 @@ namespace ClipBox2
             master.Lists[listName] = info;
 
             // Save back to file
-            SaveJSON.SaveMasterData(master);
+            master.Save();
 
             // Reload the grid with saved data
             populate(listName, false);  // Don't save changes when reloading
@@ -418,16 +491,180 @@ namespace ClipBox2
       }
     }
 
-    // Decompiled enum from the original code
-    private enum GetWindow_Cmd : uint
+    private void topButton_Click(object sender, EventArgs e)
     {
-      GW_HWNDFIRST,
-      GW_HWNDLAST,
-      GW_HWNDNEXT,
-      GW_HWNDPREV,
-      GW_OWNER,
-      GW_CHILD,
-      GW_ENABLEDPOPUP,
+      // Move row to the top
+      try
+      {
+        int rowIndex = dgv1.SelectedCells[0].OwningRow.Index;
+        if (rowIndex == 0) return;
+
+        int colIndex = dgv1.SelectedCells[0].OwningColumn.Index;
+        var row = dgv1.Rows[rowIndex];
+        dgv1.Rows.Remove(row);
+        dgv1.Rows.Insert(0, row);
+        dgv1.ClearSelection();
+        dgv1.Rows[0].Cells[colIndex].Selected = true;
+      }
+      catch
+      {
+        // ignore
+      }
+    }
+
+    private void bottomButton_Click(object sender, EventArgs e)
+    {
+      // Move row to the bottom
+      try
+      {
+        int rowCount = dgv1.Rows.Count;
+        int rowIndex = dgv1.SelectedCells[0].OwningRow.Index;
+        int lastRowIndex = rowCount - 2; // Accounting for the new row at the end
+        if (rowIndex == lastRowIndex) return;
+
+        int colIndex = dgv1.SelectedCells[0].OwningColumn.Index;
+        var row = dgv1.Rows[rowIndex];
+        dgv1.Rows.Remove(row);
+        dgv1.Rows.Insert(lastRowIndex, row);
+        dgv1.ClearSelection();
+        dgv1.Rows[lastRowIndex].Cells[colIndex].Selected = true;
+      }
+      catch
+      {
+        // ignore
+      }
+    }
+
+    private void leftButton_Click(object sender, EventArgs e)
+    {
+      // Move cell content left (swap with left cell)
+      try
+      {
+        int rowIndex = dgv1.SelectedCells[0].OwningRow.Index;
+        int colIndex = dgv1.SelectedCells[0].OwningColumn.Index;
+        
+        // Check if we can move left
+        if (colIndex <= 0) return;
+        
+        // Get current and left cell values
+        var currentCell = dgv1.Rows[rowIndex].Cells[colIndex];
+        var leftCell = dgv1.Rows[rowIndex].Cells[colIndex - 1];
+        
+        // Swap values
+        object tempValue = currentCell.Value;
+        currentCell.Value = leftCell.Value;
+        leftCell.Value = tempValue;
+        
+        // Select the left cell
+        dgv1.ClearSelection();
+        dgv1.Rows[rowIndex].Cells[colIndex - 1].Selected = true;
+      }
+      catch
+      {
+        // ignore
+      }
+    }
+
+    private void rightButton_Click(object sender, EventArgs e)
+    {
+      // Move cell content right (swap with right cell)
+      try
+      {
+        int rowIndex = dgv1.SelectedCells[0].OwningRow.Index;
+        int colIndex = dgv1.SelectedCells[0].OwningColumn.Index;
+        
+        // Check if we can move right
+        if (colIndex >= dgv1.Columns.Count - 1) return;
+        
+        // Get current and right cell values
+        var currentCell = dgv1.Rows[rowIndex].Cells[colIndex];
+        var rightCell = dgv1.Rows[rowIndex].Cells[colIndex + 1];
+        
+        // Swap values
+        object tempValue = currentCell.Value;
+        currentCell.Value = rightCell.Value;
+        rightCell.Value = tempValue;
+        
+        // Select the right cell
+        dgv1.ClearSelection();
+        dgv1.Rows[rowIndex].Cells[colIndex + 1].Selected = true;
+      }
+      catch
+      {
+        // ignore
+      }
+    }
+
+    private void fontSizeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (fontSizeComboBox.SelectedItem == null) return;
+            
+            int fontSize = GetSelectedFontSize();
+            if (fontSize > 0)
+            {
+                ApplyFontSize(fontSize);
+                
+                // Save the font size setting to the current list
+                string listName = cb1.Text;
+                if (!string.IsNullOrEmpty(listName))
+                {
+                    MasterData master = SaveJSON.LoadMasterData();
+                    if (master.Lists.ContainsKey(listName))
+                    {
+                        master.Lists[listName].size = fontSize;
+                        master.Save();
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error changing font size: " + ex.Message);
+        }
+    }
+    
+    private void ApplyFontSize(int fontSize)
+    {
+        // Update DataGridView font
+        Font newFont = new Font(dgv1.Font.FontFamily, fontSize, dgv1.Font.Style);
+        dgv1.Font = newFont;
+        
+        // Update column headers font
+        dgv1.ColumnHeadersDefaultCellStyle.Font = newFont;
+    }
+    
+    private int GetSelectedFontSize()
+    {
+        if (fontSizeComboBox.SelectedIndex >= 0)
+        {
+            string selectedText = fontSizeComboBox.SelectedItem.ToString();
+            foreach (var pair in App.FontSizes)
+            {
+                if (pair.Value == selectedText)
+                {
+                    return pair.Key;
+                }
+            }
+        }
+        return 9; // Default size
+    }
+    
+    private void SelectFontSizeInComboBox(int size)
+    {
+        if (App.FontSizes.TryGetValue(size, out string sizeText))
+        {
+            fontSizeComboBox.SelectedItem = sizeText;
+        }
+        else
+        {
+            // Default to Size 9 if the specified size is not found
+            if (App.FontSizes.TryGetValue(9, out string defaultSizeText))
+            {
+                fontSizeComboBox.SelectedItem = defaultSizeText;
+            }
+        }
     }
 
     private void passwordGeneratorToolStripMenuItem_Click(object sender, EventArgs e)

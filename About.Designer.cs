@@ -38,8 +38,7 @@ namespace ClipBox2
             // 
             // linkLabel1
             // 
-            this.linkLabel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
-                                      | AnchorStyles.Left | AnchorStyles.Right;
+            this.linkLabel1.Anchor = AnchorStyles.None;
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Location = new System.Drawing.Point(95, 69);
             this.linkLabel1.Name = "linkLabel1";
@@ -52,21 +51,22 @@ namespace ClipBox2
             // 
             // label1
             // 
-            this.label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
-                                 | AnchorStyles.Left | AnchorStyles.Right;
+            this.label1.Anchor = AnchorStyles.None;
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(89, 92);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(115, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "All Rights Reserved © ";
+            this.label1.Text = "All Rights Reserved ";
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Anchor = AnchorStyles.None;
             this.pictureBox1.Image = (Image)(resources.GetObject("pictureBox1.Image"));
             this.pictureBox1.Location = new System.Drawing.Point(15, -4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(261, 70);
+            this.pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
@@ -83,6 +83,10 @@ namespace ClipBox2
             this.Name = "About";
             this.Text = "About";
             this.TopMost = true;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.StartPosition = FormStartPosition.CenterParent;
             ((ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

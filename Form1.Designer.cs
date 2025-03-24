@@ -27,6 +27,12 @@ namespace ClipBox2
         private ToolStripMenuItem saveAsNormalToolStripMenuItem;
         private Button U;
         private Button d;
+        private Button topButton;
+        private Button bottomButton;
+        private Button leftButton;
+        private Button rightButton;
+        private ComboBox fontSizeComboBox;
+        private Label editModeLabel;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -69,6 +75,12 @@ namespace ClipBox2
             this.U = new System.Windows.Forms.Button();
             this.btn1 = new System.Windows.Forms.Button();
             this.chk1 = new System.Windows.Forms.CheckBox();
+            this.topButton = new System.Windows.Forms.Button();
+            this.bottomButton = new System.Windows.Forms.Button();
+            this.leftButton = new System.Windows.Forms.Button();
+            this.rightButton = new System.Windows.Forms.Button();
+            this.fontSizeComboBox = new System.Windows.Forms.ComboBox();
+            this.editModeLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv1)).BeginInit();
             this.SuspendLayout();
@@ -111,7 +123,7 @@ namespace ClipBox2
             });
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(286, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(486, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -225,51 +237,118 @@ namespace ClipBox2
             gridViewCellStyle.WrapMode = DataGridViewTriState.False;
             this.dgv1.DefaultCellStyle = gridViewCellStyle;
             this.dgv1.EditMode = DataGridViewEditMode.EditOnKeystroke;
-            this.dgv1.GridColor = SystemColors.ButtonFace;
-            this.dgv1.Location = new System.Drawing.Point(0, 67);
+            this.dgv1.GridColor = SystemColors.ButtonHighlight;
+            this.dgv1.Location = new System.Drawing.Point(0, 46);
             this.dgv1.MultiSelect = false;
             this.dgv1.Name = "dgv1";
             this.dgv1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            this.dgv1.RowHeadersVisible = false;
             this.dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
             this.dgv1.ShowCellErrors = false;
-            this.dgv1.Size = new System.Drawing.Size(286, 389);
+            this.dgv1.Size = new System.Drawing.Size(486, 410);
             this.dgv1.StandardTab = true;
             this.dgv1.TabIndex = 0;
             this.dgv1.TabStop = false;
             this.dgv1.CellContentClick += new DataGridViewCellEventHandler(this.dgv1_CellClick);
             this.dgv1.LostFocus += new System.EventHandler(this.dgv1_LostFocus);
             // 
-            // d
+            // fontSizeComboBox
             // 
-            this.d.Image = ((System.Drawing.Image)(componentResourceManager.GetObject("d.Image")));
-            this.d.ImageAlign = ContentAlignment.BottomCenter;
-            this.d.Location = new System.Drawing.Point(258, 46);
-            this.d.Name = "d";
-            this.d.Size = new System.Drawing.Size(18, 16);
-            this.d.TabIndex = 9;
-            this.d.TextAlign = ContentAlignment.TopRight;
-            this.d.UseVisualStyleBackColor = true;
-            this.d.Click += new System.EventHandler(this.d_Click);
+            this.fontSizeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.fontSizeComboBox.FormattingEnabled = true;
+            this.fontSizeComboBox.Items.AddRange(new object[] {
+                "Size 7",
+                "Size 8",
+                "Size 9",
+                "Size 10",
+                "Size 11",
+                "Size 12",
+                "Size 13",
+                "Size 14",
+                "Size 15"
+            });
+            this.fontSizeComboBox.Location = new System.Drawing.Point(215, 21);
+            this.fontSizeComboBox.Name = "fontSizeComboBox";
+            this.fontSizeComboBox.Size = new System.Drawing.Size(60, 21);
+            this.fontSizeComboBox.TabIndex = 14;
+            this.fontSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.fontSizeComboBox_SelectedIndexChanged);
+            this.fontSizeComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            // 
+            // leftButton
+            // 
+            this.leftButton.Location = new System.Drawing.Point(277, 21);
+            this.leftButton.Name = "leftButton";
+            this.leftButton.Size = new System.Drawing.Size(24, 21);
+            this.leftButton.TabIndex = 12;
+            this.leftButton.Text = "←";
+            this.leftButton.UseVisualStyleBackColor = true;
+            this.leftButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            this.leftButton.Click += new System.EventHandler(this.leftButton_Click);
+            // 
+            // topButton
+            // 
+            this.topButton.Location = new System.Drawing.Point(303, 21);
+            this.topButton.Name = "topButton";
+            this.topButton.Size = new System.Drawing.Size(24, 21);
+            this.topButton.TabIndex = 10;
+            this.topButton.Text = "↥";
+            this.topButton.UseVisualStyleBackColor = true;
+            this.topButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            this.topButton.Click += new System.EventHandler(this.topButton_Click);
             // 
             // U
             // 
-            this.U.Image = ((System.Drawing.Image)(componentResourceManager.GetObject("U.Image")));
-            this.U.ImageAlign = ContentAlignment.TopCenter;
-            this.U.Location = new System.Drawing.Point(258, 31);
+            this.U.Location = new System.Drawing.Point(329, 21);
             this.U.Name = "U";
-            this.U.Size = new System.Drawing.Size(18, 16);
+            this.U.Size = new System.Drawing.Size(18, 21);
             this.U.TabIndex = 8;
+            this.U.Text = "↑";
             this.U.UseVisualStyleBackColor = true;
+            this.U.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             this.U.Click += new System.EventHandler(this.u_Click);
+            // 
+            // d
+            // 
+            this.d.Location = new System.Drawing.Point(349, 21);
+            this.d.Name = "d";
+            this.d.Size = new System.Drawing.Size(18, 21);
+            this.d.TabIndex = 9;
+            this.d.Text = "↓";
+            this.d.UseVisualStyleBackColor = true;
+            this.d.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            this.d.Click += new System.EventHandler(this.d_Click);
+            // 
+            // bottomButton
+            // 
+            this.bottomButton.Location = new System.Drawing.Point(369, 21);
+            this.bottomButton.Name = "bottomButton";
+            this.bottomButton.Size = new System.Drawing.Size(24, 21);
+            this.bottomButton.TabIndex = 11;
+            this.bottomButton.Text = "↧";
+            this.bottomButton.UseVisualStyleBackColor = true;
+            this.bottomButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            this.bottomButton.Click += new System.EventHandler(this.bottomButton_Click);
+            // 
+            // rightButton
+            // 
+            this.rightButton.Location = new System.Drawing.Point(395, 21);
+            this.rightButton.Name = "rightButton";
+            this.rightButton.Size = new System.Drawing.Size(24, 21);
+            this.rightButton.TabIndex = 13;
+            this.rightButton.Text = "→";
+            this.rightButton.UseVisualStyleBackColor = true;
+            this.rightButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            this.rightButton.Click += new System.EventHandler(this.rightButton_Click);
             // 
             // btn1
             // 
             this.btn1.Image = ((System.Drawing.Image)(componentResourceManager.GetObject("btn1.Image")));
-            this.btn1.Location = new System.Drawing.Point(237, 39);
+            this.btn1.Location = new System.Drawing.Point(421, 21);
             this.btn1.Name = "btn1";
-            this.btn1.Size = new System.Drawing.Size(22, 23);
+            this.btn1.Size = new System.Drawing.Size(22, 21);
             this.btn1.TabIndex = 7;
             this.btn1.UseVisualStyleBackColor = true;
+            this.btn1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             this.btn1.Click += new System.EventHandler(this.btn1_Click);
             // 
             // chk1
@@ -280,18 +359,37 @@ namespace ClipBox2
             this.chk1.BackgroundImageLayout = ImageLayout.Center;
             this.chk1.ForeColor = SystemColors.Desktop;
             this.chk1.Image = ((System.Drawing.Image)(componentResourceManager.GetObject("chk1.Image")));
-            this.chk1.Location = new System.Drawing.Point(215, 39);
+            this.chk1.Location = new System.Drawing.Point(445, 21);
             this.chk1.Name = "chk1";
             this.chk1.Size = new System.Drawing.Size(22, 22);
             this.chk1.TabIndex = 6;
             this.chk1.UseVisualStyleBackColor = false;
+            this.chk1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             this.chk1.CheckedChanged += new System.EventHandler(this.chk1_CheckedChanged);
+            // 
+            // editModeLabel
+            // 
+            this.editModeLabel.AutoSize = true;
+            this.editModeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.editModeLabel.ForeColor = System.Drawing.Color.Red;
+            this.editModeLabel.Location = new System.Drawing.Point(469, 25);
+            this.editModeLabel.Name = "editModeLabel";
+            this.editModeLabel.Size = new System.Drawing.Size(0, 13);
+            this.editModeLabel.TabIndex = 16;
+            this.editModeLabel.Visible = false;
+            this.editModeLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(286, 456);
+            this.ClientSize = new System.Drawing.Size(486, 456);
+            this.Controls.Add(this.editModeLabel);
+            this.Controls.Add(this.fontSizeComboBox);
+            this.Controls.Add(this.rightButton);
+            this.Controls.Add(this.leftButton);
+            this.Controls.Add(this.bottomButton);
+            this.Controls.Add(this.topButton);
             this.Controls.Add(this.d);
             this.Controls.Add(this.U);
             this.Controls.Add(this.btn1);

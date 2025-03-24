@@ -123,7 +123,7 @@ namespace ClipBox2
 
                 // Save the migrated data to JSON in the same directory
                 string jsonPath = Path.Combine(sourceDirectory, "ClipBox2.json");
-                SaveJSON.SaveMasterData(master, jsonPath);
+                master.Save(jsonPath);
 
                 MessageBox.Show($"Migration complete!\nJSON file saved as: {jsonPath}", 
                     "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
