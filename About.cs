@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -9,6 +9,10 @@ namespace ClipBox2
     public About()
     {
       InitializeComponent();
+      
+      // Set form properties to ensure it appears on top
+      this.TopMost = true;
+      this.StartPosition = FormStartPosition.CenterScreen;
     }
 
     private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

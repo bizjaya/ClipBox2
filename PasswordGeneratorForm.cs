@@ -27,6 +27,7 @@ namespace ClipBox2
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterParent;
+            this.TopMost = true; // Ensure form stays on top
 
             var lblLength = new Label { Text = "Password Length:", Location = new System.Drawing.Point(20, 20) };
             txtLength = new NumericUpDown 

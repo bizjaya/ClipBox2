@@ -10,6 +10,9 @@ namespace ClipBox2
             InitializeComponent();
             this.Load += new EventHandler(Delete_Load);
 
+            // Set form properties to ensure it appears on top
+            this.TopMost = true;
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         // Example code inside a "Delete" button

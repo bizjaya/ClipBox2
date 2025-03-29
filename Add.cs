@@ -20,6 +20,10 @@ namespace ClipBox2
             InitializeComponent();
             mainForm = Application.OpenForms["Form1"] as Form1;
             
+            // Set form properties to ensure it appears on top
+            this.TopMost = true;
+            this.StartPosition = FormStartPosition.CenterScreen;
+            
             // Populate the font size combo box from App.FontSizes
             foreach (var size in App.FontSizes)
             {

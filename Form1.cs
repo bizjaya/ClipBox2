@@ -41,6 +41,71 @@ namespace ClipBox2
       
       // Default to Size 9
       SelectFontSizeInComboBox(9);
+      
+      // Set up keyboard shortcut handling
+      this.KeyPreview = true;
+      this.KeyDown += Form1_KeyDown;
+    }
+
+    private void Form1_KeyDown(object sender, KeyEventArgs e)
+    {
+        // Check for Ctrl+E to toggle edit mode
+        if (e.Control && e.KeyCode == Keys.E)
+        {
+            e.Handled = true; // Mark as handled to prevent further processing
+            e.SuppressKeyPress = true; // Suppress the key press to prevent it from being processed elsewhere
+            
+            // Toggle the edit mode checkbox
+            chk1.Checked = !chk1.Checked;
+            
+            // The chk1_CheckedChanged event will handle the actual toggling of edit mode
+            return;
+        }
+        
+        // Check for Ctrl+C to copy cell content
+        if (e.Control && e.KeyCode == Keys.C)
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+            
+            // Copy the content of the selected cell
+            CopyCellContent();
+            return;
+        }
+        
+        // Allow arrow keys to pass through to the DataGridView
+        if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || 
+            e.KeyCode == Keys.Left || e.KeyCode == Keys.Right ||
+            e.KeyCode == Keys.Tab || e.KeyCode == Keys.Enter)
+        {
+            // Don't handle these keys at the form level
+            e.Handled = false;
+            return;
+        }
+    }
+
+    private void CopyCellContent()
+    {
+        // Make sure we have a selected cell
+        if (dgv1.SelectedCells.Count == 0) return;
+        
+        // Get the value, checking first if it's masked
+        string textValue;
+        if (dgv1.SelectedCells[0].Value?.ToString() == "****" && dgv1.SelectedCells[0].Tag != null)
+        {
+            // Use the original value stored in Tag
+            textValue = dgv1.SelectedCells[0].Tag.ToString();
+        }
+        else
+        {
+            textValue = dgv1.SelectedCells[0].Value?.ToString() ?? "";
+        }
+        
+        // Copy to clipboard
+        if (!string.IsNullOrEmpty(textValue))
+        {
+            Clipboard.SetText(textValue);
+        }
     }
 
     private void Form1_Load(object sender, EventArgs e)
@@ -208,7 +273,7 @@ namespace ClipBox2
     private void addListToolStripMenuItem_Click(object sender, EventArgs e)
     {
         Add addForm = new Add();
-        addForm.ShowDialog();
+        addForm.ShowDialog(this);
         
         // Refresh the combo box
         cb1.Items.Clear();
@@ -228,7 +293,7 @@ namespace ClipBox2
       if (!master.Lists.ContainsKey(listName)) return;
       
       Edit editForm = new Edit(master, listName);
-      editForm.ShowDialog();
+      editForm.ShowDialog(this);
       
       // Refresh the current list after editing
       populate(listName);
@@ -355,10 +420,18 @@ namespace ClipBox2
     {
         try
         {
+            // Show "S" indicator to indicate saving is happening
+            editModeLabel.Text = "S";
+            editModeLabel.Visible = true;
+            // Force UI update to show the "S"
+            Application.DoEvents();
+            
             string listName = cb1.Items[cb1.SelectedIndex].ToString();
             if (string.IsNullOrEmpty(listName))
             {
                 MessageBox.Show("Please select a list to save.", "Save", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Hide the indicator if save is canceled
+                if (!chk1.Checked) editModeLabel.Visible = false;
                 return;
             }
 
@@ -394,6 +467,8 @@ namespace ClipBox2
             {
                 info.cbmz = existing.cbmz;
                 info.cbname = existing.cbname;
+                info.pswd = existing.pswd;
+                info.size = existing.size;
             }
             else
             {
@@ -411,18 +486,39 @@ namespace ClipBox2
             // Reload the grid with saved data
             populate(listName, false);  // Don't save changes when reloading
 
+            // If we're not in edit mode, hide the indicator
+            if (!chk1.Checked)
+            {
+                editModeLabel.Visible = false;
+            }
+            else
+            {
+                // If we're in edit mode, change back to "E"
+                editModeLabel.Text = "E";
+            }
+
             MessageBox.Show("Changes saved successfully!", "Save", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Error saving changes: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            
+            // Reset the indicator
+            if (chk1.Checked)
+            {
+                editModeLabel.Text = "E";
+            }
+            else
+            {
+                editModeLabel.Visible = false;
+            }
         }
     }
 
     private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var about = new About();
-        about.Show();
+        about.ShowDialog(this);
     }
 
     private void saveAsEncryptedToolStripMenuItem_Click(object sender, EventArgs e)
