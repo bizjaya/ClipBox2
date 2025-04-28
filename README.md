@@ -1,5 +1,7 @@
 # ClipBox2
 
+![ClipBox Tool](ClipBox Tool.png)
+
 **ClipBox2** is a simple Windows Forms application for managing lists of data—often used for storing passwords or login information. It supports creating named lists (stored in `.xml` files), defining custom columns, and quickly copying or typing data into other windows.
 
 ## Features
@@ -27,6 +29,12 @@
 3. **Restore NuGet Packages** if prompted.
 4. **Build** the project (`Build > Build Solution`).
 5. **Run** the application (`Debug > Start Debugging` or `Ctrl+F5`).
+
+For a self-contained build:
+
+```
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+```
 
 ### Usage
 

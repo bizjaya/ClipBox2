@@ -1,3 +1,4 @@
+using ClipBox2.Properties;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -25,6 +26,8 @@ namespace ClipBox2
         private ToolStripMenuItem saveAsNormalToolStripMenuItem;
         public CheckBox chk1;
         private Button btn1;
+        private Button btn2;
+
         public DataGridView dgv1;
         private Button U;
         private Button d;
@@ -53,414 +56,433 @@ namespace ClipBox2
 
         private void InitializeComponent()
         {
-            this.components = new Container();
-            System.Windows.Forms.DataGridViewCellStyle gridViewCellStyle =
-                new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager componentResourceManager =
-                new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.cb1 = new System.Windows.Forms.ComboBox();
-            this.listlbl = new System.Windows.Forms.Label();
-            this.cb2 = new System.Windows.Forms.ComboBox();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.passwordGeneratorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.migrateXmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openDataFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAsEncryptedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAsNormalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dgv1 = new System.Windows.Forms.DataGridView();
-            this.d = new System.Windows.Forms.Button();
-            this.U = new System.Windows.Forms.Button();
-            this.btn1 = new System.Windows.Forms.Button();
-            this.chk1 = new System.Windows.Forms.CheckBox();
-            this.topButton = new System.Windows.Forms.Button();
-            this.bottomButton = new System.Windows.Forms.Button();
-            this.leftButton = new System.Windows.Forms.Button();
-            this.rightButton = new System.Windows.Forms.Button();
-            this.fontSizeComboBox = new System.Windows.Forms.ComboBox();
-            this.editModeLabel = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.toolbarPanel = new System.Windows.Forms.FlowLayoutPanel();
-
-
-            this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv1)).BeginInit();
-            this.SuspendLayout();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(Form1));
+            cb1 = new ComboBox();
+            listlbl = new Label();
+            cb2 = new ComboBox();
+            menuStrip1 = new MenuStrip();
+            fileToolStripMenuItem = new ToolStripMenuItem();
+            addListToolStripMenuItem = new ToolStripMenuItem();
+            editListToolStripMenuItem = new ToolStripMenuItem();
+            deleteListToolStripMenuItem = new ToolStripMenuItem();
+            toolsToolStripMenuItem = new ToolStripMenuItem();
+            passwordGeneratorToolStripMenuItem = new ToolStripMenuItem();
+            migrateXmlToolStripMenuItem = new ToolStripMenuItem();
+            openDataFolderToolStripMenuItem = new ToolStripMenuItem();
+            optionsToolStripMenuItem = new ToolStripMenuItem();
+            saveAsEncryptedToolStripMenuItem = new ToolStripMenuItem();
+            saveAsNormalToolStripMenuItem = new ToolStripMenuItem();
+            aboutToolStripMenuItem = new ToolStripMenuItem();
+            titleLabel = new ToolStripLabel();
+            dgv1 = new DataGridView();
+            d = new Button();
+            U = new Button();
+            btn1 = new Button();
+            btn2 = new Button();
+            chk1 = new CheckBox();
+            topButton = new Button();
+            bottomButton = new Button();
+            leftButton = new Button();
+            rightButton = new Button();
+            fontSizeComboBox = new ComboBox();
+            editModeLabel = new Label();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            toolbarPanel = new FlowLayoutPanel();
+            menuStrip1.SuspendLayout();
+            ((ISupportInitialize)dgv1).BeginInit();
+            tableLayoutPanel1.SuspendLayout();
+            toolbarPanel.SuspendLayout();
+            SuspendLayout();
             // 
             // cb1
             // 
-            this.cb1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cb1.FormattingEnabled = true;
-            this.cb1.Name = "cb1";
-            this.cb1.Size = new System.Drawing.Size(134, 21);
-            this.cb1.TabIndex = 1;
-            this.cb1.SelectedIndexChanged += new System.EventHandler(this.cb1_SelectedIndexChanged);
+            cb1.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb1.FormattingEnabled = true;
+            cb1.Location = new Point(8, 4);
+            cb1.Margin = new Padding(4, 3, 4, 3);
+            cb1.Name = "cb1";
+            cb1.Size = new Size(156, 23);
+            cb1.TabIndex = 1;
+            cb1.SelectedIndexChanged += cb1_SelectedIndexChanged;
             // 
             // listlbl
             // 
-            this.listlbl.AutoSize = true;
-            this.listlbl.Name = "listlbl";
-            this.listlbl.Size = new System.Drawing.Size(23, 13);
-            this.listlbl.TabIndex = 2;
-            this.listlbl.Text = "List";
+            listlbl.AutoSize = true;
+            listlbl.Location = new Point(8, 1);
+            listlbl.Margin = new Padding(4, 0, 4, 0);
+            listlbl.Name = "listlbl";
+            listlbl.Size = new Size(25, 15);
+            listlbl.TabIndex = 2;
             // 
             // cb2
             // 
-            this.cb2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cb2.FormattingEnabled = true;
-            this.cb2.Location = new System.Drawing.Point(164, 21);
-            this.cb2.Name = "cb2";
-            this.cb2.Size = new System.Drawing.Size(49, 21);
-            this.cb2.TabIndex = 3;
+            cb2.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb2.FormattingEnabled = true;
+            cb2.Location = new Point(172, 4);
+            cb2.Margin = new Padding(4, 3, 4, 3);
+            cb2.Name = "cb2";
+            cb2.Size = new Size(56, 23);
+            cb2.TabIndex = 3;
             // 
             // menuStrip1
             // 
-            this.menuStrip1.Items.AddRange(new ToolStripItem[] {
-                this.fileToolStripMenuItem,
-                this.toolsToolStripMenuItem,
-                this.optionsToolStripMenuItem,
-                this.aboutToolStripMenuItem
-            });
-            this.menuStrip1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(486, 24);
-            this.menuStrip1.TabIndex = 4;
-            this.menuStrip1.Text = "menuStrip1";
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, toolsToolStripMenuItem, optionsToolStripMenuItem, aboutToolStripMenuItem, titleLabel });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Padding = new Padding(7, 2, 0, 2);
+            menuStrip1.Size = new Size(619, 24);
+            menuStrip1.TabIndex = 4;
+            menuStrip1.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
-                this.addListToolStripMenuItem,
-                this.editListToolStripMenuItem,
-                this.deleteListToolStripMenuItem
-            });
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addListToolStripMenuItem, editListToolStripMenuItem, deleteListToolStripMenuItem });
+            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            fileToolStripMenuItem.Size = new Size(37, 20);
+            fileToolStripMenuItem.Text = "File";
             // 
             // addListToolStripMenuItem
             // 
-            this.addListToolStripMenuItem.Name = "addListToolStripMenuItem";
-            this.addListToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
-            this.addListToolStripMenuItem.Text = "Add List";
-            this.addListToolStripMenuItem.Click += new System.EventHandler(this.addListToolStripMenuItem_Click);
+            addListToolStripMenuItem.Name = "addListToolStripMenuItem";
+            addListToolStripMenuItem.Size = new Size(128, 22);
+            addListToolStripMenuItem.Text = "Add List";
+            addListToolStripMenuItem.Click += addListToolStripMenuItem_Click;
             // 
             // editListToolStripMenuItem
             // 
-            this.editListToolStripMenuItem.Name = "editListToolStripMenuItem";
-            this.editListToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
-            this.editListToolStripMenuItem.Text = "Edit List";
-            this.editListToolStripMenuItem.Click += new System.EventHandler(this.editListToolStripMenuItem_Click);
+            editListToolStripMenuItem.Name = "editListToolStripMenuItem";
+            editListToolStripMenuItem.Size = new Size(128, 22);
+            editListToolStripMenuItem.Text = "Edit List";
+            editListToolStripMenuItem.Click += editListToolStripMenuItem_Click;
             // 
             // deleteListToolStripMenuItem
             // 
-            this.deleteListToolStripMenuItem.Name = "deleteListToolStripMenuItem";
-            this.deleteListToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
-            this.deleteListToolStripMenuItem.Text = "Delete List";
+            deleteListToolStripMenuItem.Name = "deleteListToolStripMenuItem";
+            deleteListToolStripMenuItem.Size = new Size(128, 22);
+            deleteListToolStripMenuItem.Text = "Delete List";
             // 
             // toolsToolStripMenuItem
             // 
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
-                this.passwordGeneratorToolStripMenuItem,
-                this.migrateXmlToolStripMenuItem,
-                this.openDataFolderToolStripMenuItem
-            });
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
-            this.toolsToolStripMenuItem.Text = "Tools";
+            toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { passwordGeneratorToolStripMenuItem, migrateXmlToolStripMenuItem, openDataFolderToolStripMenuItem });
+            toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            toolsToolStripMenuItem.Size = new Size(47, 20);
+            toolsToolStripMenuItem.Text = "Tools";
             // 
             // passwordGeneratorToolStripMenuItem
             // 
-            this.passwordGeneratorToolStripMenuItem.Name = "passwordGeneratorToolStripMenuItem";
-            this.passwordGeneratorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.passwordGeneratorToolStripMenuItem.Text = "Password Generator";
-            this.passwordGeneratorToolStripMenuItem.Click += new System.EventHandler(this.passwordGeneratorToolStripMenuItem_Click);
+            passwordGeneratorToolStripMenuItem.Name = "passwordGeneratorToolStripMenuItem";
+            passwordGeneratorToolStripMenuItem.Size = new Size(179, 22);
+            passwordGeneratorToolStripMenuItem.Text = "Password Generator";
+            passwordGeneratorToolStripMenuItem.Click += passwordGeneratorToolStripMenuItem_Click;
             // 
             // migrateXmlToolStripMenuItem
             // 
-            this.migrateXmlToolStripMenuItem.Name = "migrateXmlToolStripMenuItem";
-            this.migrateXmlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.migrateXmlToolStripMenuItem.Text = "Migrate XML Files";
-            this.migrateXmlToolStripMenuItem.Click += new System.EventHandler(this.migrateXmlToolStripMenuItem_Click);
+            migrateXmlToolStripMenuItem.Name = "migrateXmlToolStripMenuItem";
+            migrateXmlToolStripMenuItem.Size = new Size(179, 22);
+            migrateXmlToolStripMenuItem.Text = "Migrate XML Files";
+            migrateXmlToolStripMenuItem.Click += migrateXmlToolStripMenuItem_Click;
             // 
             // openDataFolderToolStripMenuItem
             // 
-            this.openDataFolderToolStripMenuItem.Name = "openDataFolderToolStripMenuItem";
-            this.openDataFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openDataFolderToolStripMenuItem.Text = "Open Data Folder";
-            this.openDataFolderToolStripMenuItem.Click += new System.EventHandler(this.openDataFolderToolStripMenuItem_Click);
+            openDataFolderToolStripMenuItem.Name = "openDataFolderToolStripMenuItem";
+            openDataFolderToolStripMenuItem.Size = new Size(179, 22);
+            openDataFolderToolStripMenuItem.Text = "Open Data Folder";
+            openDataFolderToolStripMenuItem.Click += openDataFolderToolStripMenuItem_Click;
             // 
             // optionsToolStripMenuItem
             // 
-            this.optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
-                this.saveAsEncryptedToolStripMenuItem,
-                this.saveAsNormalToolStripMenuItem
-            });
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.optionsToolStripMenuItem.Text = "Options";
+            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveAsEncryptedToolStripMenuItem, saveAsNormalToolStripMenuItem });
+            optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            optionsToolStripMenuItem.Size = new Size(61, 20);
+            optionsToolStripMenuItem.Text = "Options";
             // 
             // saveAsEncryptedToolStripMenuItem
             // 
-            this.saveAsEncryptedToolStripMenuItem.Checked = true;
-            this.saveAsEncryptedToolStripMenuItem.CheckState = CheckState.Checked;
-            this.saveAsEncryptedToolStripMenuItem.Name = "saveAsEncryptedToolStripMenuItem";
-            this.saveAsEncryptedToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.saveAsEncryptedToolStripMenuItem.Text = "Save as Encrypted";
-            this.saveAsEncryptedToolStripMenuItem.Click += new System.EventHandler(this.saveAsEncryptedToolStripMenuItem_Click);
+            saveAsEncryptedToolStripMenuItem.CheckState = CheckState.Checked;
+            saveAsEncryptedToolStripMenuItem.Checked = true;
+            saveAsEncryptedToolStripMenuItem.Name = "saveAsEncryptedToolStripMenuItem";
+            saveAsEncryptedToolStripMenuItem.Size = new Size(168, 22);
+            saveAsEncryptedToolStripMenuItem.Text = "Save as Encrypted";
+            saveAsEncryptedToolStripMenuItem.Click += saveAsEncryptedToolStripMenuItem_Click;
             // 
             // saveAsNormalToolStripMenuItem
             // 
-            this.saveAsNormalToolStripMenuItem.Name = "saveAsNormalToolStripMenuItem";
-            this.saveAsNormalToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.saveAsNormalToolStripMenuItem.Text = "Save as Normal";
-            this.saveAsNormalToolStripMenuItem.Click += new System.EventHandler(this.saveAsNormalToolStripMenuItem_Click);
+            saveAsNormalToolStripMenuItem.Name = "saveAsNormalToolStripMenuItem";
+            saveAsNormalToolStripMenuItem.Size = new Size(168, 22);
+            saveAsNormalToolStripMenuItem.Text = "Save as Normal";
+            saveAsNormalToolStripMenuItem.Click += saveAsNormalToolStripMenuItem_Click;
             // 
             // aboutToolStripMenuItem
             // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            aboutToolStripMenuItem.Size = new Size(52, 20);
+            aboutToolStripMenuItem.Text = "About";
+            aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
+            // 
+            // titleLabel
+            // 
+            titleLabel.Name = "titleLabel";
+            titleLabel.Size = new Size(130, 17);
+            titleLabel.Font = new Font("Georgia", titleLabel.Font.Size, titleLabel.Font.Style);
+
+            titleLabel.Text = "ClipBox by BIZJAYA.COM";
+            titleLabel.Alignment = ToolStripItemAlignment.Right;
+
             // 
             // dgv1
             // 
-            this.dgv1.AllowUserToAddRows = false;
-            this.dgv1.AllowUserToDeleteRows = false;
-            this.dgv1.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom
-                                | AnchorStyles.Left | AnchorStyles.Right);
-            this.dgv1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgv1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            this.dgv1.BackgroundColor = SystemColors.ButtonHighlight;
-            this.dgv1.BorderStyle = BorderStyle.None;
-            this.dgv1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            this.dgv1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            gridViewCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            gridViewCellStyle.BackColor = SystemColors.Window;
-            gridViewCellStyle.Font = new Font("Arial", 8.2F, FontStyle.Regular,
-                                              GraphicsUnit.Pixel);
-            gridViewCellStyle.ForeColor = SystemColors.ControlText;
-            gridViewCellStyle.SelectionBackColor = SystemColors.Highlight;
-            gridViewCellStyle.SelectionForeColor = SystemColors.HighlightText;
-            gridViewCellStyle.WrapMode = DataGridViewTriState.False;
-            this.dgv1.DefaultCellStyle = gridViewCellStyle;
-            this.dgv1.EditMode = DataGridViewEditMode.EditOnKeystroke;
-            this.dgv1.GridColor = SystemColors.ButtonHighlight;
-            this.dgv1.Location = new System.Drawing.Point(0, 46);
-            this.dgv1.MultiSelect = false;
-            this.dgv1.Name = "dgv1";
-            this.dgv1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            this.dgv1.RowHeadersVisible = false;
-            this.dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
-            this.dgv1.ShowCellErrors = false;
-            this.dgv1.Size = new System.Drawing.Size(486, 410);
-            this.dgv1.StandardTab = true;
-            this.dgv1.TabIndex = 0;
-            this.dgv1.TabStop = false;
-            this.dgv1.CellContentClick += new DataGridViewCellEventHandler(this.dgv1_CellClick);
-            this.dgv1.LostFocus += new System.EventHandler(this.dgv1_LostFocus);
-            // 
-            // fontSizeComboBox
-            // 
-            this.fontSizeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.fontSizeComboBox.FormattingEnabled = true;
-            this.fontSizeComboBox.Items.AddRange(new object[] {
-                "Size 7",
-                "Size 8",
-                "Size 9",
-                "Size 10",
-                "Size 11",
-                "Size 12",
-                "Size 13",
-                "Size 14",
-                "Size 15"
-            });
-            this.fontSizeComboBox.Location = new System.Drawing.Point(215, 21);
-            this.fontSizeComboBox.Name = "fontSizeComboBox";
-            this.fontSizeComboBox.Size = new System.Drawing.Size(60, 21);
-            this.fontSizeComboBox.TabIndex = 14;
-            this.fontSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.fontSizeComboBox_SelectedIndexChanged);
-            this.fontSizeComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            // 
-            // leftButton
-            // 
-            this.leftButton.Location = new System.Drawing.Point(277, 21);
-            this.leftButton.Name = "leftButton";
-            this.leftButton.Size = new System.Drawing.Size(24, 21);
-            this.leftButton.TabIndex = 12;
-            this.leftButton.Text = "←";
-            this.leftButton.UseVisualStyleBackColor = true;
-            this.leftButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            this.leftButton.Click += new System.EventHandler(this.leftButton_Click);
-            // 
-            // topButton
-            // 
-            this.topButton.Location = new System.Drawing.Point(303, 21);
-            this.topButton.Name = "topButton";
-            this.topButton.Size = new System.Drawing.Size(24, 21);
-            this.topButton.TabIndex = 10;
-            this.topButton.Text = "↥";
-            this.topButton.UseVisualStyleBackColor = true;
-            this.topButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            this.topButton.Click += new System.EventHandler(this.topButton_Click);
-            // 
-            // U
-            // 
-            this.U.Location = new System.Drawing.Point(329, 21);
-            this.U.Name = "U";
-            this.U.Size = new System.Drawing.Size(18, 21);
-            this.U.TabIndex = 8;
-            this.U.Text = "↑";
-            this.U.UseVisualStyleBackColor = true;
-            this.U.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            this.U.Click += new System.EventHandler(this.u_Click);
+            dgv1.AllowUserToAddRows = false;
+            dgv1.AllowUserToDeleteRows = false;
+            dgv1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgv1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            dgv1.BackgroundColor = SystemColors.ButtonHighlight;
+            dgv1.BorderStyle = BorderStyle.None;
+            dgv1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgv1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Window;
+            dataGridViewCellStyle1.Font = new Font("Arial", 8.2F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+            dgv1.DefaultCellStyle = dataGridViewCellStyle1;
+            dgv1.Dock = DockStyle.Fill;
+            dgv1.EditMode = DataGridViewEditMode.EditOnKeystroke;
+            dgv1.GridColor = SystemColors.ButtonHighlight;
+            dgv1.Location = new Point(4, 59);
+            dgv1.Margin = new Padding(4, 3, 4, 3);
+            dgv1.MultiSelect = false;
+            dgv1.Name = "dgv1";
+            dgv1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgv1.RowHeadersVisible = false;
+            dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            dgv1.ShowCellErrors = false;
+            dgv1.Size = new Size(611, 419);
+            dgv1.StandardTab = true;
+            dgv1.TabIndex = 0;
+            dgv1.TabStop = false;
+            dgv1.CellContentClick += dgv1_CellClick;
+            dgv1.LostFocus += dgv1_LostFocus;
             // 
             // d
             // 
-            this.d.Location = new System.Drawing.Point(349, 21);
-            this.d.Name = "d";
-            this.d.Size = new System.Drawing.Size(18, 21);
-            this.d.TabIndex = 9;
-            this.d.Text = "↓";
-            this.d.UseVisualStyleBackColor = true;
-            this.d.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            this.d.Click += new System.EventHandler(this.d_Click);
+            d.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            d.Location = new Point(438, 4);
+            d.Margin = new Padding(4, 3, 4, 3);
+            d.Name = "d";
+            d.Size = new Size(21, 24);
+            d.TabIndex = 9;
+            d.Text = "↓";
+            d.UseVisualStyleBackColor = true;
+            d.Click += d_Click;
             // 
-            // bottomButton
+            // U
             // 
-            this.bottomButton.Location = new System.Drawing.Point(369, 21);
-            this.bottomButton.Name = "bottomButton";
-            this.bottomButton.Size = new System.Drawing.Size(24, 21);
-            this.bottomButton.TabIndex = 11;
-            this.bottomButton.Text = "↧";
-            this.bottomButton.UseVisualStyleBackColor = true;
-            this.bottomButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            this.bottomButton.Click += new System.EventHandler(this.bottomButton_Click);
-            // 
-            // rightButton
-            // 
-            this.rightButton.Location = new System.Drawing.Point(395, 21);
-            this.rightButton.Name = "rightButton";
-            this.rightButton.Size = new System.Drawing.Size(24, 21);
-            this.rightButton.TabIndex = 13;
-            this.rightButton.Text = "→";
-            this.rightButton.UseVisualStyleBackColor = true;
-            this.rightButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            this.rightButton.Click += new System.EventHandler(this.rightButton_Click);
+            U.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            U.Location = new Point(409, 4);
+            U.Margin = new Padding(4, 3, 4, 3);
+            U.Name = "U";
+            U.Size = new Size(21, 24);
+            U.TabIndex = 8;
+            U.Text = "↑";
+            U.UseVisualStyleBackColor = true;
+            U.Click += u_Click;
             // 
             // btn1
             // 
-            this.btn1.Image = ((System.Drawing.Image)(componentResourceManager.GetObject("btn1.Image")));
-            this.btn1.Location = new System.Drawing.Point(421, 21);
-            this.btn1.Name = "btn1";
-            this.btn1.Size = new System.Drawing.Size(22, 21);
-            this.btn1.TabIndex = 7;
-            this.btn1.UseVisualStyleBackColor = true;
-            this.btn1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            this.btn1.Click += new System.EventHandler(this.btn1_Click);
+            btn1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btn1.FlatAppearance.BorderSize = 0;
+            btn1.FlatStyle = FlatStyle.Flat;
+            btn1.Image = (Image)resources.GetObject("btn1.Image");
+            btn1.Location = new Point(499, 4);
+            btn1.Margin = new Padding(4, 3, 4, 3);
+            btn1.Name = "btn1";
+            btn1.Size = new Size(24, 24);
+            btn1.TabIndex = 7;
+            btn1.UseVisualStyleBackColor = true;
+            btn1.Click += btn1_Click;
+            // 
+            // btn2
+            // 
+            btn2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btn2.FlatAppearance.BorderSize = 0;
+            btn2.FlatStyle = FlatStyle.Flat;
+            btn2.Image = (Image)resources.GetObject("btn2.Image");
+            btn2.Location = new Point(531, 4);
+            btn2.Margin = new Padding(4, 3, 4, 3);
+            btn2.Name = "btn2";
+            btn2.Size = new Size(24, 24);
+            btn2.TabIndex = 7;
+            btn2.UseVisualStyleBackColor = true;
+            btn2.Click += btn2_Click;
             // 
             // chk1
             // 
-            this.chk1.Appearance = Appearance.Button;
-            this.chk1.AutoSize = true;
-            this.chk1.BackColor = SystemColors.ButtonFace;
-            this.chk1.BackgroundImageLayout = ImageLayout.Center;
-            this.chk1.ForeColor = SystemColors.Desktop;
-            this.chk1.Image = ((System.Drawing.Image)(componentResourceManager.GetObject("chk1.Image")));
-            this.chk1.Location = new System.Drawing.Point(445, 21);
-            this.chk1.Name = "chk1";
-            this.chk1.Size = new System.Drawing.Size(22, 22);
-            this.chk1.TabIndex = 6;
-            this.chk1.UseVisualStyleBackColor = false;
-            this.chk1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            this.chk1.CheckedChanged += new System.EventHandler(this.chk1_CheckedChanged);
+            chk1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chk1.Appearance = Appearance.Button;
+            chk1.AutoSize = true;
+            chk1.BackColor = SystemColors.ButtonFace;
+            chk1.BackgroundImageLayout = ImageLayout.Center;
+            chk1.ForeColor = SystemColors.Desktop;
+            chk1.Location = new Point(563, 4);
+            chk1.Margin = new Padding(4, 3, 4, 3);
+            chk1.Name = "chk1";
+            chk1.Size = new Size(6, 6);
+            chk1.TabIndex = 6;
+            chk1.UseVisualStyleBackColor = false;
+            chk1.CheckedChanged += chk1_CheckedChanged;
+            // 
+            // topButton
+            // 
+            topButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            topButton.Location = new Point(377, 4);
+            topButton.Margin = new Padding(4, 3, 4, 3);
+            topButton.Name = "topButton";
+            topButton.Size = new Size(24, 24);
+            topButton.TabIndex = 10;
+            topButton.Text = "↥";
+            topButton.UseVisualStyleBackColor = true;
+            topButton.Click += topButton_Click;
+            // 
+            // bottomButton
+            // 
+            bottomButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            bottomButton.Location = new Point(467, 4);
+            bottomButton.Margin = new Padding(4, 3, 4, 3);
+            bottomButton.Name = "bottomButton";
+            bottomButton.Size = new Size(24, 24);
+            bottomButton.TabIndex = 11;
+            bottomButton.Text = "↧";
+            bottomButton.UseVisualStyleBackColor = true;
+            bottomButton.Click += bottomButton_Click;
+            // 
+            // leftButton
+            // 
+            leftButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            leftButton.Location = new Point(313, 4);
+            leftButton.Margin = new Padding(4, 3, 4, 3);
+            leftButton.Name = "leftButton";
+            leftButton.Size = new Size(24, 24);
+            leftButton.TabIndex = 12;
+            leftButton.Text = "←";
+            leftButton.UseVisualStyleBackColor = true;
+            leftButton.Click += leftButton_Click;
+            // 
+            // rightButton
+            // 
+            rightButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            rightButton.Location = new Point(345, 4);
+            rightButton.Margin = new Padding(4, 3, 4, 3);
+            rightButton.Name = "rightButton";
+            rightButton.Size = new Size(24, 24);
+            rightButton.TabIndex = 13;
+            rightButton.Text = "→";
+            rightButton.UseVisualStyleBackColor = true;
+            rightButton.Click += rightButton_Click;
+            // 
+            // fontSizeComboBox
+            // 
+            fontSizeComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            fontSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            fontSizeComboBox.FormattingEnabled = true;
+            fontSizeComboBox.Items.AddRange(new object[] { "Size 7", "Size 8", "Size 9", "Size 10", "Size 11", "Size 12", "Size 13", "Size 14", "Size 15" });
+            fontSizeComboBox.Location = new Point(236, 4);
+            fontSizeComboBox.Margin = new Padding(4, 3, 4, 3);
+            fontSizeComboBox.Name = "fontSizeComboBox";
+            fontSizeComboBox.Size = new Size(69, 23);
+            fontSizeComboBox.TabIndex = 14;
+            fontSizeComboBox.SelectedIndexChanged += fontSizeComboBox_SelectedIndexChanged;
             // 
             // editModeLabel
             // 
-            this.editModeLabel.AutoSize = true;
-            this.editModeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.editModeLabel.ForeColor = System.Drawing.Color.Red;
-            this.editModeLabel.Location = new System.Drawing.Point(469, 25);
-            this.editModeLabel.Name = "editModeLabel";
-            this.editModeLabel.Size = new System.Drawing.Size(0, 13);
-            this.editModeLabel.TabIndex = 16;
-            this.editModeLabel.Visible = false;
-            this.editModeLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            editModeLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            editModeLabel.AutoSize = true;
+            editModeLabel.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            editModeLabel.ForeColor = Color.Red;
+            editModeLabel.Location = new Point(550, 9);
+            editModeLabel.Margin = new Padding(0, 6, 4, 3);
+            editModeLabel.Name = "editModeLabel";
+            editModeLabel.Size = new Size(13, 13);
+            editModeLabel.TabIndex = 16;
+            editModeLabel.Visible = false;
+
+
+
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 1;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.Controls.Add(menuStrip1, 0, 0);
+            tableLayoutPanel1.Controls.Add(toolbarPanel, 0, 1);
+            tableLayoutPanel1.Controls.Add(dgv1, 0, 2);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(4, 20);
+            tableLayoutPanel1.Margin = new Padding(4, 3, 4, 3);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 3;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new Size(619, 481);
+            tableLayoutPanel1.TabIndex = 0;
+            tableLayoutPanel1.AutoSize = false;
+
+            // 
+            // toolbarPanel
+            // 
+            toolbarPanel.AutoScroll = true;
+            toolbarPanel.AutoSize = false;
+            toolbarPanel.Controls.Add(cb1);
+            toolbarPanel.Controls.Add(cb2);
+            toolbarPanel.Controls.Add(fontSizeComboBox);
+            toolbarPanel.Controls.Add(leftButton);
+            toolbarPanel.Controls.Add(rightButton);
+            toolbarPanel.Controls.Add(topButton);
+            toolbarPanel.Controls.Add(U);
+            toolbarPanel.Controls.Add(d);
+            toolbarPanel.Controls.Add(bottomButton);
+            toolbarPanel.Controls.Add(btn1);
+            toolbarPanel.Controls.Add(btn2);
+            toolbarPanel.Controls.Add(chk1);
+            toolbarPanel.Controls.Add(editModeLabel);
+            toolbarPanel.Dock = DockStyle.Fill;
+            toolbarPanel.Location = new Point(0, 24);
+            toolbarPanel.Margin = new Padding(0);
+            toolbarPanel.Name = "toolbarPanel";
+            toolbarPanel.Padding = new Padding(4, 1, 4, 1);
+            toolbarPanel.Size = new Size(619, 32);
+            toolbarPanel.TabIndex = 5;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = AutoScaleMode.Font;
-            this.Text = "ClipBox by BizJaya.com";
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-            this.MaximizeBox = true;
-            this.MinimizeBox = true;
-            this.MinimumSize = new System.Drawing.Size(400, 300);
-            // --- Begin TableLayoutPanel Layout ---
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.toolbarPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize)); // MenuStrip
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize)); // Toolbar
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F)); // DataGridView
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(627, 504);
+            Controls.Add(tableLayoutPanel1);
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            Margin = new Padding(4, 3, 4, 3);
+            //MinimumSize = new Size(464, 340);
+            Name = "Form1";
+            MinimumSize = new Size(200, this.MinimumSize.Height);
 
-            // Row 1: MenuStrip
-            this.menuStrip1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tableLayoutPanel1.Controls.Add(this.menuStrip1, 0, 0);
-
-            tableLayoutPanel1.RowStyles[1] = new RowStyle(SizeType.Absolute, 32);
-
-            // Row 2: Toolbar (FlowLayoutPanel)
-            this.toolbarPanel.Dock = DockStyle.Fill;
-            this.toolbarPanel.AutoSize = false;
-            this.toolbarPanel.AutoScroll = true;
-            this.toolbarPanel.WrapContents = false;
-            this.toolbarPanel.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.toolbarPanel.Padding = new System.Windows.Forms.Padding(3, 1, 3, 1);
-            this.toolbarPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.toolbarPanel.Controls.Add(this.listlbl);
-            this.toolbarPanel.Controls.Add(this.cb1);
-            this.toolbarPanel.Controls.Add(this.cb2);
-            this.toolbarPanel.Controls.Add(this.fontSizeComboBox);
-            this.toolbarPanel.Controls.Add(this.leftButton);
-            this.toolbarPanel.Controls.Add(this.rightButton);
-            this.toolbarPanel.Controls.Add(this.topButton);
-            this.toolbarPanel.Controls.Add(this.U);
-            this.toolbarPanel.Controls.Add(this.d);
-            this.toolbarPanel.Controls.Add(this.bottomButton);
-            this.toolbarPanel.Controls.Add(this.btn1);
-            this.toolbarPanel.Controls.Add(this.chk1);
-            this.toolbarPanel.Controls.Add(this.editModeLabel);
-            this.tableLayoutPanel1.Controls.Add(this.toolbarPanel, 0, 1);
-
-            // Row 3: DataGridView
-            this.dgv1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Controls.Add(this.dgv1, 0, 2);
-
-            // Add TableLayoutPanel to the form
-            this.Controls.Add(this.tableLayoutPanel1);
-            // --- End TableLayoutPanel Layout ---
-            this.Icon = ((System.Drawing.Icon)(componentResourceManager.GetObject("$this.Icon")));
-            this.Name = "Form1";
-            this.SizeGripStyle = SizeGripStyle.Auto;
-            this.Text = "ClipBox by BizJaya.com";
-            this.TopMost = true;
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv1)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            Padding = new Padding(4, 20, 4, 3);
+            TopMost = true;
+            Load += Form1_Load;
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
+            ((ISupportInitialize)dgv1).EndInit();
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
+            toolbarPanel.ResumeLayout(false);
+            toolbarPanel.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private ToolStripLabel titleLabel;
     }
 }
