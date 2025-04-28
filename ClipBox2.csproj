@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <TrimmerRootDescriptor Include="rd.xml" />
+    <PackageReference Include="MaterialSkin.2" Version="2.3.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 

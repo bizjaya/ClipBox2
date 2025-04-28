@@ -8,15 +8,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MaterialSkin;
+using MaterialSkin.Controls;
 
 namespace ClipBox2
 {
-    public partial class Add : Form
+    public partial class Add : MaterialSkin.Controls.MaterialForm
     {
         private Form1 mainForm;
 
         public Add()
         {
+            // MaterialSkin initialization
+            var materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.AddFormToManage(this);
+            materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+            materialSkinManager.ColorScheme = new ColorScheme(Primary.Blue600, Primary.Blue700, Primary.Blue200, Accent.LightBlue200, TextShade.WHITE);
             InitializeComponent();
             mainForm = Application.OpenForms["Form1"] as Form1;
             

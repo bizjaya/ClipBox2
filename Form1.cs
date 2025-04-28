@@ -6,13 +6,33 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using MaterialSkin;
+using MaterialSkin.Controls;
 
 namespace ClipBox2
 {
-  public partial class Form1 : Form
+  public partial class Form1 : MaterialSkin.Controls.MaterialForm
   {
     public Form1()
     {
+      // MaterialSkin initialization
+      //var materialSkinManager = MaterialSkinManager.Instance;
+      //materialSkinManager.AddFormToManage(this);
+      //materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+      //materialSkinManager.ColorScheme = new ColorScheme(Primary.Blue600, Primary.Blue700, Primary.Blue200, Accent.LightBlue200, TextShade.WHITE);
+
+      //// Set the form title for MaterialSkin
+      this.Text = "ClipBox";
+      // Add padding so MenuStrip is not hidden behind the MaterialSkin title bar
+      this.Padding = new Padding(0, 24, 0, 0); // 24px is the standard MaterialSkin title bar height
+      // If MenuStrip is not docked, ensure it is: menuStrip1.Dock = DockStyle.Top;
+      // MaterialSkin initialization
+      var materialSkinManager = MaterialSkinManager.Instance;
+      materialSkinManager.AddFormToManage(this);
+      materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+      materialSkinManager.ColorScheme = new ColorScheme(Primary.Blue600, Primary.Blue700, Primary.Blue200, Accent.LightBlue200, TextShade.WHITE);
+
+
       // Initialize environment variables
       Environment.SetEnvironmentVariable("cbFol", App.ExecutablePath);
       Environment.SetEnvironmentVariable("fName", "default.xml");

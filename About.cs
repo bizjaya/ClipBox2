@@ -1,13 +1,20 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using MaterialSkin;
+using MaterialSkin.Controls;
 
 namespace ClipBox2
 {
-  public partial class About : Form
+  public partial class About : MaterialSkin.Controls.MaterialForm
   {
     public About()
     {
+      // MaterialSkin initialization
+      var materialSkinManager = MaterialSkinManager.Instance;
+      materialSkinManager.AddFormToManage(this);
+      materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+      materialSkinManager.ColorScheme = new ColorScheme(Primary.Blue600, Primary.Blue700, Primary.Blue200, Accent.LightBlue200, TextShade.WHITE);
       InitializeComponent();
       
       // Set form properties to ensure it appears on top

@@ -1,12 +1,19 @@
 using System;
 using System.Windows.Forms;
+using MaterialSkin;
+using MaterialSkin.Controls;
 
 namespace ClipBox2
 {
-    public partial class Delete : Form
+    public partial class Delete : MaterialSkin.Controls.MaterialForm
     {
         public Delete()
         {
+            // MaterialSkin initialization
+            var materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.AddFormToManage(this);
+            materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+            materialSkinManager.ColorScheme = new ColorScheme(Primary.Blue600, Primary.Blue700, Primary.Blue200, Accent.LightBlue200, TextShade.WHITE);
             InitializeComponent();
             this.Load += new EventHandler(Delete_Load);
 

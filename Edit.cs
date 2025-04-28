@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using MaterialSkin;
+using MaterialSkin.Controls;
 
 namespace ClipBox2
 {
-  public partial class Edit : Form
+  public partial class Edit : MaterialSkin.Controls.MaterialForm
   {
     private MasterData master;
     private Info data;
@@ -17,6 +19,11 @@ namespace ClipBox2
 
     public Edit(MasterData master, string listName)
     {
+      // MaterialSkin initialization
+      var materialSkinManager = MaterialSkinManager.Instance;
+      materialSkinManager.AddFormToManage(this);
+      materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+      materialSkinManager.ColorScheme = new ColorScheme(Primary.Blue600, Primary.Blue700, Primary.Blue200, Accent.LightBlue200, TextShade.WHITE);
       InitializeComponent();
       this.master = master;
       this.listName = listName;
