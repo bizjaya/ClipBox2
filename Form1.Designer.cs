@@ -34,6 +34,8 @@ namespace ClipBox2
         private Button rightButton;
         private ComboBox fontSizeComboBox;
         private Label editModeLabel;
+        private TableLayoutPanel tableLayoutPanel1;
+        private FlowLayoutPanel toolbarPanel;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -83,6 +85,10 @@ namespace ClipBox2
             this.rightButton = new System.Windows.Forms.Button();
             this.fontSizeComboBox = new System.Windows.Forms.ComboBox();
             this.editModeLabel = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.toolbarPanel = new System.Windows.Forms.FlowLayoutPanel();
+
+
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv1)).BeginInit();
             this.SuspendLayout();
@@ -91,7 +97,6 @@ namespace ClipBox2
             // 
             this.cb1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cb1.FormattingEnabled = true;
-            this.cb1.Location = new System.Drawing.Point(26, 21);
             this.cb1.Name = "cb1";
             this.cb1.Size = new System.Drawing.Size(134, 21);
             this.cb1.TabIndex = 1;
@@ -100,7 +105,6 @@ namespace ClipBox2
             // listlbl
             // 
             this.listlbl.AutoSize = true;
-            this.listlbl.Location = new System.Drawing.Point(3, 25);
             this.listlbl.Name = "listlbl";
             this.listlbl.Size = new System.Drawing.Size(23, 13);
             this.listlbl.TabIndex = 2;
@@ -123,7 +127,7 @@ namespace ClipBox2
                 this.optionsToolStripMenuItem,
                 this.aboutToolStripMenuItem
             });
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Dock = System.Windows.Forms.DockStyle.Top;
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(486, 24);
             this.menuStrip1.TabIndex = 4;
@@ -393,26 +397,61 @@ namespace ClipBox2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(486, 456);
-            this.Controls.Add(this.editModeLabel);
-            this.Controls.Add(this.fontSizeComboBox);
-            this.Controls.Add(this.rightButton);
-            this.Controls.Add(this.leftButton);
-            this.Controls.Add(this.bottomButton);
-            this.Controls.Add(this.topButton);
-            this.Controls.Add(this.d);
-            this.Controls.Add(this.U);
-            this.Controls.Add(this.btn1);
-            this.Controls.Add(this.chk1);
-            this.Controls.Add(this.dgv1);
-            this.Controls.Add(this.cb2);
-            this.Controls.Add(this.listlbl);
-            this.Controls.Add(this.cb1);
-            this.Controls.Add(this.menuStrip1);
+            this.Text = "ClipBox by BizJaya.com";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
+            this.MinimizeBox = true;
+            this.MinimumSize = new System.Drawing.Size(400, 300);
+            // --- Begin TableLayoutPanel Layout ---
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.toolbarPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize)); // MenuStrip
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize)); // Toolbar
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F)); // DataGridView
+
+            // Row 1: MenuStrip
+            this.menuStrip1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tableLayoutPanel1.Controls.Add(this.menuStrip1, 0, 0);
+
+            tableLayoutPanel1.RowStyles[1] = new RowStyle(SizeType.Absolute, 32);
+
+            // Row 2: Toolbar (FlowLayoutPanel)
+            this.toolbarPanel.Dock = DockStyle.Fill;
+            this.toolbarPanel.AutoSize = false;
+            this.toolbarPanel.AutoScroll = true;
+            this.toolbarPanel.WrapContents = false;
+            this.toolbarPanel.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            this.toolbarPanel.Padding = new System.Windows.Forms.Padding(3, 1, 3, 1);
+            this.toolbarPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.toolbarPanel.Controls.Add(this.listlbl);
+            this.toolbarPanel.Controls.Add(this.cb1);
+            this.toolbarPanel.Controls.Add(this.cb2);
+            this.toolbarPanel.Controls.Add(this.fontSizeComboBox);
+            this.toolbarPanel.Controls.Add(this.leftButton);
+            this.toolbarPanel.Controls.Add(this.rightButton);
+            this.toolbarPanel.Controls.Add(this.topButton);
+            this.toolbarPanel.Controls.Add(this.U);
+            this.toolbarPanel.Controls.Add(this.d);
+            this.toolbarPanel.Controls.Add(this.bottomButton);
+            this.toolbarPanel.Controls.Add(this.btn1);
+            this.toolbarPanel.Controls.Add(this.chk1);
+            this.toolbarPanel.Controls.Add(this.editModeLabel);
+            this.tableLayoutPanel1.Controls.Add(this.toolbarPanel, 0, 1);
+
+            // Row 3: DataGridView
+            this.dgv1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Controls.Add(this.dgv1, 0, 2);
+
+            // Add TableLayoutPanel to the form
+            this.Controls.Add(this.tableLayoutPanel1);
+            // --- End TableLayoutPanel Layout ---
             this.Icon = ((System.Drawing.Icon)(componentResourceManager.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.SizeGripStyle = SizeGripStyle.Hide;
-            this.Text = "ClipBox V2.4";
+            this.SizeGripStyle = SizeGripStyle.Auto;
+            this.Text = "ClipBox by BizJaya.com";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
