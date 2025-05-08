@@ -59,9 +59,11 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         tableLayoutPanel1 = new TableLayoutPanel();
         panel1 = new Panel();
         chkMulti = new CheckBox();
+        dataGridView1 = new DataGridView();
         ((ISupportInitialize)dgvColumns).BeginInit();
         tableLayoutPanel1.SuspendLayout();
         panel1.SuspendLayout();
+        ((ISupportInitialize)dataGridView1).BeginInit();
         SuspendLayout();
         // 
         // tbcolname
@@ -98,10 +100,10 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         // 
         btnEdit.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
         btnEdit.AutoSize = true;
-        btnEdit.Location = new Point(431, 303);
+        btnEdit.Location = new Point(513, 415);
         btnEdit.Margin = new Padding(4, 3, 4, 3);
         btnEdit.Name = "btnEdit";
-        btnEdit.Size = new Size(88, 24);
+        btnEdit.Size = new Size(88, 25);
         btnEdit.TabIndex = 12;
         btnEdit.Text = "Edit List";
         btnEdit.UseVisualStyleBackColor = true;
@@ -130,10 +132,10 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         // lboColumns
         // 
         lboColumns.Dock = DockStyle.Fill;
-        lboColumns.Location = new Point(4, 153);
+        lboColumns.Location = new Point(4, 160);
         lboColumns.Margin = new Padding(4, 3, 4, 3);
         lboColumns.Name = "lboColumns";
-        lboColumns.Size = new Size(515, 144);
+        lboColumns.Size = new Size(597, 121);
         lboColumns.TabIndex = 24;
         // 
         // dgvColumns
@@ -174,7 +176,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         cboList.Location = new Point(99, 13);
         cboList.Margin = new Padding(4, 3, 4, 3);
         cboList.Name = "cboList";
-        cboList.Size = new Size(272, 23);
+        cboList.Size = new Size(354, 23);
         cboList.TabIndex = 16;
         cboList.SelectedIndexChanged += cboList_SelectedIndexChanged;
         // 
@@ -204,7 +206,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         // 
         chkPswd.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         chkPswd.AutoSize = true;
-        chkPswd.Location = new Point(317, 48);
+        chkPswd.Location = new Point(399, 48);
         chkPswd.Margin = new Padding(4, 3, 4, 3);
         chkPswd.Name = "chkPswd";
         chkPswd.Size = new Size(54, 19);
@@ -217,7 +219,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         fontSizeComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         fontSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
         fontSizeComboBox.FormattingEnabled = true;
-        fontSizeComboBox.Location = new Point(379, 13);
+        fontSizeComboBox.Location = new Point(461, 13);
         fontSizeComboBox.Margin = new Padding(4, 3, 4, 3);
         fontSizeComboBox.Name = "fontSizeComboBox";
         fontSizeComboBox.Size = new Size(75, 23);
@@ -228,16 +230,18 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         tableLayoutPanel1.ColumnCount = 1;
         tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
         tableLayoutPanel1.Controls.Add(panel1, 0, 0);
-        tableLayoutPanel1.Controls.Add(btnEdit, 0, 2);
         tableLayoutPanel1.Controls.Add(lboColumns, 0, 1);
+        tableLayoutPanel1.Controls.Add(btnEdit, 0, 3);
+        tableLayoutPanel1.Controls.Add(dataGridView1, 0, 2);
         tableLayoutPanel1.Dock = DockStyle.Fill;
-        tableLayoutPanel1.Location = new Point(29, 29);
+        tableLayoutPanel1.Location = new Point(4, 20);
         tableLayoutPanel1.Name = "tableLayoutPanel1";
-        tableLayoutPanel1.RowCount = 3;
-        tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-        tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+        tableLayoutPanel1.RowCount = 4;
+        tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 38.25401F));
+        tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 30.8729973F));
+        tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 30.8729973F));
         tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
-        tableLayoutPanel1.Size = new Size(523, 330);
+        tableLayoutPanel1.Size = new Size(605, 443);
         tableLayoutPanel1.TabIndex = 25;
         // 
         // panel1
@@ -256,14 +260,14 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         panel1.Dock = DockStyle.Fill;
         panel1.Location = new Point(3, 3);
         panel1.Name = "panel1";
-        panel1.Size = new Size(517, 144);
+        panel1.Size = new Size(599, 151);
         panel1.TabIndex = 25;
         // 
         // chkMulti
         // 
         chkMulti.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         chkMulti.AutoSize = true;
-        chkMulti.Location = new Point(357, 48);
+        chkMulti.Location = new Point(461, 48);
         chkMulti.Margin = new Padding(4, 3, 4, 3);
         chkMulti.Name = "chkMulti";
         chkMulti.Size = new Size(76, 19);
@@ -271,20 +275,26 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         chkMulti.Text = "MultiLine";
         chkMulti.UseVisualStyleBackColor = true;
         // 
+        // dataGridView1
+        // 
+        dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        dataGridView1.Dock = DockStyle.Fill;
+        dataGridView1.Location = new Point(3, 287);
+        dataGridView1.Name = "dataGridView1";
+        dataGridView1.Size = new Size(599, 121);
+        dataGridView1.TabIndex = 26;
+        // 
         // Edit
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        FormBorderStyle = FormBorderStyle.SizableToolWindow;
-        ClientSize = new Size(581, 388);
+        ClientSize = new Size(613, 466);
         Controls.Add(tableLayoutPanel1);
+        FormBorderStyle = FormBorderStyle.SizableToolWindow;
         Margin = new Padding(4, 3, 4, 3);
-        Padding = new Padding(4, 20, 4, 3);
-
-        //MaximumSize = new Size(581, 571);
         MinimumSize = new Size(371, 317);
         Name = "Edit";
-        //Padding = new Padding(29);
+        Padding = new Padding(4, 20, 4, 3);
         Text = "Edit";
         Load += Edit_Load;
         ((ISupportInitialize)dgvColumns).EndInit();
@@ -292,6 +302,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         tableLayoutPanel1.PerformLayout();
         panel1.ResumeLayout(false);
         panel1.PerformLayout();
+        ((ISupportInitialize)dataGridView1).EndInit();
         ResumeLayout(false);
     }
 
@@ -302,4 +313,5 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
     private TableLayoutPanel tableLayoutPanel1;
     private Panel panel1;
     private CheckBox chkMulti;
+    private DataGridView dataGridView1;
 }
