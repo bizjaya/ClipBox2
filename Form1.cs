@@ -364,6 +364,13 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             dgv1.Columns[i].Name = uniqueColumns[i];
             dgv1.Columns[i].HeaderText = uniqueColumns[i];
             
+            // Check if this column is password protected
+            bool isPassword = false;
+            if (data.colIsPassword != null && i < data.colIsPassword.Count)
+            {
+                isPassword = data.colIsPassword[i];
+            }
+            
             // Check if this column is multiline
             bool isMultiLine = false;
             if (data.colIsMultiLine != null && i < data.colIsMultiLine.Count)
@@ -374,13 +381,31 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             // Configure column for multiline if needed
             if (isMultiLine)
             {
-                // Set the default cell style to wrap text
+                // Create a custom column for multiline cells with scrollbars
+                DataGridViewTextBoxColumn multilineColumn = new DataGridViewTextBoxColumn();
+                multilineColumn.Name = dgv1.Columns[i].Name;
+                multilineColumn.HeaderText = dgv1.Columns[i].HeaderText;
+                multilineColumn.Width = dgv1.Columns[i].Width;
+                
+                // Set multiline properties
                 DataGridViewCellStyle multilineStyle = new DataGridViewCellStyle();
                 multilineStyle.WrapMode = DataGridViewTriState.True;
-                dgv1.Columns[i].DefaultCellStyle = multilineStyle;
+                multilineColumn.DefaultCellStyle = multilineStyle;
                 
-                // Make sure the row height can adjust to content
-                dgv1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                // Replace the existing column with our custom column
+                dgv1.Columns.RemoveAt(i);
+                dgv1.Columns.Insert(i, multilineColumn);
+                
+                // Set fixed row height instead of auto-sizing
+                dgv1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+                dgv1.RowTemplate.Height = 50; // Fixed height for rows with multiline content
+            }
+            
+            // Configure column for password if needed
+            if (isPassword)
+            {
+                // Tag the column as password protected for reference
+                dgv1.Columns[i].Tag = "password";
             }
         }
 
@@ -403,10 +428,17 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             var displayData = new string[rowData.Count];
             for (int i = 0; i < rowData.Count; i++)
             {
-                // If password protection is enabled, mask the data with asterisks
-                if (data.pswd && i == 1) // Col2 is at index 1
+                // Check if this column is password protected
+                bool isColumnPassword = false;
+                if (data.colIsPassword != null && i < data.colIsPassword.Count)
                 {
-                    displayData[i] = !string.IsNullOrEmpty(rowData[i]) ? "****" : "";
+                    isColumnPassword = data.colIsPassword[i];
+                }
+                
+                // If this is a password column, mask the data with asterisks
+                if (isColumnPassword || (data.pswd && i == 1)) // Check both column-specific and legacy password flag
+                {
+                    displayData[i] = !string.IsNullOrEmpty(rowData[i]) ? "***" : "";
                 }
                 else
                 {
@@ -420,9 +452,34 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             // Store the original values in the Tag property for copy operations
             for (int i = 0; i < rowData.Count && i < uniqueColumns.Count; i++)
             {
-                if (data.pswd && i == 1) // Col2 is at index 1
+                // Check if this column is password protected
+                bool isColumnPassword = false;
+                if (data.colIsPassword != null && i < data.colIsPassword.Count)
+                {
+                    isColumnPassword = data.colIsPassword[i];
+                }
+                
+                // Store original value for password cells
+                if (isColumnPassword || (data.pswd && i == 1)) // Check both column-specific and legacy password flag
                 {
                     rows[rowIndex - 1].Cells[i].Tag = rowData[i]; // Store original value
+                }
+                
+                // Check if this column is multiline
+                bool isMultiLine = false;
+                if (data.colIsMultiLine != null && i < data.colIsMultiLine.Count)
+                {
+                    isMultiLine = data.colIsMultiLine[i];
+                }
+                
+                // Configure cell for multiline if needed
+                if (isMultiLine)
+                {
+                    // Set style for this specific cell
+                    DataGridViewCellStyle multilineStyle = new DataGridViewCellStyle();
+                    multilineStyle.WrapMode = DataGridViewTriState.True;
+                    multilineStyle.Alignment = DataGridViewContentAlignment.TopLeft;
+                    rows[rowIndex - 1].Cells[i].Style = multilineStyle;
                 }
             }
         }
