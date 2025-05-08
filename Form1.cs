@@ -51,10 +51,8 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         cb2.Items.Add("Point");
         cb2.Text = cb2.Items[0].ToString();
 
-        dgv1.AllowUserToAddRows = false;
         dgv1.AllowUserToDeleteRows = false;
         dgv1.AllowUserToOrderColumns = false;
-        dgv1.ReadOnly = true;
 
         // Populate font size combo box from App.FontSizes
         fontSizeComboBox.Items.Clear();
@@ -146,6 +144,11 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
     {
         try
         {
+            // Setup combo box style and autocomplete
+            cbxListName.DropDownStyle = ComboBoxStyle.DropDown;
+            cbxListName.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cbxListName.AutoCompleteSource = AutoCompleteSource.ListItems;
+            
             MasterData master = SaveJSON.LoadMasterData();
 
             // If empty, maybe we create a default list
@@ -396,11 +399,19 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
     
     private void PopulateGridWithData(Info data, string listKey, bool saveChanges = false)
     {
-        
         this.SuspendLayout();
         dgv1.SuspendLayout();
         dgv1.Rows.Clear();
         dgv1.Columns.Clear();
+        
+        // Add ID column
+        DataGridViewTextBoxColumn idColumn = new DataGridViewTextBoxColumn();
+        idColumn.Name = "ID";
+        idColumn.HeaderText = "ID";
+        idColumn.Width = 30; // Make it narrower
+        idColumn.ReadOnly = true;
+        idColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // Prevent auto-sizing
+        dgv1.Columns.Add(idColumn);
 
         // First make sure we have valid column names
         if (data.cols == null) data.cols = new List<string>();
@@ -427,12 +438,13 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             data.cols[i] = uniqueName;
         }
 
-        // Now set up the grid columns
-        dgv1.ColumnCount = uniqueColumns.Count;
+        // Now set up the grid columns (add columns after the ID column)
         for (int i = 0; i < uniqueColumns.Count; i++)
         {
-            dgv1.Columns[i].Name = uniqueColumns[i];
-            dgv1.Columns[i].HeaderText = uniqueColumns[i];
+            DataGridViewTextBoxColumn column = new DataGridViewTextBoxColumn();
+            column.Name = uniqueColumns[i];
+            column.HeaderText = uniqueColumns[i];
+            dgv1.Columns.Add(column);
             
             // Check if this column is password protected
             bool isPassword = false;
@@ -448,23 +460,16 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 isMultiLine = data.colIsMultiLine[i];
             }
             
+            // Get the index of the column we just added (ID column + i)
+            int columnIndex = i + 1; // +1 for the ID column
+            
             // Configure column for multiline if needed
             if (isMultiLine)
             {
-                // Create a custom column for multiline cells with scrollbars
-                DataGridViewTextBoxColumn multilineColumn = new DataGridViewTextBoxColumn();
-                multilineColumn.Name = dgv1.Columns[i].Name;
-                multilineColumn.HeaderText = dgv1.Columns[i].HeaderText;
-                multilineColumn.Width = dgv1.Columns[i].Width;
-                
                 // Set multiline properties
                 DataGridViewCellStyle multilineStyle = new DataGridViewCellStyle();
                 multilineStyle.WrapMode = DataGridViewTriState.True;
-                multilineColumn.DefaultCellStyle = multilineStyle;
-                
-                // Replace the existing column with our custom column
-                dgv1.Columns.RemoveAt(i);
-                dgv1.Columns.Insert(i, multilineColumn);
+                dgv1.Columns[columnIndex].DefaultCellStyle = multilineStyle;
                 
                 // Set fixed row height instead of auto-sizing
                 dgv1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
@@ -475,15 +480,14 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             if (isPassword)
             {
                 // Tag the column as password protected for reference
-                dgv1.Columns[i].Tag = "password";
+                dgv1.Columns[columnIndex].Tag = "password";
             }
         }
 
         // Add the rows
         if (data.strs == null) data.strs = new List<List<string>>();
 
-        // Pre-allocate rows array
-        var rows = new DataGridViewRow[data.strs.Count];
+        // Track row index for ID column
         int rowIndex = 0;
 
         foreach (List<string> rowData in data.strs)
@@ -516,46 +520,36 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 }
             }
 
-            rows[rowIndex++] = new DataGridViewRow();
-            rows[rowIndex - 1].CreateCells(dgv1, displayData);
-
-            // Store the original values in the Tag property for copy operations
-            for (int i = 0; i < rowData.Count && i < uniqueColumns.Count; i++)
+            // Create a new row with the right number of cells
+            dgv1.Rows.Add();
+            int newRowIndex = dgv1.Rows.Count - 1;
+            
+            // Set the ID column value (row number)
+            dgv1.Rows[newRowIndex].Cells[0].Value = (rowIndex + 1).ToString();
+            
+            // Set the data for the other columns (offset by 1 for the ID column)
+            for (int i = 0; i < displayData.Length; i++)
             {
-                // Check if this column is password protected
-                bool isColumnPassword = false;
-                if (data.colIsPassword != null && i < data.colIsPassword.Count)
+                // Make sure we don't go out of bounds
+                if (i + 1 < dgv1.Columns.Count)
                 {
-                    isColumnPassword = data.colIsPassword[i];
-                }
-                
-                // Store original value for password cells
-                if (isColumnPassword || (data.pswd && i == 1)) // Check both column-specific and legacy password flag
-                {
-                    rows[rowIndex - 1].Cells[i].Tag = rowData[i]; // Store original value
-                }
-                
-                // Check if this column is multiline
-                bool isMultiLine = false;
-                if (data.colIsMultiLine != null && i < data.colIsMultiLine.Count)
-                {
-                    isMultiLine = data.colIsMultiLine[i];
-                }
-                
-                // Configure cell for multiline if needed
-                if (isMultiLine)
-                {
-                    // Set style for this specific cell
-                    DataGridViewCellStyle multilineStyle = new DataGridViewCellStyle();
-                    multilineStyle.WrapMode = DataGridViewTriState.True;
-                    multilineStyle.Alignment = DataGridViewContentAlignment.TopLeft;
-                    rows[rowIndex - 1].Cells[i].Style = multilineStyle;
+                    dgv1.Rows[newRowIndex].Cells[i + 1].Value = displayData[i];
+                    
+                    // Store the original value in the Tag property for password cells
+                    if (dgv1.Columns[i + 1].Tag != null && dgv1.Columns[i + 1].Tag.ToString() == "password" && !string.IsNullOrEmpty(rowData[i]))
+                    {
+                        dgv1.Rows[newRowIndex].Cells[i + 1].Tag = rowData[i];
+                    }
                 }
             }
+            
+            rowIndex++;
+
+            // We've already handled storing original values for password cells above
+            // No need to do anything else here
         }
 
-        // Add all rows at once
-        dgv1.Rows.AddRange(rows);
+        // Rows have been added directly in the loop above
 
         dgv1.ResumeLayout();
         this.ResumeLayout();

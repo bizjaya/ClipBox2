@@ -30,7 +30,7 @@ namespace ClipBox2
 
         public DataGridView dgv1;
         private Button upBtn;
-        private Button d;
+        private Button dnBtn;
         private Button topBtn;
         private Button botBtn;
         private Button lefBtn;
@@ -76,7 +76,7 @@ namespace ClipBox2
             aboutToolStripMenuItem = new ToolStripMenuItem();
             titleLabel = new ToolStripLabel();
             dgv1 = new DataGridView();
-            d = new Button();
+            dnBtn = new Button();
             upBtn = new Button();
             btn1 = new Button();
             btn2 = new Button();
@@ -307,21 +307,23 @@ namespace ClipBox2
             chk1.TabIndex = 6;
             chk1.UseVisualStyleBackColor = false;
             chk1.CheckedChanged += chk1_CheckedChanged;
+
+            var btnMarg = new Padding(3, 3, 3, 3);
+            var btnSize = new Size(20, 20);
             // 
             // d
             // 
-            d.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            d.Location = new Point(438, 4);
-            d.Margin = new Padding(4, 3, 4, 3);
-            d.Name = "d";
-            d.Size = new Size(24, 24);
-            d.TabIndex = 9;
-            d.Text = "▼";
-            d.UseVisualStyleBackColor = true;
-            d.Click += d_Click;
+            dnBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            dnBtn.Location = new Point(438, 4);
+            dnBtn.Name = "dnBtn";
+            dnBtn.Margin = btnMarg;
+            dnBtn.Size = btnSize;
+            dnBtn.TabIndex = 9;
+            dnBtn.Text = "▼";
+            dnBtn.UseVisualStyleBackColor = true;
+            dnBtn.Click += d_Click;
 
-            var btnMarg = new Padding(3, 3, 3, 3);
-            var btnSize = new Size(24, 24);
+
 
             // 
             // U
@@ -438,7 +440,7 @@ namespace ClipBox2
             toolbarPanel.Controls.Add(rigBtn);
             toolbarPanel.Controls.Add(topBtn);
             toolbarPanel.Controls.Add(upBtn);
-            toolbarPanel.Controls.Add(d);
+            toolbarPanel.Controls.Add(dnBtn);
             toolbarPanel.Controls.Add(botBtn);
             toolbarPanel.Controls.Add(btn1);
             toolbarPanel.Controls.Add(btn2);
