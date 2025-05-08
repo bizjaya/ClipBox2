@@ -36,12 +36,6 @@ namespace ClipBox2
             if (this.master == null)
             {
                 this.master = SaveJSON.LoadMasterData();
-
-
-                /* FIX: Replace SaveJSON.LoadMasterData with your actual method to load master data */
-              //  SaveJSON.LoadMasterData(/* FIX: Replace App.xmlFile with the correct path or static property for your XML file, e.g. Config.XmlFile or similar */ App.xmlFile);
-
-
                 if (this.master == null)
                 {
                     MessageBox.Show("Failed to load master data. Form may not work correctly.", "Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -51,7 +45,7 @@ namespace ClipBox2
             SetupMode();
             SetupGrid();
             SetupEventHandlers();
-            LoadInitialData();
+            PopulateComboBoxes();
         }
 
         private void SetupGrid()
@@ -91,7 +85,7 @@ namespace ClipBox2
             this.btnRight.Click += new System.EventHandler(this.btnColumnRight_Click);
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
 
-            //this.cbxListName.SelectedIndexChanged += new System.EventHandler(this.cbxListName_SelectedIndexChanged);
+            this.cbxListName.SelectedIndexChanged += new System.EventHandler(this.cboList_SelectedIndexChanged);
             this.fontSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.fontSizeComboBox_SelectedIndexChanged);
 
             this.dgvColumns.SelectionChanged += (s, e) =>
@@ -107,86 +101,182 @@ namespace ClipBox2
             };
         }
 
-        private void LoadInitialData()
+        private void PopulateComboBoxes()
         {
-            // Populate cbxListName with list names from master.Lists
-            this.cbxListName.Items.Clear();
+            // Populate list combo box
+            cbxListName.Items.Clear();
             if (master != null && master.Lists != null)
             {
                 foreach (var listNameKey in master.Lists.Keys)
                 {
-                    this.cbxListName.Items.Add(listNameKey);
+                    cbxListName.Items.Add(listNameKey);
                 }
             }
+            
+            // Populate font size combo box using App.FontSizes dictionary
+            fontSizeComboBox.Items.Clear();
+            if (App.FontSizes != null)
+            {
+                // Sort by key (font size) to display in ascending order
+                foreach (var pair in App.FontSizes.OrderBy(p => p.Key))
+                {
+                    fontSizeComboBox.Items.Add(pair.Value);
+                }
+                
+                // Select default size 9 if available
+                if (App.FontSizes.ContainsKey(9))
+                {
+                    fontSizeComboBox.SelectedItem = App.FontSizes[9];
+                }
+                else if (fontSizeComboBox.Items.Count > 0)
+                {
+                    fontSizeComboBox.SelectedIndex = 0;
+                }
+            }
+            
+            // Select initial list if in edit mode
+            if (isEditMode && !string.IsNullOrEmpty(listName) && cbxListName.Items.Contains(listName))
+            {
+                cbxListName.SelectedItem = listName;
+            }
+            else if (isEditMode && cbxListName.Items.Count > 0)
+            {
+                cbxListName.SelectedIndex = 0;
+            }
+        }
 
-            // If in edit mode and a list is selected (e.g. first one or a passed one), populate controls
-            if (isEditMode && this.cbxListName.Items.Count > 0)
+        private void LoadInitialData()
+        {
+            // This method is no longer needed as it's replaced by PopulateComboBoxes
+            // Keeping it for backward compatibility
+            PopulateComboBoxes();
+        }
+
+        private void cboList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbxListName.SelectedItem == null) return;
+            
+            this.listName = cbxListName.SelectedItem.ToString();
+            if (master.Lists.TryGetValue(this.listName, out Info data))
             {
-                // this.cbxListName.SelectedIndex = 0; // Or select a specific list if its name was passed
-                // This will trigger cbxListName_SelectedIndexChanged, which should load dgvColumns
+                // Update the column data for the DataGridView
+                columnData.Clear();
+                if (data.cols != null)
+                {
+                    for (int i = 0; i < data.cols.Count; i++)
+                    {
+                        string name = data.cols[i];
+                        // Get password and multiline flags with safe defaults
+                        bool isPswd = false;
+                        bool isMulti = false;
+                        
+                        // Handle colIsPassword safely
+                        if (data.colIsPassword != null && i < data.colIsPassword.Count)
+                            isPswd = data.colIsPassword[i];
+                        
+                        // Handle colIsMultiLine safely
+                        if (data.colIsMultiLine != null && i < data.colIsMultiLine.Count)
+                            isMulti = data.colIsMultiLine[i];
+                        
+                        columnData.Add(new ColumnDisplayItem(name, isPswd, isMulti));
+                    }
+                }
+                
+                // Update UI elements
+                SelectFontSizeInComboBox(data.size);
             }
-            else if (!isEditMode)
+            else
             {
-                // Setup for adding a new list
-                this.Text = "Add New List";
-                this.tbxListName.Enabled = true;
-                this.cbxListName.Enabled = false;
-                columnData.Clear(); // Ensure grid is empty for new list
-                // Set default font size, etc.
+                columnData.Clear();
+                SelectFontSizeInComboBox(9);
             }
-            // The original Edit_Load from user might have more specific logic for initial state.
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            //if (string.IsNullOrEmpty(tbListName.Text))
-            //{
-            //    MessageBox.Show("Please enter a list name.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    return;
-            //}
+            // Get the list name from the appropriate control based on mode
+            string listNameToSave = isEditMode 
+                ? (cbxListName.SelectedItem?.ToString() ?? this.listName) 
+                : tbxListName.Text.Trim();
 
-            //string listName = tbListName.Text;
+            // Validation
+            if (string.IsNullOrWhiteSpace(listNameToSave))
+            {
+                MessageBox.Show("List name cannot be empty.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            //// Create a new list with the columns
-            //MasterData master = SaveJSON.LoadMasterData();
+            if (columnData.Count == 0)
+            {
+                MessageBox.Show("A list must have at least one column.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            //// Check if the list name already exists
-            //if (master.Lists.ContainsKey(listName))
-            //{
-            //    MessageBox.Show($"A list with the name '{listName}' already exists.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    return;
-            //}
+            // Check for duplicate list name
+            if ((!isEditMode && master.Lists.ContainsKey(listNameToSave)) ||
+                (isEditMode && this.listName != listNameToSave && master.Lists.ContainsKey(listNameToSave)))
+            {
+                MessageBox.Show($"A list with the name '{listNameToSave}' already exists.", "Duplicate Name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            //// Create a new Info object for the list
-            //Info info = new Info
-            //{
-            //    cols = new List<string>(),
-            //    strs = new List<List<string>>(),
-            //    pswd = chkPswd.Checked,
-            //    size = GetSelectedFontSize()
-            //};
+            // Create or get the Info object
+            Info infoToSave;
+            bool isRenaming = isEditMode && this.listName != null && this.listName != listNameToSave;
 
-            //// Add the columns
-            //foreach (var item in lboColumns.Items)
-            //{
-            //    info.cols.Add(item.ToString());
-            //}
+            if (isEditMode && !isRenaming)
+            {
+                infoToSave = master.Lists.ContainsKey(listNameToSave) ? master.Lists[listNameToSave] : new Info();
+            }
+            else
+            {
+                infoToSave = new Info();
+            }
 
-            //// Add the list to the master data
-            //master.Lists[listName] = info;
-            //master.Save();
+            // Update the Info object with current data
+            infoToSave.cols = new List<string>();
+            infoToSave.colIsPassword = new List<bool>();
+            infoToSave.colIsMultiLine = new List<bool>();
 
-            //// Refresh the main form's combo box
-            //if (mainForm != null)
-            //{
-            //    mainForm.populate(listName);
-            //}
+            foreach (ColumnDisplayItem item in columnData)
+            {
+                infoToSave.cols.Add(item.Name);
+                infoToSave.colIsPassword.Add(item.IsPassword);
+                infoToSave.colIsMultiLine.Add(item.IsMultiLine);
+            }
 
-            //MessageBox.Show($"List '{listName}' added successfully.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //this.Close();
+            // Set other properties
+            infoToSave.size = GetSelectedFontSize();
+            infoToSave.cbname = listNameToSave;
+            infoToSave.cbdate = DateTime.Now;
 
+            // Handle renaming
+            if (isRenaming)
+            {
+                master.Lists.Remove(this.listName);
+            }
 
+            // Save the list
+            master.Lists[listNameToSave] = infoToSave;
+            master.Save();
+            
+            // Call the Save() method in Form1 if the owner is Form1
+            if (this.Owner is Form1 form1)
+            {
+                // Use reflection to call the private Save() method in Form1
+                System.Reflection.MethodInfo saveMethod = typeof(Form1).GetMethod("Save", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                
+                if (saveMethod != null)
+                {
+                    saveMethod.Invoke(form1, null);
+                }
+            }
+
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
+
         private void PopulateDataGridViewForSelectedList(string listNameKey)
         {
             columnData.Clear(); // Clear existing items
@@ -272,6 +362,52 @@ namespace ClipBox2
             // Optionally, update DataGridView font live:
             // if (fontSizeComboBox.SelectedItem != null && int.TryParse(fontSizeComboBox.SelectedItem.ToString(), out int selectedFontSize))
             //     dgvColumns.Font = new Font(dgvColumns.Font.FontFamily, selectedFontSize);
+        }
+        
+        private void SelectFontSizeInComboBox(int size)
+        {
+            // Try to find the display text for the given size in App.FontSizes
+            if (App.FontSizes != null && App.FontSizes.TryGetValue(size, out string sizeText))
+            {
+                fontSizeComboBox.SelectedItem = sizeText;
+                return;
+            }
+            
+            // If the exact size isn't found, try to find the closest size
+            if (App.FontSizes != null && App.FontSizes.Count > 0)
+            {
+                // Find closest size
+                int closestSize = App.FontSizes.Keys.OrderBy(k => Math.Abs(k - size)).First();
+                fontSizeComboBox.SelectedItem = App.FontSizes[closestSize];
+                return;
+            }
+            
+            // Default to first item if nothing else works
+            if (fontSizeComboBox.Items.Count > 0)
+                fontSizeComboBox.SelectedIndex = 0;
+        }
+        
+        private int GetSelectedFontSize()
+        {
+            if (fontSizeComboBox.SelectedItem != null)
+            {
+                string selectedText = fontSizeComboBox.SelectedItem.ToString();
+                
+                // Look up the key (font size) for the selected display text in App.FontSizes
+                if (App.FontSizes != null)
+                {
+                    var pair = App.FontSizes.FirstOrDefault(p => p.Value == selectedText);
+                    if (pair.Key != 0) // If a valid key was found
+                        return pair.Key;
+                }
+                
+                // Try to extract a number from the text (e.g., "Size 9" -> 9)
+                string numberPart = new string(selectedText.Where(char.IsDigit).ToArray());
+                if (!string.IsNullOrEmpty(numberPart) && int.TryParse(numberPart, out int size))
+                    return size;
+            }
+            
+            return 9; // Default font size
         }
 
         public class ColumnDisplayItem
