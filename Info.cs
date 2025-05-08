@@ -10,6 +10,12 @@ namespace ClipBox2
     [Serializable]  // Optional for JSON, but doesn't hurt.
     public class Info
     {
+        // Unique identifier for the list (used as dictionary key when saving)
+        public int Id { get; set; }
+        
+        // Name of the list (displayed to the user)
+        public string Name { get; set; }
+        
         // List of column names
         public List<string> cols { get; set; } = new List<string>();
 
@@ -27,6 +33,5 @@ namespace ClipBox2
         public bool pswd { get; set; } = false;
         public bool multi { get; set; } = false;
         public int size { get; set; } = 9;
-
     }
 }

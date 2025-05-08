@@ -179,8 +179,34 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         try
         {
             if (cbxListName.SelectedIndex == -1) return;
-            string listName = cbxListName.Items[cbxListName.SelectedIndex].ToString();
-            populateDGV1(listName);
+            
+            // Get the display name from the combo box
+            string displayName = cbxListName.Items[cbxListName.SelectedIndex].ToString();
+            
+            // Load the master data
+            MasterData master = SaveJSON.LoadMasterData();
+            
+            // First try to find a list with this exact key
+            if (master.Lists.ContainsKey(displayName))
+            {
+                populateDGV1(displayName);
+                return;
+            }
+            
+            // If not found by key, try to find by Name property (case-insensitive)
+            foreach (var kvp in master.Lists)
+            {
+                if (string.Equals(kvp.Value.Name, displayName, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(kvp.Key, displayName, StringComparison.OrdinalIgnoreCase))
+                {
+                    // Use the key to load the list
+                    populateDGV1(kvp.Key);
+                    return;
+                }
+            }
+            
+            // If we get here, we couldn't find the list
+            MessageBox.Show($"Could not find list: {displayName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         catch (Exception ex)
         {
@@ -297,20 +323,46 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
     // Save a cell value to the data
     private void SaveCellValue(int rowIndex, int columnIndex, string value)
     {
-        string listName = cbxListName.Text;
-        if (string.IsNullOrEmpty(listName)) return;
+        // Get the display name from the combo box
+        string displayName = cbxListName.Text;
+        if (string.IsNullOrEmpty(displayName)) return;
         
         MasterData master = SaveJSON.LoadMasterData();
-        if (!master.Lists.ContainsKey(listName)) return;
+        string actualKey = null;
+        Info data = null;
         
-        Info data = master.Lists[listName];
+        // First try direct key lookup
+        if (master.Lists.ContainsKey(displayName))
+        {
+            actualKey = displayName;
+            data = master.Lists[displayName];
+        }
+        else
+        {
+            // Try case-insensitive key lookup
+            foreach (var kvp in master.Lists)
+            {
+                if (string.Equals(kvp.Key, displayName, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(kvp.Value.Name, displayName, StringComparison.OrdinalIgnoreCase))
+                {
+                    actualKey = kvp.Key;
+                    data = kvp.Value;
+                    break;
+                }
+            }
+        }
+        
+        // If we couldn't find the list, return
+        if (data == null || actualKey == null) return;
+        
+        // Update the data
         if (data.strs == null || rowIndex >= data.strs.Count) return;
         
         List<string> row = data.strs[rowIndex];
         if (columnIndex >= row.Count) return;
         
         row[columnIndex] = value;
-        master.Lists[listName] = data;
+        master.Lists[actualKey] = data;
         master.Save();
     }
     
@@ -319,14 +371,34 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         if (string.IsNullOrEmpty(listName)) return;
 
         MasterData master = SaveJSON.LoadMasterData();
-        if (!master.Lists.ContainsKey(listName))
+        
+        // First try direct key lookup
+        if (master.Lists.ContainsKey(listName))
         {
-            MessageBox.Show($"List '{listName}' not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Info data = master.Lists[listName];
+            PopulateGridWithData(data, listName, saveChanges);
             return;
         }
-
-        Info data = master.Lists[listName];
-
+        
+        // Try case-insensitive key lookup
+        foreach (var kvp in master.Lists)
+        {
+            if (string.Equals(kvp.Key, listName, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(kvp.Value.Name, listName, StringComparison.OrdinalIgnoreCase))
+            {
+                Info data = kvp.Value;
+                PopulateGridWithData(data, kvp.Key, saveChanges);
+                return;
+            }
+        }
+        
+        // If we get here, the list wasn't found
+        MessageBox.Show($"List '{listName}' not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+    
+    private void PopulateGridWithData(Info data, string listKey, bool saveChanges = false)
+    {
+        
         this.SuspendLayout();
         dgv1.SuspendLayout();
         dgv1.Rows.Clear();
@@ -496,7 +568,9 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
 
         if (saveChanges)
         {
-            master.Lists[listName] = data;
+            // Load master data to ensure we're working with the latest data
+            MasterData master = SaveJSON.LoadMasterData();
+            master.Lists[listKey] = data;
             master.Save();
         }
     }
@@ -517,20 +591,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         }
     }
 
-    private void editListToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        string listName = cbxListName.Text;
-        if (string.IsNullOrEmpty(listName)) return;
 
-        MasterData master = SaveJSON.LoadMasterData();
-        if (!master.Lists.ContainsKey(listName)) return;
-
-        Edit editForm = new Edit(true, listName, master);
-        editForm.Show(this);
-
-        // Refresh the current list after editing
-        populateDGV1(listName);
-    }
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
@@ -1061,28 +1122,89 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         {
             // Load the entire MasterData once
             MasterData master = SaveJSON.LoadMasterData();
+            
+            // Ensure all lists have Names (but don't change keys)
+            master.EnsureListsHaveNames();
 
             // Remember current selection
             string currentSelection = cbxListName.SelectedIndex >= 0 ? cbxListName.Items[cbxListName.SelectedIndex].ToString() : null;
-
+            
             cbxListName.BeginUpdate();
             cbxListName.Items.Clear();
-            foreach (string listName in master.Lists.Keys)
+            
+            // Add all list names to the combo box
+            foreach (var kvp in master.Lists)
             {
-                cbxListName.Items.Add(listName);
+                string key = kvp.Key;
+                Info info = kvp.Value;
+                
+                // For display in the combo box, use the Name property if available, otherwise use the key
+                string displayName = string.IsNullOrEmpty(info.Name) ? key : info.Name;
+                
+                // Add the display name to the combo box
+                cbxListName.Items.Add(displayName);
             }
 
             // Suspend layout of the grid to prevent flicker
             dgv1.SuspendLayout();
 
             // If a specific list was requested, select it
-            if (!string.IsNullOrEmpty(selectList) && master.Lists.ContainsKey(selectList))
+            if (!string.IsNullOrEmpty(selectList))
             {
-                cbxListName.SelectedIndex = cbxListName.Items.IndexOf(selectList);
-                populateDGV1(selectList, false);  // Don't save changes when just displaying
+                // Try to find the list by name or key
+                int index = -1;
+                
+                // First check if selectList is directly in the combo box (it's a display name)
+                index = cbxListName.Items.IndexOf(selectList);
+                
+                // If not found, try to find the list with this key
+                if (index == -1 && master.Lists.ContainsKey(selectList))
+                {
+                    // Get the display name for this key
+                    string displayName = string.IsNullOrEmpty(master.Lists[selectList].Name) ? 
+                        selectList : master.Lists[selectList].Name;
+                    index = cbxListName.Items.IndexOf(displayName);
+                }
+                
+                // If still not found, try to find a list with this name
+                if (index == -1)
+                {
+                    foreach (var kvp in master.Lists)
+                    {
+                        if (kvp.Value.Name == selectList)
+                        {
+                            index = cbxListName.Items.IndexOf(selectList);
+                            break;
+                        }
+                    }
+                }
+                
+                if (index >= 0)
+                {
+                    cbxListName.SelectedIndex = index;
+                    
+                    // Get the actual key for the selected list
+                    string actualKey = selectList;
+                    
+                    // If the list was found by name, we need to find the actual key
+                    if (!master.Lists.ContainsKey(selectList))
+                    {
+                        foreach (var kvp in master.Lists)
+                        {
+                            if (string.Equals(kvp.Value.Name, selectList, StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(kvp.Key, selectList, StringComparison.OrdinalIgnoreCase))
+                            {
+                                actualKey = kvp.Key;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    populateDGV1(actualKey, false);  // Don't save changes when just displaying
+                }
             }
             // Otherwise try to keep the current selection if it exists
-            else if (!string.IsNullOrEmpty(currentSelection) && master.Lists.ContainsKey(currentSelection))
+            else if (!string.IsNullOrEmpty(currentSelection) && cbxListName.Items.Contains(currentSelection))
             {
                 cbxListName.SelectedIndex = cbxListName.Items.IndexOf(currentSelection);
                 populateDGV1(currentSelection, false);  // Don't save changes when just displaying
@@ -1091,7 +1213,8 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             else if (cbxListName.Items.Count > 0)
             {
                 cbxListName.SelectedIndex = 0;
-                populateDGV1(cbxListName.Items[0].ToString(), false);  // Don't save changes when just displaying
+                string displayName = cbxListName.Items[0].ToString();
+                populateDGV1(displayName, false);  // Don't save changes when just displaying
             }
 
             cbxListName.EndUpdate();
@@ -1103,5 +1226,79 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         }
     }
 
-  
+    //private void editListToolStripMenuItem_Click(object sender, EventArgs e)
+    //{
+    //    string listName = cbxListName.Text;
+    //    if (string.IsNullOrEmpty(listName)) return;
+
+    //    MasterData master = SaveJSON.LoadMasterData();
+    //    if (!master.Lists.ContainsKey(listName)) return;
+
+    //    Edit editForm = new Edit(true, listName, master);
+    //    editForm.Show(this);
+
+    //    // Refresh the current list after editing
+    //    populateDGV1(listName);
+    //}
+
+    private void editListToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        // Make sure a list is selected
+        if (cbxListName.SelectedIndex < 0)
+        {
+            MessageBox.Show("Please select a list to edit.", "Edit List", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+        
+        string listName = cbxListName.Text;
+        
+        // Load the master data
+        MasterData master = SaveJSON.LoadMasterData();
+        
+        // Find the actual key for the selected list
+        string actualKey = null;
+        
+        // First try direct key lookup
+        if (master.Lists.ContainsKey(listName))
+        {
+            actualKey = listName;
+        }
+        else
+        {
+            // Try case-insensitive key lookup
+            foreach (var kvp in master.Lists)
+            {
+                if (string.Equals(kvp.Key, listName, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(kvp.Value.Name, listName, StringComparison.OrdinalIgnoreCase))
+                {
+                    actualKey = kvp.Key;
+                    break;
+                }
+            }
+        }
+        
+        // If we couldn't find the list, show an error
+        if (actualKey == null)
+        {
+            MessageBox.Show($"Could not find list: {listName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        // Open the Edit form with the selected list
+        var form = new Edit(true, actualKey, master);
+        
+        form.Show(this);
+
+         populateDGV1(listName);
+
+
+
+        //{
+        //    // Refresh the list display
+        //    popCbxListName(actualKey);
+        //}
+
+
+
+    }
 }

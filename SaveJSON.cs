@@ -46,14 +46,28 @@ namespace ClipBox2
                 if (data.Lists == null)
                     data.Lists = new Dictionary<string, Info>();
                 
-                // Ensure each Info object has initialized collections
+                // Initialize empty collections if they're null
                 foreach (var info in data.Lists.Values)
                 {
+                    // Initialize collections if they're null
                     if (info.cols == null)
                         info.cols = new List<string>();
                     if (info.strs == null)
                         info.strs = new List<List<string>>();
+                    if (info.colIsPassword == null)
+                        info.colIsPassword = new List<bool>();
+                    if (info.colIsMultiLine == null)
+                        info.colIsMultiLine = new List<bool>();
+                        
+                    // For backward compatibility, if cbname is set but Name is not, use cbname
+                    if (string.IsNullOrEmpty(info.Name) && !string.IsNullOrEmpty(info.cbname))
+                    {
+                        info.Name = info.cbname;
+                    }
                 }
+                
+                // Ensure all lists have Name properties set (but don't change keys)
+                data.EnsureListsHaveNames();
 
                 return data;
             }

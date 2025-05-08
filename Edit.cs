@@ -85,7 +85,7 @@ namespace ClipBox2
             this.btnRight.Click += new System.EventHandler(this.btnColumnRight_Click);
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
 
-            this.cbxListName.SelectedIndexChanged += new System.EventHandler(this.cboList_SelectedIndexChanged);
+            this.cbxListName.SelectedIndexChanged += new System.EventHandler(this.cbxListName_SelectedIndexChanged);
             this.fontSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.fontSizeComboBox_SelectedIndexChanged);
 
             this.dgvColumns.SelectionChanged += (s, e) =>
@@ -107,7 +107,7 @@ namespace ClipBox2
             cbxListName.Items.Clear();
             if (master != null && master.Lists != null)
             {
-                foreach (var listNameKey in master.Lists.Keys)
+                foreach (var listNameKey in master.Lists)
                 {
                     cbxListName.Items.Add(listNameKey);
                 }
@@ -145,14 +145,14 @@ namespace ClipBox2
             }
         }
 
-        private void LoadInitialData()
-        {
-            // This method is no longer needed as it's replaced by PopulateComboBoxes
-            // Keeping it for backward compatibility
-            PopulateComboBoxes();
-        }
+        //private void LoadInitialData()
+        //{
+        //    // This method is no longer needed as it's replaced by PopulateComboBoxes
+        //    // Keeping it for backward compatibility
+        //    PopulateComboBoxes();
+        //}
 
-        private void cboList_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbxListName_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbxListName.SelectedItem == null) return;
             
@@ -277,33 +277,33 @@ namespace ClipBox2
             this.Close();
         }
 
-        private void PopulateDataGridViewForSelectedList(string listNameKey)
-        {
-            columnData.Clear(); // Clear existing items
-            if (master.Lists.TryGetValue(listNameKey, out Info selectedInfo))
-            {
-                this.tbxListName.Text = listNameKey; // Update list name TextBox if it's separate
-                // Populate font size (assuming fontSizeComboBox is for font size)
-                fontSizeComboBox.SelectedItem = selectedInfo.size.ToString();
+        //private void PopulateDataGridViewForSelectedList(string listNameKey)
+        //{
+        //    columnData.Clear(); // Clear existing items
+        //    if (master.Lists.TryGetValue(listNameKey, out Info selectedInfo))
+        //    {
+        //        this.tbxListName.Text = listNameKey; // Update list name TextBox if it's separate
+        //        // Populate font size (assuming fontSizeComboBox is for font size)
+        //        fontSizeComboBox.SelectedItem = selectedInfo.size.ToString();
 
-                for (int i = 0; i < selectedInfo.cols.Count; i++)
-                {
-                    string name = selectedInfo.cols[i];
-                    bool isPswd = selectedInfo.colIsPassword.ElementAtOrDefault(i);
-                    bool isMulti = selectedInfo.colIsMultiLine.ElementAtOrDefault(i);
-                    columnData.Add(new ColumnDisplayItem(name, isPswd, isMulti));
-                }
-                // List-level pswd/multi flags from selectedInfo.pswd and selectedInfo.multi are not directly tied to UI controls anymore.
-            }
-            /* FIX: Replace SaveJSON.SaveMasterData with your actual method to save master data */
+        //        for (int i = 0; i < selectedInfo.cols.Count; i++)
+        //        {
+        //            string name = selectedInfo.cols[i];
+        //            bool isPswd = selectedInfo.colIsPassword.ElementAtOrDefault(i);
+        //            bool isMulti = selectedInfo.colIsMultiLine.ElementAtOrDefault(i);
+        //            columnData.Add(new ColumnDisplayItem(name, isPswd, isMulti));
+        //        }
+        //        // List-level pswd/multi flags from selectedInfo.pswd and selectedInfo.multi are not directly tied to UI controls anymore.
+        //    }
+        //    /* FIX: Replace SaveJSON.SaveMasterData with your actual method to save master data */
 
-            // SaveJSON.SaveMasterData(master,  App.xmlFile); // Assuming this is the correct save call
+        //    // SaveJSON.SaveMasterData(master,  App.xmlFile); // Assuming this is the correct save call
 
-            master.Save();
+        //    master.Save();
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
+        //    this.DialogResult = DialogResult.OK;
+        //    this.Close();
+        //}
 
         private void btnColumnLeft_Click(object sender, EventArgs e)
         {
