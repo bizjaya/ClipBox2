@@ -13,6 +13,10 @@ namespace ClipBox2;
 
 public partial class Form1 : MaterialSkin.Controls.MaterialForm
 {
+    // Context menu for right-clicking on multiline cells
+    private ContextMenuStrip cellContextMenu;
+    private ToolStripMenuItem editTextMenuItem;
+
     public Form1()
     {
         // MaterialSkin initialization
@@ -65,6 +69,16 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         // Set up keyboard shortcut handling
         this.KeyPreview = true;
         this.KeyDown += Form1_KeyDown;
+
+        // Set up context menu for multiline cells
+        cellContextMenu = new ContextMenuStrip();
+        editTextMenuItem = new ToolStripMenuItem("Edit Text...");
+        editTextMenuItem.Click += EditTextMenuItem_Click;
+        cellContextMenu.Items.Add(editTextMenuItem);
+
+        // Add cell mouse event handlers
+        dgv1.CellMouseDown += Dgv1_CellMouseDown;
+        dgv1.CellMouseDoubleClick += Dgv1_CellMouseDoubleClick;
     }
 
     private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -152,7 +166,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             }
 
             // Now populate the combo & show the first list
-            popcombo();
+            popCbxListName();
         }
         catch (Exception ex)
         {
@@ -164,9 +178,9 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
     {
         try
         {
-            if (cb1.SelectedIndex == -1) return;
-            string listName = cb1.Items[cb1.SelectedIndex].ToString();
-            populate(listName);
+            if (cbxListName.SelectedIndex == -1) return;
+            string listName = cbxListName.Items[cbxListName.SelectedIndex].ToString();
+            populateDGV1(listName);
         }
         catch (Exception ex)
         {
@@ -179,7 +193,128 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         // (Unused in original code)
     }
 
-    public void populate(string listName, bool saveChanges = false)
+    // Handle right-click on cell to open text editor
+    private void Dgv1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Right && e.RowIndex >= 0 && e.ColumnIndex >= 0)
+        {
+            // Select the cell that was right-clicked
+            dgv1.CurrentCell = dgv1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            
+            // Check if this column is multiline
+            string columnName = dgv1.Columns[e.ColumnIndex].Name;
+            int columnIndex = GetColumnIndexInData(columnName);
+            
+            if (IsMultiLineColumn(columnIndex))
+            {
+                // Show context menu
+                Point cellLocation = dgv1.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false).Location;
+                cellContextMenu.Show(dgv1, new Point(cellLocation.X + 15, cellLocation.Y + 15));
+            }
+        }
+    }
+    
+    // Handle double-click on multiline cell to open text editor
+    private void Dgv1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+    {
+        if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+        {
+            // Check if this column is multiline
+            string columnName = dgv1.Columns[e.ColumnIndex].Name;
+            int columnIndex = GetColumnIndexInData(columnName);
+            
+            if (IsMultiLineColumn(columnIndex))
+            {
+                OpenTextEditor(e.RowIndex, e.ColumnIndex);
+            }
+        }
+    }
+    
+    // Helper method to get the index of a column in the data
+    private int GetColumnIndexInData(string columnName)
+    {
+        string listName = cbxListName.Text;
+        if (string.IsNullOrEmpty(listName)) return -1;
+        
+        MasterData master = SaveJSON.LoadMasterData();
+        if (!master.Lists.ContainsKey(listName)) return -1;
+        
+        Info data = master.Lists[listName];
+        if (data.cols == null) return -1;
+        
+        return data.cols.IndexOf(columnName);
+    }
+    
+    // Helper method to check if a column is multiline
+    private bool IsMultiLineColumn(int columnIndex)
+    {
+        if (columnIndex < 0) return false;
+        
+        string listName = cbxListName.Text;
+        if (string.IsNullOrEmpty(listName)) return false;
+        
+        MasterData master = SaveJSON.LoadMasterData();
+        if (!master.Lists.ContainsKey(listName)) return false;
+        
+        Info data = master.Lists[listName];
+        if (data.colIsMultiLine == null || columnIndex >= data.colIsMultiLine.Count) return false;
+        
+        return data.colIsMultiLine[columnIndex];
+    }
+    
+    // Open the text editor for a cell
+    private void EditTextMenuItem_Click(object sender, EventArgs e)
+    {
+        if (dgv1.CurrentCell != null)
+        {
+            OpenTextEditor(dgv1.CurrentCell.RowIndex, dgv1.CurrentCell.ColumnIndex);
+        }
+    }
+    
+    // Open the text editor for a cell
+    private void OpenTextEditor(int rowIndex, int columnIndex)
+    {
+        if (rowIndex < 0 || columnIndex < 0) return;
+        
+        // Get the current value
+        string currentValue = dgv1.Rows[rowIndex].Cells[columnIndex].Value?.ToString() ?? "";
+        
+        // Open the text editor form
+        using (var editor = new TextEditorForm())
+        {
+            editor.CellValue = currentValue;
+            if (editor.ShowDialog() == DialogResult.OK)
+            {
+                // Update the cell value
+                dgv1.Rows[rowIndex].Cells[columnIndex].Value = editor.CellValue;
+                
+                // Save the changes to the data
+                SaveCellValue(rowIndex, columnIndex, editor.CellValue);
+            }
+        }
+    }
+    
+    // Save a cell value to the data
+    private void SaveCellValue(int rowIndex, int columnIndex, string value)
+    {
+        string listName = cbxListName.Text;
+        if (string.IsNullOrEmpty(listName)) return;
+        
+        MasterData master = SaveJSON.LoadMasterData();
+        if (!master.Lists.ContainsKey(listName)) return;
+        
+        Info data = master.Lists[listName];
+        if (data.strs == null || rowIndex >= data.strs.Count) return;
+        
+        List<string> row = data.strs[rowIndex];
+        if (columnIndex >= row.Count) return;
+        
+        row[columnIndex] = value;
+        master.Lists[listName] = data;
+        master.Save();
+    }
+    
+    public void populateDGV1(string listName, bool saveChanges = false)
     {
         if (string.IsNullOrEmpty(listName)) return;
 
@@ -228,6 +363,25 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         {
             dgv1.Columns[i].Name = uniqueColumns[i];
             dgv1.Columns[i].HeaderText = uniqueColumns[i];
+            
+            // Check if this column is multiline
+            bool isMultiLine = false;
+            if (data.colIsMultiLine != null && i < data.colIsMultiLine.Count)
+            {
+                isMultiLine = data.colIsMultiLine[i];
+            }
+            
+            // Configure column for multiline if needed
+            if (isMultiLine)
+            {
+                // Set the default cell style to wrap text
+                DataGridViewCellStyle multilineStyle = new DataGridViewCellStyle();
+                multilineStyle.WrapMode = DataGridViewTriState.True;
+                dgv1.Columns[i].DefaultCellStyle = multilineStyle;
+                
+                // Make sure the row height can adjust to content
+                dgv1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            }
         }
 
         // Add the rows
@@ -292,21 +446,23 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
 
     private void addListToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        Add addForm = new Add();
-        addForm.ShowDialog(this);
-
-        // Refresh the combo box
-        cb1.Items.Clear();
+        // Use the Edit form with isEditMode set to false instead of the old Add form
         MasterData master = SaveJSON.LoadMasterData();
-        foreach (string listName in master.Lists.Keys)
+        Edit addForm = new Edit(false, null, master);
+        
+        // Show as dialog to block until user finishes
+        DialogResult result = addForm.ShowDialog(this);
+        
+        if (result == DialogResult.OK)
         {
-            cb1.Items.Add(listName);
+            // Refresh the combo box and select the newly added list if possible
+            popCbxListName();
         }
     }
 
     private void editListToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        string listName = cb1.Text;
+        string listName = cbxListName.Text;
         if (string.IsNullOrEmpty(listName)) return;
 
         MasterData master = SaveJSON.LoadMasterData();
@@ -316,7 +472,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         editForm.Show(this);
 
         // Refresh the current list after editing
-        populate(listName);
+        populateDGV1(listName);
     }
 
     [DllImport("user32.dll", SetLastError = true)]
@@ -456,7 +612,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             // Force UI update to show the "S"
             Application.DoEvents();
 
-            string listName = cb1.Items[cb1.SelectedIndex].ToString();
+            string listName = cbxListName.Items[cbxListName.SelectedIndex].ToString();
             if (string.IsNullOrEmpty(listName))
             {
                 MessageBox.Show("Please select a list to save.", "Save", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -514,7 +670,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             master.Save();
 
             // Reload the grid with saved data
-            populate(listName, false);  // Don't save changes when reloading
+            populateDGV1(listName, false);  // Don't save changes when reloading
 
             // If we're not in edit mode, hide the indicator
             if (!chk1.Checked)
@@ -740,7 +896,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 ApplyFontSize(fontSize);
 
                 // Save the font size setting to the current list
-                string listName = cb1.Text;
+                string listName = cbxListName.Text;
                 if (!string.IsNullOrEmpty(listName))
                 {
                     MasterData master = SaveJSON.LoadMasterData();
@@ -825,7 +981,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             DataMigrator.MigrateXmlToJson();
 
             // Refresh the current view
-            popcombo();
+            popCbxListName();
         }
     }
 
@@ -842,7 +998,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         }
     }
 
-    public void popcombo(string selectList = null)
+    public void popCbxListName(string selectList = null)
     {
         try
         {
@@ -850,13 +1006,13 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             MasterData master = SaveJSON.LoadMasterData();
 
             // Remember current selection
-            string currentSelection = cb1.SelectedIndex >= 0 ? cb1.Items[cb1.SelectedIndex].ToString() : null;
+            string currentSelection = cbxListName.SelectedIndex >= 0 ? cbxListName.Items[cbxListName.SelectedIndex].ToString() : null;
 
-            cb1.BeginUpdate();
-            cb1.Items.Clear();
+            cbxListName.BeginUpdate();
+            cbxListName.Items.Clear();
             foreach (string listName in master.Lists.Keys)
             {
-                cb1.Items.Add(listName);
+                cbxListName.Items.Add(listName);
             }
 
             // Suspend layout of the grid to prevent flicker
@@ -865,23 +1021,23 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             // If a specific list was requested, select it
             if (!string.IsNullOrEmpty(selectList) && master.Lists.ContainsKey(selectList))
             {
-                cb1.SelectedIndex = cb1.Items.IndexOf(selectList);
-                populate(selectList, false);  // Don't save changes when just displaying
+                cbxListName.SelectedIndex = cbxListName.Items.IndexOf(selectList);
+                populateDGV1(selectList, false);  // Don't save changes when just displaying
             }
             // Otherwise try to keep the current selection if it exists
             else if (!string.IsNullOrEmpty(currentSelection) && master.Lists.ContainsKey(currentSelection))
             {
-                cb1.SelectedIndex = cb1.Items.IndexOf(currentSelection);
-                populate(currentSelection, false);  // Don't save changes when just displaying
+                cbxListName.SelectedIndex = cbxListName.Items.IndexOf(currentSelection);
+                populateDGV1(currentSelection, false);  // Don't save changes when just displaying
             }
             // Otherwise select the first item
-            else if (cb1.Items.Count > 0)
+            else if (cbxListName.Items.Count > 0)
             {
-                cb1.SelectedIndex = 0;
-                populate(cb1.Items[0].ToString(), false);  // Don't save changes when just displaying
+                cbxListName.SelectedIndex = 0;
+                populateDGV1(cbxListName.Items[0].ToString(), false);  // Don't save changes when just displaying
             }
 
-            cb1.EndUpdate();
+            cbxListName.EndUpdate();
             dgv1.ResumeLayout();
         }
         catch (Exception ex)

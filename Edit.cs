@@ -25,8 +25,8 @@ namespace ClipBox2
 
         private void SetupMode()
         {
-            cboList.Visible = isEditMode;
-            tbxList.Visible = !isEditMode;
+            cbxListName.Visible = isEditMode;
+            tbxListName.Visible = !isEditMode;
             this.Text = isEditMode ? "Edit List" : "Add List";
             btnEdit.Text = isEditMode ? "Edit List" : "Add List";
         }
@@ -85,52 +85,52 @@ namespace ClipBox2
 
         private void SetupEventHandlers()
         {
-            this.btnplus.Click += new System.EventHandler(this.btnplus_Click);
-            this.btnminus.Click += new System.EventHandler(this.btnminus_Click);
-            this.btnColumnLeft.Click += new System.EventHandler(this.btnColumnLeft_Click);
-            this.btnColumnRight.Click += new System.EventHandler(this.btnColumnRight_Click);
+            this.btnPlus.Click += new System.EventHandler(this.btnPlus_Click);
+            this.btnMinus.Click += new System.EventHandler(this.btnMinus_Click);
+            this.btnLeft.Click += new System.EventHandler(this.btnColumnLeft_Click);
+            this.btnRight.Click += new System.EventHandler(this.btnColumnRight_Click);
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
 
-            //this.cboList.SelectedIndexChanged += new System.EventHandler(this.cboList_SelectedIndexChanged);
+            //this.cbxListName.SelectedIndexChanged += new System.EventHandler(this.cbxListName_SelectedIndexChanged);
             this.fontSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.fontSizeComboBox_SelectedIndexChanged);
 
             this.dgvColumns.SelectionChanged += (s, e) =>
             {
                 if (this.dgvColumns.CurrentRow != null && this.dgvColumns.CurrentRow.DataBoundItem is ColumnDisplayItem selectedDisplayItem)
                 {
-                    tbcolname.Text = selectedDisplayItem.Name;
+                   // tbcolname.Text = selectedDisplayItem.Name;
                 }
                 else
                 {
-                    tbcolname.Text = "";
+                   // tbcolname.Text = "";
                 }
             };
         }
 
         private void LoadInitialData()
         {
-            // Populate cboList with list names from master.Lists
-            this.cboList.Items.Clear();
+            // Populate cbxListName with list names from master.Lists
+            this.cbxListName.Items.Clear();
             if (master != null && master.Lists != null)
             {
                 foreach (var listNameKey in master.Lists.Keys)
                 {
-                    this.cboList.Items.Add(listNameKey);
+                    this.cbxListName.Items.Add(listNameKey);
                 }
             }
 
             // If in edit mode and a list is selected (e.g. first one or a passed one), populate controls
-            if (isEditMode && this.cboList.Items.Count > 0)
+            if (isEditMode && this.cbxListName.Items.Count > 0)
             {
-                // this.cboList.SelectedIndex = 0; // Or select a specific list if its name was passed
-                // This will trigger cboList_SelectedIndexChanged, which should load dgvColumns
+                // this.cbxListName.SelectedIndex = 0; // Or select a specific list if its name was passed
+                // This will trigger cbxListName_SelectedIndexChanged, which should load dgvColumns
             }
             else if (!isEditMode)
             {
                 // Setup for adding a new list
                 this.Text = "Add New List";
-                this.tbxList.Enabled = true;
-                this.cboList.Enabled = false;
+                this.tbxListName.Enabled = true;
+                this.cbxListName.Enabled = false;
                 columnData.Clear(); // Ensure grid is empty for new list
                 // Set default font size, etc.
             }
@@ -192,7 +192,7 @@ namespace ClipBox2
             columnData.Clear(); // Clear existing items
             if (master.Lists.TryGetValue(listNameKey, out Info selectedInfo))
             {
-                this.tbxList.Text = listNameKey; // Update list name TextBox if it's separate
+                this.tbxListName.Text = listNameKey; // Update list name TextBox if it's separate
                 // Populate font size (assuming fontSizeComboBox is for font size)
                 fontSizeComboBox.SelectedItem = selectedInfo.size.ToString();
 
@@ -237,25 +237,25 @@ namespace ClipBox2
             dgvColumns.CurrentCell = dgvColumns.Rows[idx + 1].Cells[0];
         }
 
-        private void btnplus_Click(object sender, EventArgs e)
+        private void btnPlus_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(tbcolname.Text))
-            {
-                MessageBox.Show("Column name cannot be empty.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            string newColName = tbcolname.Text.Trim();
+            //if (string.IsNullOrWhiteSpace(tbcolname.Text))
+            //{
+            //    MessageBox.Show("Column name cannot be empty.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    return;
+            //}
+            string newColName = "Col Name";// tbcolname.Text.Trim();
             if (columnData.Any(cd => cd.Name.Equals(newColName, StringComparison.OrdinalIgnoreCase)))
             {
                 MessageBox.Show("Column name already exists.", "Duplicate Column", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             columnData.Add(new ColumnDisplayItem(newColName));
-            tbcolname.Clear();
-            tbcolname.Focus();
+           // tbcolname.Clear();
+           // tbcolname.Focus();
         }
 
-        private void btnminus_Click(object sender, EventArgs e)
+        private void btnMinus_Click(object sender, EventArgs e)
         {
             if (dgvColumns.CurrentRow != null && dgvColumns.CurrentRow.Index >= 0)
             {

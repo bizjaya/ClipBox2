@@ -8,7 +8,7 @@ namespace ClipBox2
     public partial class Form1
     {
         private IContainer components = null;
-        public ComboBox cb1;
+        public ComboBox cbxListName;
         private Label listlbl;
         public ComboBox cb2;
         private MenuStrip menuStrip1;
@@ -29,12 +29,12 @@ namespace ClipBox2
         private Button btn2;
 
         public DataGridView dgv1;
-        private Button U;
+        private Button upBtn;
         private Button d;
-        private Button topButton;
-        private Button bottomButton;
-        private Button leftButton;
-        private Button rightButton;
+        private Button topBtn;
+        private Button botBtn;
+        private Button lefBtn;
+        private Button rigBtn;
         private ComboBox fontSizeComboBox;
         private Label editModeLabel;
         private TableLayoutPanel tableLayoutPanel1;
@@ -56,9 +56,9 @@ namespace ClipBox2
 
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             ComponentResourceManager resources = new ComponentResourceManager(typeof(Form1));
-            cb1 = new ComboBox();
+            cbxListName = new ComboBox();
             listlbl = new Label();
             cb2 = new ComboBox();
             menuStrip1 = new MenuStrip();
@@ -77,14 +77,14 @@ namespace ClipBox2
             titleLabel = new ToolStripLabel();
             dgv1 = new DataGridView();
             d = new Button();
-            U = new Button();
+            upBtn = new Button();
             btn1 = new Button();
             btn2 = new Button();
             chk1 = new CheckBox();
-            topButton = new Button();
-            bottomButton = new Button();
-            leftButton = new Button();
-            rightButton = new Button();
+            topBtn = new Button();
+            botBtn = new Button();
+            lefBtn = new Button();
+            rigBtn = new Button();
             fontSizeComboBox = new ComboBox();
             editModeLabel = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -95,16 +95,16 @@ namespace ClipBox2
             toolbarPanel.SuspendLayout();
             SuspendLayout();
             // 
-            // cb1
+            // cbxListName
             // 
-            cb1.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb1.FormattingEnabled = true;
-            cb1.Location = new Point(8, 4);
-            cb1.Margin = new Padding(4, 3, 4, 3);
-            cb1.Name = "cb1";
-            cb1.Size = new Size(156, 23);
-            cb1.TabIndex = 1;
-            cb1.SelectedIndexChanged += cb1_SelectedIndexChanged;
+            cbxListName.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbxListName.FormattingEnabled = true;
+            cbxListName.Location = new Point(8, 4);
+            cbxListName.Margin = new Padding(4, 3, 4, 3);
+            cbxListName.Name = "cbxListName";
+            cbxListName.Size = new Size(156, 23);
+            cbxListName.TabIndex = 1;
+            cbxListName.SelectedIndexChanged += cb1_SelectedIndexChanged;
             // 
             // listlbl
             // 
@@ -131,7 +131,7 @@ namespace ClipBox2
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new Padding(7, 2, 0, 2);
-            menuStrip1.Size = new Size(619, 24);
+            menuStrip1.Size = new Size(651, 24);
             menuStrip1.TabIndex = 4;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -222,13 +222,11 @@ namespace ClipBox2
             // 
             // titleLabel
             // 
-            titleLabel.Name = "titleLabel";
-            titleLabel.Size = new Size(130, 17);
-            titleLabel.Font = new Font("Georgia", titleLabel.Font.Size, titleLabel.Font.Style);
-
-            titleLabel.Text = "ClipBox by BIZJAYA.COM";
             titleLabel.Alignment = ToolStripItemAlignment.Right;
-
+            titleLabel.Font = new Font("Georgia", 9F);
+            titleLabel.Name = "titleLabel";
+            titleLabel.Size = new Size(156, 17);
+            titleLabel.Text = "ClipBox by BIZJAYA.COM";
             // 
             // dgv1
             // 
@@ -240,14 +238,14 @@ namespace ClipBox2
             dgv1.BorderStyle = BorderStyle.None;
             dgv1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dgv1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Window;
-            dataGridViewCellStyle1.Font = new Font("Arial", 8.2F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
-            dgv1.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Arial", 8.2F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgv1.DefaultCellStyle = dataGridViewCellStyle2;
             dgv1.Dock = DockStyle.Fill;
             dgv1.EditMode = DataGridViewEditMode.EditOnKeystroke;
             dgv1.GridColor = SystemColors.ButtonHighlight;
@@ -259,36 +257,12 @@ namespace ClipBox2
             dgv1.RowHeadersVisible = false;
             dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dgv1.ShowCellErrors = false;
-            dgv1.Size = new Size(611, 419);
+            dgv1.Size = new Size(643, 497);
             dgv1.StandardTab = true;
             dgv1.TabIndex = 0;
             dgv1.TabStop = false;
             dgv1.CellContentClick += dgv1_CellClick;
             dgv1.LostFocus += dgv1_LostFocus;
-            // 
-            // d
-            // 
-            d.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            d.Location = new Point(438, 4);
-            d.Margin = new Padding(4, 3, 4, 3);
-            d.Name = "d";
-            d.Size = new Size(21, 24);
-            d.TabIndex = 9;
-            d.Text = "↓";
-            d.UseVisualStyleBackColor = true;
-            d.Click += d_Click;
-            // 
-            // U
-            // 
-            U.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            U.Location = new Point(409, 4);
-            U.Margin = new Padding(4, 3, 4, 3);
-            U.Name = "U";
-            U.Size = new Size(21, 24);
-            U.TabIndex = 8;
-            U.Text = "↑";
-            U.UseVisualStyleBackColor = true;
-            U.Click += u_Click;
             // 
             // btn1
             // 
@@ -334,53 +308,81 @@ namespace ClipBox2
             chk1.UseVisualStyleBackColor = false;
             chk1.CheckedChanged += chk1_CheckedChanged;
             // 
+            // d
+            // 
+            d.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            d.Location = new Point(438, 4);
+            d.Margin = new Padding(4, 3, 4, 3);
+            d.Name = "d";
+            d.Size = new Size(24, 24);
+            d.TabIndex = 9;
+            d.Text = "▼";
+            d.UseVisualStyleBackColor = true;
+            d.Click += d_Click;
+
+            var btnMarg = new Padding(3, 3, 3, 3);
+            var btnSize = new Size(24, 24);
+
+            // 
+            // U
+            // 
+            upBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            upBtn.Location = new Point(409, 4);
+            upBtn.Margin = btnMarg;
+            upBtn.Size = btnSize;
+            upBtn.Name = "upBtn";
+            upBtn.TabIndex = 8;
+            upBtn.Text = "▲";
+            upBtn.UseVisualStyleBackColor = true;
+            upBtn.Click += u_Click;
+            // 
             // topButton
             // 
-            topButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            topButton.Location = new Point(377, 4);
-            topButton.Margin = new Padding(4, 3, 4, 3);
-            topButton.Name = "topButton";
-            topButton.Size = new Size(24, 24);
-            topButton.TabIndex = 10;
-            topButton.Text = "↥";
-            topButton.UseVisualStyleBackColor = true;
-            topButton.Click += topButton_Click;
+            topBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            topBtn.Location = new Point(377, 4);
+            topBtn.Margin = btnMarg;
+            topBtn.Size = btnSize;
+            topBtn.Name = "topBtn";
+            topBtn.TabIndex = 10;
+            topBtn.Text = "🔼";
+            topBtn.UseVisualStyleBackColor = true;
+            topBtn.Click += topButton_Click;
             // 
             // bottomButton
             // 
-            bottomButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bottomButton.Location = new Point(467, 4);
-            bottomButton.Margin = new Padding(4, 3, 4, 3);
-            bottomButton.Name = "bottomButton";
-            bottomButton.Size = new Size(24, 24);
-            bottomButton.TabIndex = 11;
-            bottomButton.Text = "↧";
-            bottomButton.UseVisualStyleBackColor = true;
-            bottomButton.Click += bottomButton_Click;
+            botBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            botBtn.Location = new Point(467, 4);
+            botBtn.Margin = btnMarg;
+            botBtn.Size = btnSize;
+            botBtn.Name = "botBtn";
+            botBtn.TabIndex = 11;
+            botBtn.Text = "🔽";
+            botBtn.UseVisualStyleBackColor = true;
+            botBtn.Click += bottomButton_Click;
             // 
             // leftButton
             // 
-            leftButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            leftButton.Location = new Point(313, 4);
-            leftButton.Margin = new Padding(4, 3, 4, 3);
-            leftButton.Name = "leftButton";
-            leftButton.Size = new Size(24, 24);
-            leftButton.TabIndex = 12;
-            leftButton.Text = "←";
-            leftButton.UseVisualStyleBackColor = true;
-            leftButton.Click += leftButton_Click;
+            lefBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lefBtn.Location = new Point(313, 4);
+            lefBtn.Margin = btnMarg;
+            lefBtn.Size = btnSize;
+            lefBtn.Name = "lefBtn";
+            lefBtn.TabIndex = 12;
+            lefBtn.Text = "◀";
+            lefBtn.UseVisualStyleBackColor = true;
+            lefBtn.Click += leftButton_Click;
             // 
             // rightButton
             // 
-            rightButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            rightButton.Location = new Point(345, 4);
-            rightButton.Margin = new Padding(4, 3, 4, 3);
-            rightButton.Name = "rightButton";
-            rightButton.Size = new Size(24, 24);
-            rightButton.TabIndex = 13;
-            rightButton.Text = "→";
-            rightButton.UseVisualStyleBackColor = true;
-            rightButton.Click += rightButton_Click;
+            rigBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            rigBtn.Location = new Point(345, 4);
+            rigBtn.Margin = btnMarg;
+            rigBtn.Size = btnSize;
+            rigBtn.Name = "rigBtn";
+            rigBtn.TabIndex = 13;
+            rigBtn.Text = "▶";
+            rigBtn.UseVisualStyleBackColor = true;
+            rigBtn.Click += rightButton_Click;
             // 
             // fontSizeComboBox
             // 
@@ -401,15 +403,12 @@ namespace ClipBox2
             editModeLabel.AutoSize = true;
             editModeLabel.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             editModeLabel.ForeColor = Color.Red;
-            editModeLabel.Location = new Point(550, 9);
+            editModeLabel.Location = new Point(573, 7);
             editModeLabel.Margin = new Padding(0, 6, 4, 3);
             editModeLabel.Name = "editModeLabel";
-            editModeLabel.Size = new Size(13, 13);
+            editModeLabel.Size = new Size(0, 13);
             editModeLabel.TabIndex = 16;
             editModeLabel.Visible = false;
-
-
-
             // 
             // tableLayoutPanel1
             // 
@@ -426,24 +425,21 @@ namespace ClipBox2
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(619, 481);
+            tableLayoutPanel1.Size = new Size(651, 559);
             tableLayoutPanel1.TabIndex = 0;
-            tableLayoutPanel1.AutoSize = false;
-
             // 
             // toolbarPanel
             // 
             toolbarPanel.AutoScroll = true;
-            toolbarPanel.AutoSize = false;
-            toolbarPanel.Controls.Add(cb1);
+            toolbarPanel.Controls.Add(cbxListName);
             toolbarPanel.Controls.Add(cb2);
             toolbarPanel.Controls.Add(fontSizeComboBox);
-            toolbarPanel.Controls.Add(leftButton);
-            toolbarPanel.Controls.Add(rightButton);
-            toolbarPanel.Controls.Add(topButton);
-            toolbarPanel.Controls.Add(U);
+            toolbarPanel.Controls.Add(lefBtn);
+            toolbarPanel.Controls.Add(rigBtn);
+            toolbarPanel.Controls.Add(topBtn);
+            toolbarPanel.Controls.Add(upBtn);
             toolbarPanel.Controls.Add(d);
-            toolbarPanel.Controls.Add(bottomButton);
+            toolbarPanel.Controls.Add(botBtn);
             toolbarPanel.Controls.Add(btn1);
             toolbarPanel.Controls.Add(btn2);
             toolbarPanel.Controls.Add(chk1);
@@ -453,21 +449,19 @@ namespace ClipBox2
             toolbarPanel.Margin = new Padding(0);
             toolbarPanel.Name = "toolbarPanel";
             toolbarPanel.Padding = new Padding(4, 1, 4, 1);
-            toolbarPanel.Size = new Size(619, 32);
+            toolbarPanel.Size = new Size(651, 32);
             toolbarPanel.TabIndex = 5;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(627, 504);
+            ClientSize = new Size(659, 582);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 3, 4, 3);
-            //MinimumSize = new Size(464, 340);
+            MinimumSize = new Size(200, 0);
             Name = "Form1";
-            MinimumSize = new Size(200, this.MinimumSize.Height);
-
             Padding = new Padding(4, 20, 4, 3);
             TopMost = true;
             Load += Form1_Load;

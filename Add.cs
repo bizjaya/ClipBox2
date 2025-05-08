@@ -175,7 +175,7 @@ namespace ClipBox2
             // Refresh the main form's combo box
             if (mainForm != null)
             {
-                mainForm.populate(listName);
+                mainForm.populateDGV1(listName);
             }
             
             MessageBox.Show($"List '{listName}' added successfully.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Information);
