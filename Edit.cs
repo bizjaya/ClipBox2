@@ -103,13 +103,20 @@ namespace ClipBox2
 
         private void PopulateComboBoxes()
         {
-            // Populate list combo box
+            // Populate list combo box with CbxItem<string> objects
             cbxListName.Items.Clear();
             if (master != null && master.Lists != null)
             {
-                foreach (var listNameKey in master.Lists)
+                foreach (var kvp in master.Lists)
                 {
-                    cbxListName.Items.Add(listNameKey);
+                    string key = kvp.Key;
+                    Info info = kvp.Value;
+                    
+                    // For display in the combo box, use the Name property if available, otherwise use the key
+                    string displayName = string.IsNullOrEmpty(info.Name) ? key : info.Name;
+                    
+                    // Add a CbxItem with display name and key value to the combo box
+                    cbxListName.Items.Add(new CbxItem<string>(displayName, key));
                 }
             }
             
@@ -156,7 +163,16 @@ namespace ClipBox2
         {
             if (cbxListName.SelectedItem == null) return;
             
-            this.listName = cbxListName.SelectedItem.ToString();
+            // Get the selected item from the combo box
+            if (!(cbxListName.SelectedItem is CbxItem<string> selectedItem))
+            {
+                MessageBox.Show("Invalid selection", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            
+            // Get the key value directly from the selected item
+            this.listName = selectedItem.Value;
+            
             if (master.Lists.TryGetValue(this.listName, out Info data))
             {
                 // Update the column data for the DataGridView
@@ -187,6 +203,7 @@ namespace ClipBox2
             }
             else
             {
+                MessageBox.Show($"List not found: {selectedItem.Name} (Key: {this.listName})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 columnData.Clear();
                 SelectFontSizeInComboBox(9);
             }

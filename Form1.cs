@@ -180,37 +180,35 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         {
             if (cbxListName.SelectedIndex == -1) return;
             
-            // Get the display name from the combo box
-            string displayName = cbxListName.Items[cbxListName.SelectedIndex].ToString();
-            
-            // Load the master data
-            MasterData master = SaveJSON.LoadMasterData();
-            
-            // First try to find a list with this exact key
-            if (master.Lists.ContainsKey(displayName))
+            // Get the selected item from the combo box
+            if (cbxListName.SelectedItem is CbxItem<string> selectedItem)
             {
-                populateDGV1(displayName);
-                return;
-            }
-            
-            // If not found by key, try to find by Name property (case-insensitive)
-            foreach (var kvp in master.Lists)
-            {
-                if (string.Equals(kvp.Value.Name, displayName, StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(kvp.Key, displayName, StringComparison.OrdinalIgnoreCase))
+                // Get the key value directly from the selected item
+                string key = selectedItem.Value;
+                
+                // Load the master data
+                MasterData master = SaveJSON.LoadMasterData();
+                
+                // Check if the key exists in the master data
+                if (master.Lists.ContainsKey(key))
                 {
-                    // Use the key to load the list
-                    populateDGV1(kvp.Key);
+                    populateDGV1(key);
                     return;
                 }
+                
+                // If we get here, the key doesn't exist in the master data
+                // This shouldn't happen if the combo box is properly populated
+                MessageBox.Show($"List not found: {selectedItem.Name} (Key: {key})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
-            // If we get here, we couldn't find the list
-            MessageBox.Show($"Could not find list: {displayName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+            {
+                // This shouldn't happen if the combo box is properly populated
+                MessageBox.Show("Invalid selection", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error loading list: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Error selecting list: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -1127,12 +1125,16 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             master.EnsureListsHaveNames();
 
             // Remember current selection
-            string currentSelection = cbxListName.SelectedIndex >= 0 ? cbxListName.Items[cbxListName.SelectedIndex].ToString() : null;
+            string currentKey = null;
+            if (cbxListName.SelectedIndex >= 0 && cbxListName.SelectedItem is CbxItem<string> selectedItem)
+            {
+                currentKey = selectedItem.Value;
+            }
             
             cbxListName.BeginUpdate();
             cbxListName.Items.Clear();
             
-            // Add all list names to the combo box
+            // Add all list names to the combo box using CbxItem<string>
             foreach (var kvp in master.Lists)
             {
                 string key = kvp.Key;
@@ -1141,8 +1143,8 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 // For display in the combo box, use the Name property if available, otherwise use the key
                 string displayName = string.IsNullOrEmpty(info.Name) ? key : info.Name;
                 
-                // Add the display name to the combo box
-                cbxListName.Items.Add(displayName);
+                // Add a CbxItem with display name and key value to the combo box
+                cbxListName.Items.Add(new CbxItem<string>(displayName, key));
             }
 
             // Suspend layout of the grid to prevent flicker
@@ -1151,29 +1153,23 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             // If a specific list was requested, select it
             if (!string.IsNullOrEmpty(selectList))
             {
-                // Try to find the list by name or key
+                // Find the index of the item with matching key or name
                 int index = -1;
-                
-                // First check if selectList is directly in the combo box (it's a display name)
-                index = cbxListName.Items.IndexOf(selectList);
-                
-                // If not found, try to find the list with this key
-                if (index == -1 && master.Lists.ContainsKey(selectList))
+                for (int i = 0; i < cbxListName.Items.Count; i++)
                 {
-                    // Get the display name for this key
-                    string displayName = string.IsNullOrEmpty(master.Lists[selectList].Name) ? 
-                        selectList : master.Lists[selectList].Name;
-                    index = cbxListName.Items.IndexOf(displayName);
-                }
-                
-                // If still not found, try to find a list with this name
-                if (index == -1)
-                {
-                    foreach (var kvp in master.Lists)
+                    if (cbxListName.Items[i] is CbxItem<string> item)
                     {
-                        if (kvp.Value.Name == selectList)
+                        // Check if the key matches
+                        if (item.Value == selectList)
                         {
-                            index = cbxListName.Items.IndexOf(selectList);
+                            index = i;
+                            break;
+                        }
+                        
+                        // Check if the name matches (case-insensitive)
+                        if (string.Equals(item.Name, selectList, StringComparison.OrdinalIgnoreCase))
+                        {
+                            index = i;
                             break;
                         }
                     }
@@ -1182,39 +1178,41 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 if (index >= 0)
                 {
                     cbxListName.SelectedIndex = index;
-                    
-                    // Get the actual key for the selected list
-                    string actualKey = selectList;
-                    
-                    // If the list was found by name, we need to find the actual key
-                    if (!master.Lists.ContainsKey(selectList))
-                    {
-                        foreach (var kvp in master.Lists)
-                        {
-                            if (string.Equals(kvp.Value.Name, selectList, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals(kvp.Key, selectList, StringComparison.OrdinalIgnoreCase))
-                            {
-                                actualKey = kvp.Key;
-                                break;
-                            }
-                        }
-                    }
-                    
-                    populateDGV1(actualKey, false);  // Don't save changes when just displaying
+                    var selectedListItem = (CbxItem<string>)cbxListName.SelectedItem;
+                    populateDGV1(selectedListItem.Value, false);  // Don't save changes when just displaying
+                }
+                else if (master.Lists.ContainsKey(selectList))
+                {
+                    // If we couldn't find the item but the key exists, populate the grid directly
+                    populateDGV1(selectList, false);
                 }
             }
             // Otherwise try to keep the current selection if it exists
-            else if (!string.IsNullOrEmpty(currentSelection) && cbxListName.Items.Contains(currentSelection))
+            else if (!string.IsNullOrEmpty(currentKey) && master.Lists.ContainsKey(currentKey))
             {
-                cbxListName.SelectedIndex = cbxListName.Items.IndexOf(currentSelection);
-                populateDGV1(currentSelection, false);  // Don't save changes when just displaying
+                // Find the index of the item with matching key
+                int index = -1;
+                for (int i = 0; i < cbxListName.Items.Count; i++)
+                {
+                    if (cbxListName.Items[i] is CbxItem<string> item && item.Value == currentKey)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                
+                if (index >= 0)
+                {
+                    cbxListName.SelectedIndex = index;
+                    populateDGV1(currentKey, false);  // Don't save changes when just displaying
+                }
             }
             // Otherwise select the first item
             else if (cbxListName.Items.Count > 0)
             {
                 cbxListName.SelectedIndex = 0;
-                string displayName = cbxListName.Items[0].ToString();
-                populateDGV1(displayName, false);  // Don't save changes when just displaying
+                var firstItem = (CbxItem<string>)cbxListName.Items[0];
+                populateDGV1(firstItem.Value, false);  // Don't save changes when just displaying
             }
 
             cbxListName.EndUpdate();
@@ -1250,55 +1248,35 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             return;
         }
         
-        string listName = cbxListName.Text;
+        // Get the selected item from the combo box
+        if (!(cbxListName.SelectedItem is CbxItem<string> selectedItem))
+        {
+            MessageBox.Show("Invalid selection", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+        
+        // Get the key value directly from the selected item
+        string key = selectedItem.Value;
         
         // Load the master data
         MasterData master = SaveJSON.LoadMasterData();
         
-        // Find the actual key for the selected list
-        string actualKey = null;
-        
-        // First try direct key lookup
-        if (master.Lists.ContainsKey(listName))
+        // Check if the key exists in the master data
+        if (!master.Lists.ContainsKey(key))
         {
-            actualKey = listName;
-        }
-        else
-        {
-            // Try case-insensitive key lookup
-            foreach (var kvp in master.Lists)
-            {
-                if (string.Equals(kvp.Key, listName, StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(kvp.Value.Name, listName, StringComparison.OrdinalIgnoreCase))
-                {
-                    actualKey = kvp.Key;
-                    break;
-                }
-            }
-        }
-        
-        // If we couldn't find the list, show an error
-        if (actualKey == null)
-        {
-            MessageBox.Show($"Could not find list: {listName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"List not found: {selectedItem.Name} (Key: {key})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
 
         // Open the Edit form with the selected list
-        var form = new Edit(true, actualKey, master);
-        
+        var form = new Edit(true, key, master);
         form.Show(this);
 
-         populateDGV1(listName);
-
-
-
-        //{
-        //    // Refresh the list display
-        //    popCbxListName(actualKey);
-        //}
-
-
-
+        // Refresh the current list
+        populateDGV1(key);
+        
+        // Note: We're not calling popCbxListName here because the Edit form will handle refreshing the list
+        // If you want to refresh the combo box after editing, you can uncomment the line below
+        // popCbxListName(key);
     }
 }

@@ -4,126 +4,126 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClipBox2
+namespace ClipBox2;
+
+
+public class MasterData
 {
-    public class MasterData
+    // Track the next available ID for new lists
+    public int NextListId { get; set; } = 1;
+    
+    public Dictionary<string, Info> Lists { get; set; } = new Dictionary<string, Info>(StringComparer.OrdinalIgnoreCase);
+    
+    /// <summary>
+    /// Ensures all lists have valid Name properties but does NOT change dictionary keys
+    /// Only used during loading to ensure backward compatibility
+    /// </summary>
+    public void EnsureListsHaveNames()
     {
-        // Track the next available ID for new lists
-        public int NextListId { get; set; } = 1;
-        
-        public Dictionary<string, Info> Lists { get; set; } = new Dictionary<string, Info>(StringComparer.OrdinalIgnoreCase);
-        
-        /// <summary>
-        /// Ensures all lists have valid Name properties but does NOT change dictionary keys
-        /// Only used during loading to ensure backward compatibility
-        /// </summary>
-        public void EnsureListsHaveNames()
+        // Process each list to ensure it has a Name
+        foreach (var kvp in Lists)
         {
-            // Process each list to ensure it has a Name
-            foreach (var kvp in Lists)
+            string key = kvp.Key;
+            Info info = kvp.Value;
+            
+            // If Name is not set, use the dictionary key
+            if (string.IsNullOrEmpty(info.Name))
             {
-                string key = kvp.Key;
-                Info info = kvp.Value;
-                
-                // If Name is not set, use the dictionary key
-                if (string.IsNullOrEmpty(info.Name))
-                {
-                    info.Name = key;
-                }
+                info.Name = key;
             }
         }
+    }
+    
+    /// <summary>
+    /// Prepares lists for saving by assigning IDs and using them as keys
+    /// Only called during save operations
+    /// </summary>
+    public void PrepareForSave()
+    {
+        // Create a temporary dictionary to hold the updated lists
+        var updatedLists = new Dictionary<string, Info>(StringComparer.OrdinalIgnoreCase);
         
-        /// <summary>
-        /// Prepares lists for saving by assigning IDs and using them as keys
-        /// Only called during save operations
-        /// </summary>
-        public void PrepareForSave()
+        // Process each list
+        foreach (var kvp in Lists)
         {
-            // Create a temporary dictionary to hold the updated lists
-            var updatedLists = new Dictionary<string, Info>(StringComparer.OrdinalIgnoreCase);
+            string key = kvp.Key;
+            Info info = kvp.Value;
             
-            // Process each list
-            foreach (var kvp in Lists)
+            // If Name is not set, use the dictionary key
+            if (string.IsNullOrEmpty(info.Name))
             {
-                string key = kvp.Key;
-                Info info = kvp.Value;
-                
-                // If Name is not set, use the dictionary key
-                if (string.IsNullOrEmpty(info.Name))
-                {
-                    info.Name = key;
-                }
-                
-                // If ID is not set (0 is default value), assign a new ID
-                if (info.Id == 0)
-                {
-                    info.Id = NextListId++;
-                }
-                
-                // Use the ID as the new key
-                string newKey = info.Id.ToString();
-                updatedLists[newKey] = info;
+                info.Name = key;
             }
             
-            // Replace the old dictionary with the updated one
-            Lists = updatedLists;
-        }
-        
-        /// <summary>
-        /// Gets a list by its name
-        /// </summary>
-        public Info GetListByName(string name)
-        {
-            return Lists.Values.FirstOrDefault(info => info.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-        }
-        
-        /// <summary>
-        /// Adds a new list or updates an existing one
-        /// </summary>
-        public void AddOrUpdateList(Info info)
-        {
-            // Ensure the list has an ID
+            // If ID is not set (0 is default value), assign a new ID
             if (info.Id == 0)
             {
                 info.Id = NextListId++;
             }
             
-            // Use the ID as the key
-            Lists[info.Id.ToString()] = info;
+            // Use the ID as the new key
+            string newKey = info.Id.ToString();
+            updatedLists[newKey] = info;
         }
         
-        /// <summary>
-        /// Removes a list by its name
-        /// </summary>
-        public bool RemoveListByName(string name)
+        // Replace the old dictionary with the updated one
+        Lists = updatedLists;
+    }
+    
+    /// <summary>
+    /// Gets a list by its name
+    /// </summary>
+    public Info GetListByName(string name)
+    {
+        return Lists.Values.FirstOrDefault(info => info.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+    }
+    
+    /// <summary>
+    /// Adds a new list or updates an existing one
+    /// </summary>
+    public void AddOrUpdateList(Info info)
+    {
+        // Ensure the list has an ID
+        if (info.Id == 0)
         {
-            var list = GetListByName(name);
-            if (list != null)
-            {
-                return Lists.Remove(list.Id.ToString());
-            }
-            return false;
+            info.Id = NextListId++;
         }
         
-        /// <summary>
-        /// Saves the MasterData to the default JSON file
-        /// </summary>
-        public void Save()
+        // Use the ID as the key
+        Lists[info.Id.ToString()] = info;
+    }
+    
+    /// <summary>
+    /// Removes a list by its name
+    /// </summary>
+    public bool RemoveListByName(string name)
+    {
+        var list = GetListByName(name);
+        if (list != null)
         {
-            // Prepare lists for saving by assigning IDs
-            PrepareForSave();
-            SaveJSON.SaveMasterData(this);
+            return Lists.Remove(list.Id.ToString());
         }
-        
-        /// <summary>
-        /// Saves the MasterData to a specified JSON file path
-        /// </summary>
-        /// <param name="jsonPath">The path to save the JSON file to</param>
-        public void Save(string jsonPath)
-        {
-            // Prepare lists for saving by assigning IDs
-            PrepareForSave();
-            SaveJSON.SaveMasterData(this, jsonPath);
-        }
+        return false;
+    }
+    
+    /// <summary>
+    /// Saves the MasterData to the default JSON file
+    /// </summary>
+    public void Save()
+    {
+        // Prepare lists for saving by assigning IDs
+        PrepareForSave();
+        SaveJSON.SaveMasterData(this);
+    }
+    
+    /// <summary>
+    /// Saves the MasterData to a specified JSON file path
+    /// </summary>
+    /// <param name="jsonPath">The path to save the JSON file to</param>
+    public void Save(string jsonPath)
+    {
+        // Prepare lists for saving by assigning IDs
+        PrepareForSave();
+        SaveJSON.SaveMasterData(this, jsonPath);
     }
 }
