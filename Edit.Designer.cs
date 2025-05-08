@@ -10,7 +10,6 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
     private Button btnMinus;
     private Button btnPlus;
     private Button btnEdit;
-    private Label lblAdd;
     private DataGridView dgvColumns; // DataGridView for columns
     private TextBox tbxListName; // TextBox for Add mode
     private ComboBox cbxListName;
@@ -38,7 +37,6 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         btnMinus = new Button();
         btnPlus = new Button();
         btnEdit = new Button();
-        lblAdd = new Label();
         dgvColumns = new DataGridView();
         colName = new DataGridViewTextBoxColumn();
         colPswd = new DataGridViewCheckBoxColumn();
@@ -51,6 +49,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         tableLayoutPanel1 = new TableLayoutPanel();
         panel1 = new Panel();
         dataGridView1 = new DataGridView();
+        lblListName = new Label();
         ((ISupportInitialize)dgvColumns).BeginInit();
         tableLayoutPanel1.SuspendLayout();
         panel1.SuspendLayout();
@@ -89,16 +88,6 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         btnEdit.UseVisualStyleBackColor = true;
         btnEdit.Click += btnEdit_Click;
         // 
-        // lblAdd
-        // 
-        lblAdd.AutoSize = true;
-        lblAdd.Location = new Point(29, 18);
-        lblAdd.Margin = new Padding(4, 0, 4, 0);
-        lblAdd.Name = "lblAdd";
-        lblAdd.Size = new Size(60, 15);
-        lblAdd.TabIndex = 10;
-        lblAdd.Text = "List Name";
-        // 
         // dgvColumns
         // 
         dgvColumns.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -106,10 +95,10 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         dgvColumns.Columns.AddRange(new DataGridViewColumn[] { colName, colPswd, colMulti });
         dgvColumns.Location = new Point(3, 90);
         dgvColumns.Name = "dgvColumns";
-        dgvColumns.Size = new Size(411, 391);
+        dgvColumns.Size = new Size(443, 469);
         dgvColumns.TabIndex = 100;
         // 
-        // colName 
+        // colName
         // 
         colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         colName.HeaderText = "Column Name";
@@ -127,22 +116,22 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         colMulti.Name = "colMulti";
         colMulti.Width = 50;
         // 
-        // tbxList
+        // tbxListName
         // 
         tbxListName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-        tbxListName.Location = new Point(85, 11);
+        tbxListName.Location = new Point(199, 15);
         tbxListName.Name = "tbxListName";
-        tbxListName.Size = new Size(130, 23);
+        tbxListName.Size = new Size(194, 23);
         tbxListName.TabIndex = 101;
-        tbxListName.Visible = false;
+        tbxListName.Visible = true;
         // 
         // cbxListName
         // 
         cbxListName.FormattingEnabled = true;
-        cbxListName.Location = new Point(99, 13);
+        cbxListName.Location = new Point(29, 15);
         cbxListName.Margin = new Padding(4, 3, 4, 3);
         cbxListName.Name = "cbxListName";
-        cbxListName.Size = new Size(278, 23);
+        cbxListName.Size = new Size(162, 23);
         cbxListName.TabIndex = 16;
         // 
         // btnLeft
@@ -187,16 +176,16 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         tableLayoutPanel1.RowCount = 2;
         tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 87F));
         tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-        tableLayoutPanel1.Size = new Size(417, 484);
+        tableLayoutPanel1.Size = new Size(449, 562);
         tableLayoutPanel1.TabIndex = 25;
         // 
         // panel1
         // 
+        panel1.Controls.Add(lblListName);
         panel1.Controls.Add(tbxListName);
         panel1.Controls.Add(btnEdit);
         panel1.Controls.Add(btnRight);
         panel1.Controls.Add(btnMinus);
-        panel1.Controls.Add(lblAdd);
         panel1.Controls.Add(btnPlus);
         panel1.Controls.Add(cbxListName);
         panel1.Controls.Add(btnLeft);
@@ -204,7 +193,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         panel1.Dock = DockStyle.Fill;
         panel1.Location = new Point(3, 3);
         panel1.Name = "panel1";
-        panel1.Size = new Size(411, 81);
+        panel1.Size = new Size(443, 81);
         panel1.TabIndex = 25;
         // 
         // dataGridView1
@@ -216,11 +205,20 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         dataGridView1.Size = new Size(615, 330);
         dataGridView1.TabIndex = 26;
         // 
+        // label1
+        // 
+        lblListName.AutoSize = true;
+        lblListName.Location = new Point(153, 18);
+        lblListName.Name = "lblListName";
+        lblListName.Size = new Size(38, 15);
+        lblListName.TabIndex = 102;
+        lblListName.Text = "List Name";
+        // 
         // Edit
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(425, 507);
+        ClientSize = new Size(457, 585);
         Controls.Add(tableLayoutPanel1);
         FormBorderStyle = FormBorderStyle.SizableToolWindow;
         Margin = new Padding(4, 3, 4, 3);
@@ -245,5 +243,5 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
     private TableLayoutPanel tableLayoutPanel1;
     private Panel panel1;
     private DataGridView dataGridView1;
-
+    private Label lblListName;
 }

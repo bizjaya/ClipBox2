@@ -26,7 +26,9 @@ namespace ClipBox2
         private void SetupMode()
         {
             cbxListName.Visible = isEditMode;
-            tbxListName.Visible = !isEditMode;
+            lblListName.Visible = !isEditMode;
+ 
+
             this.Text = isEditMode ? "Edit List" : "Add List";
             btnEdit.Text = isEditMode ? "Edit List" : "Add List";
         }
