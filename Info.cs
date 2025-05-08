@@ -13,6 +13,10 @@ namespace ClipBox2
         // List of column names
         public List<string> cols { get; set; } = new List<string>();
 
+        // New: Per-column boolean flags
+        public List<bool> colIsPassword { get; set; } = new List<bool>();
+        public List<bool> colIsMultiLine { get; set; } = new List<bool>();
+
         // Rows of data; each row is itself a list of strings
         public List<List<string>> strs { get; set; } = new List<List<string>>();
 

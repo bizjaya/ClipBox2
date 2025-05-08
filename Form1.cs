@@ -312,7 +312,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         MasterData master = SaveJSON.LoadMasterData();
         if (!master.Lists.ContainsKey(listName)) return;
 
-        Edit editForm = new Edit(master, listName);
+        Edit editForm = new Edit(true, listName, master);
         editForm.Show(this);
 
         // Refresh the current list after editing
