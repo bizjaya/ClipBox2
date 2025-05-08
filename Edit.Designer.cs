@@ -109,7 +109,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         dgvColumns.Size = new Size(411, 391);
         dgvColumns.TabIndex = 100;
         // 
-        // colName
+        // colName 
         // 
         colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         colName.HeaderText = "Column Name";

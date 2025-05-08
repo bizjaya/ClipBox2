@@ -548,11 +548,11 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         if (chk1.Checked) return;
         if (e.RowIndex < 0) return;
 
-        // Get the value, checking first if it's masked
+        // Get the value, checking first if it's a password field (has Tag property set)
         string textValue;
-        if (dgv1.SelectedCells[0].Value?.ToString() == "****" && dgv1.SelectedCells[0].Tag != null)
+        if (dgv1.SelectedCells[0].Tag != null)
         {
-            // Use the original value stored in Tag
+            // Use the original value stored in Tag for password fields
             textValue = dgv1.SelectedCells[0].Tag.ToString();
         }
         else
@@ -594,11 +594,11 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 // Possibly send keys on lost focus
                 Thread.Sleep(200);
 
-                // Get the value, checking first if it's masked
+                // Get the value, checking first if it's a password field (has Tag property set)
                 string textValue;
-                if (dgv1.SelectedCells[0].Value?.ToString() == "****" && dgv1.SelectedCells[0].Tag != null)
+                if (dgv1.SelectedCells[0].Tag != null)
                 {
-                    // Use the original value stored in Tag
+                    // Use the original value stored in Tag for password fields
                     textValue = dgv1.SelectedCells[0].Tag.ToString();
                 }
                 else
