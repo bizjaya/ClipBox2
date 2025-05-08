@@ -1,14 +1,162 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data.Common;
 using System.IO;
 using System.Windows.Forms;
-using MaterialSkin;
-using MaterialSkin.Controls;
+// No MaterialSkin references needed for standard WinForms controls
 
-namespace ClipBox2
+namespace ClipBox2;
+
+public partial class Edit : MaterialSkin.Controls.MaterialForm
 {
-  public partial class Edit : MaterialSkin.Controls.MaterialForm
-  {
+    // Mode: true = Edit, false = Add
+    private bool isEditMode = false;
+    // Data source for columns
+    private BindingList<Info> columnData = new BindingList<Info>();
+
+    // Optionally allow passing mode in constructor
+    public Edit(bool editMode = false)
+    {
+        InitializeComponent();
+        isEditMode = editMode;
+        SetupMode();
+        SetupGrid();
+        SetupEventHandlers();
+    }
+
+    private void SetupMode()
+    {
+        cboList.Visible = isEditMode;
+        tbxList.Visible = !isEditMode;
+        this.Text = isEditMode ? "Edit List" : "Add List";
+        btnEdit.Text = isEditMode ? "Edit List" : "Add List";
+    }
+
+    private void SetupGrid()
+    {
+        dgvColumns.AutoGenerateColumns = false;
+        dgvColumns.DataSource = columnData;
+        // If columns are not already added in designer, add them here:
+        if (dgvColumns.Columns.Count == 0)
+        {
+            var colName = new DataGridViewTextBoxColumn();
+            colName.HeaderText = "Column Name";
+            colName.DataPropertyName = "colName";
+            colName.Name = "colName";
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            var colMulti = new DataGridViewCheckBoxColumn();
+            colMulti.HeaderText = "Multi";
+            colMulti.DataPropertyName = "multi";
+            colMulti.Name = "colMulti";
+            colMulti.Width = 50;
+            dgvColumns.Columns.AddRange(new DataGridViewColumn[] { colName, colMulti });
+        }
+    }
+
+    // Add column
+    // Add column (renamed from btnplus_Click to avoid ambiguous method definition)
+    private void AddColumn(object sender, EventArgs e)
+    {
+        if (string.IsNullOrEmpty(this.tbcolname.Text)) return;
+        columnData.Add(new Info { cols = new List<string> { this.tbcolname.Text }, multi = false });
+        this.tbcolname.Text = "";
+    }
+
+    // Remove selected column (renamed from btnminus_Click to avoid ambiguous method definition)
+    private void RemoveColumn(object sender, EventArgs e)
+    {
+        if (this.dgvColumns.CurrentRow == null) return;
+        columnData.RemoveAt(this.dgvColumns.CurrentRow.Index);
+    }
+
+    // Move selected column left/up (renamed from btnColumnLeft_Click to avoid ambiguous method definition)
+    private void MoveColumnLeft(object sender, EventArgs e)
+    {
+        int idx = this.dgvColumns.CurrentRow?.Index ?? -1;
+        if (idx > 0)
+        {
+            var item = columnData[idx];
+            columnData.RemoveAt(idx);
+            columnData.Insert(idx - 1, item);
+            this.dgvColumns.CurrentCell = this.dgvColumns.Rows[idx - 1].Cells[0];
+        }
+    }
+
+    // Move selected column right/down (renamed from btnColumnRight_Click to avoid ambiguous method definition)
+    private void MoveColumnRight(object sender, EventArgs e)
+    {
+        int idx = this.dgvColumns.CurrentRow?.Index ?? -1;
+        if (idx >= 0 && idx < columnData.Count - 1)
+        {
+            var item = columnData[idx];
+            columnData.RemoveAt(idx);
+            columnData.Insert(idx + 1, item);
+            this.dgvColumns.CurrentCell = this.dgvColumns.Rows[idx + 1].Cells[0];
+        }
+    }
+
+    // Font size change
+    private void fontSizeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (fontSizeComboBox.SelectedIndex >= 0)
+        {
+            int size = GetSelectedFontSize();
+            if (size > 0)
+            {
+                dgvColumns.Font = new Font(dgvColumns.Font.FontFamily, size);
+            }
+        }
+    }
+
+    private int GetSelectedFontSize()
+    {
+        if (fontSizeComboBox.SelectedIndex >= 0)
+        {
+            string selectedText = fontSizeComboBox.SelectedItem.ToString();
+            foreach (var pair in App.FontSizes)
+            {
+                if (pair.Value == selectedText)
+                {
+                    return pair.Key;
+                }
+            }
+        }
+        return 9; // Default size
+    }
+
+    // Save (Add/Edit List)
+    private void SaveList(object sender, EventArgs e)
+    {
+        // Gather columns info
+        var colNames = columnData.Select(c => c.cols.FirstOrDefault() ?? "").ToList();
+        var multiFlags = columnData.Select(c => c.multi).ToList();
+        string listName = isEditMode ? this.cboList.SelectedItem?.ToString() : this.tbxList.Text;
+
+        // Save to data model
+        if (master != null && data != null)
+        {
+            data.cols = colNames;
+            data.multi = chkPswd.Checked;
+            // Other properties as needed
+
+            // Update master data
+            if (isEditMode)
+            {
+                // Update existing list
+                // master.SaveList(listName, data);
+            }
+            else
+            {
+                // Add new list
+                // master.AddList(listName, data);
+            }
+        }
+
+        this.DialogResult = DialogResult.OK;
+        this.Close();
+    }
+
     private MasterData master;
     private Info data;
     private string listName;
@@ -19,101 +167,89 @@ namespace ClipBox2
 
     public Edit(MasterData master, string listName)
     {
-      // MaterialSkin initialization
-      var materialSkinManager = MaterialSkinManager.Instance;
-      materialSkinManager.AddFormToManage(this);
-      materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-      materialSkinManager.ColorScheme = new ColorScheme(Primary.Blue600, Primary.Blue700, Primary.Blue200, Accent.LightBlue200, TextShade.WHITE);
-      InitializeComponent();
-      this.master = master;
-      this.listName = listName;
-      
-      // Set form properties to ensure it appears on top
-      this.TopMost = true;
-      this.StartPosition = FormStartPosition.CenterScreen;
-            
-      // Populate the font size combo box from App.FontSizes
-      foreach (var size in App.FontSizes)
-      {
-        fontSizeComboBox.Items.Add(size.Value);
-      }
-            
-      // Set default selected index
-      fontSizeComboBox.SelectedIndexChanged += fontSizeComboBox_SelectedIndexChanged;
-            
-      // Populate the list names combo
-      foreach (string name in master.Lists.Keys)
-      {
-        cboList.Items.Add(name);
-      }
-            
-      if (cboList.Items.Count > 0)
-        cboList.SelectedIndex = 0;
+        // No MaterialSkin initialization - using standard WinForms controls
+        // Set the form appearance to match your application style
+        this.FormBorderStyle = FormBorderStyle.FixedDialog;
+        this.StartPosition = FormStartPosition.CenterScreen;
+        this.MaximizeBox = false;
+        this.MinimizeBox = true;
+        InitializeComponent();
+        this.master = master;
+        this.listName = listName;
+
+        // Set form properties to ensure it appears on top
+        this.TopMost = true;
+        this.StartPosition = FormStartPosition.CenterScreen;
+
+        // Populate the font size combo box from App.FontSizes
+        foreach (var size in App.FontSizes)
+        {
+            fontSizeComboBox.Items.Add(size.Value);
+        }
+
+        // Set default selected index
+        fontSizeComboBox.SelectedIndexChanged += fontSizeComboBox_SelectedIndexChanged;
+
+        // Populate the list names combo
+        foreach (string name in master.Lists.Keys)
+        {
+            cboList.Items.Add(name);
+        }
+
+        if (cboList.Items.Count > 0)
+            cboList.SelectedIndex = 0;
+    }
+
+    // Hook up event handlers in the constructor or form load
+    private void SetupEventHandlers()
+    {
+        // Connect the renamed method handlers to their controls
+        this.btnplus.Click -= new System.EventHandler(this.btnplus_Click); // Remove existing handler
+        this.btnplus.Click += new System.EventHandler(this.AddColumn);
+
+        this.btnminus.Click -= new System.EventHandler(this.btnminus_Click); // Remove existing handler
+        this.btnminus.Click += new System.EventHandler(this.RemoveColumn);
+
+        this.btnColumnLeft.Click -= new System.EventHandler(this.btnColumnLeft_Click); // Remove existing handler
+        this.btnColumnLeft.Click += new System.EventHandler(this.MoveColumnLeft);
+
+        this.btnColumnRight.Click -= new System.EventHandler(this.btnColumnRight_Click); // Remove existing handler
+        this.btnColumnRight.Click += new System.EventHandler(this.MoveColumnRight);
+
+        this.btnEdit.Click -= new System.EventHandler(this.btnEdit_Click); // Remove existing handler
+        this.btnEdit.Click += new System.EventHandler(this.SaveList);
+
+        // Make sure buttons have standard appearance
+        foreach (var btn in new Button[] { btnplus, btnminus, btnColumnLeft, btnColumnRight, btnEdit })
+        {
+            btn.UseVisualStyleBackColor = true;
+        }
+
+        // Set up DataGridView event handlers
+        this.dgvColumns.SelectionChanged += (s, e) =>
+        {
+            if (this.dgvColumns.CurrentRow != null && this.dgvColumns.CurrentRow.Index >= 0 && this.dgvColumns.CurrentRow.Index < columnData.Count)
+            {
+                var selectedCol = columnData[this.dgvColumns.CurrentRow.Index];
+                // Update UI based on selection if needed
+                this.tbcolname.Text = selectedCol.cols.FirstOrDefault() ?? "";
+            }
+        };
+
+        //lboColumns.SelectedIndex = selectedIndex + 1;
     }
 
     private void btnplus_Click(object sender, EventArgs e)
     {
-      if (string.IsNullOrEmpty(tbcolname.Text)) return;
+        // Add a column name to the list
 
-      lboColumns.Items.Add(tbcolname.Text);
-      tbcolname.Text = "";
     }
 
     private void btnminus_Click(object sender, EventArgs e)
     {
-      if (lboColumns.SelectedIndex < 0) return;
-
-      lboColumns.Items.RemoveAt(lboColumns.SelectedIndex);
-    }
-
-    private void lboColumns_SelectedIndexChanged(object sender, EventArgs e)
-    {
-      tbcolname.Text = lboColumns.Text;
-    }
-
-    private void btn1_Click(object sender, EventArgs e)
-    {
-      // Edit the selected column name in the listbox
-      int index = lboColumns.SelectedIndex;
-      if (index < 0) return;
-
-      lboColumns.Items[index] = tbcolname.Text;
-    }
-
-    private void btnColumnUp_Click(object sender, EventArgs e)
-    {
-        int selectedIndex = lboColumns.SelectedIndex;
-        if (selectedIndex <= 0) return; // Can't move up if it's the first item or nothing is selected
-
-        // Get the item to move
-        object item = lboColumns.Items[selectedIndex];
-        
-        // Remove it from the current position
-        lboColumns.Items.RemoveAt(selectedIndex);
-        
-        // Insert it at the new position (one up)
-        lboColumns.Items.Insert(selectedIndex - 1, item);
-        
-        // Keep the item selected
-        lboColumns.SelectedIndex = selectedIndex - 1;
-    }
-
-    private void btnColumnDown_Click(object sender, EventArgs e)
-    {
-        int selectedIndex = lboColumns.SelectedIndex;
-        if (selectedIndex < 0 || selectedIndex >= lboColumns.Items.Count - 1) return; // Can't move down if it's the last item or nothing is selected
-
-        // Get the item to move
-        object item = lboColumns.Items[selectedIndex];
-        
-        // Remove it from the current position
-        lboColumns.Items.RemoveAt(selectedIndex);
-        
-        // Insert it at the new position (one down)
-        lboColumns.Items.Insert(selectedIndex + 1, item);
-        
-        // Keep the item selected
-        lboColumns.SelectedIndex = selectedIndex + 1;
+        //// Remove the selected column from the list
+        //if (lboColumns.SelectedIndex < 0) return;
+        //lboColumns.Items.RemoveAt(lboColumns.SelectedIndex);
     }
 
     private void btnColumnLeft_Click(object sender, EventArgs e)
@@ -158,7 +294,7 @@ namespace ClipBox2
         {
             lboColumns.Items.Add(col);
         }
-        
+
         // Keep the moved item selected
         lboColumns.SelectedIndex = selectedIndex - 1;
     }
@@ -205,7 +341,7 @@ namespace ClipBox2
         {
             lboColumns.Items.Add(col);
         }
-        
+
         // Keep the moved item selected
         lboColumns.SelectedIndex = selectedIndex + 1;
     }
@@ -216,17 +352,17 @@ namespace ClipBox2
         {
             listName = cboList.SelectedItem.ToString();
             data = master.Lists[listName];
-            
+
             // Update the UI with the data
             lboColumns.Items.Clear();
             foreach (string s in data.cols)
             {
                 lboColumns.Items.Add(s);
             }
-            
+
             // Set the password checkbox
             chkPswd.Checked = data.pswd;
-            
+
             // Set the font size combo box
             SelectFontSizeInComboBox(data.size);
         }
@@ -240,31 +376,31 @@ namespace ClipBox2
             data.cols.Add(s);
         }
         data.pswd = chkPswd.Checked;
-        
+
         // Save the selected font size
         int selectedSize = GetSelectedFontSize();
         if (selectedSize > 0)
         {
             data.size = selectedSize;
         }
-        
+
         master.Lists[listName] = data;
         master.Save();
         this.Close();
     }
 
-    private void fontSizeComboBox_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        // Update the font size for the list box to preview the change
-        if (fontSizeComboBox.SelectedIndex >= 0)
-        {
-            int size = GetSelectedFontSize();
-            if (size > 0)
-            {
-                lboColumns.Font = new Font(lboColumns.Font.FontFamily, size);
-            }
-        }
-    }
+    //private void fontSizeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    //{
+    //    // Update the font size for the list box to preview the change
+    //    if (fontSizeComboBox.SelectedIndex >= 0)
+    //    {
+    //        int size = GetSelectedFontSize();
+    //        if (size > 0)
+    //        {
+    //            lboColumns.Font = new Font(lboColumns.Font.FontFamily, size);
+    //        }
+    //    }
+    //}
 
     private void Edit_Load(object sender, EventArgs e)
     {
@@ -273,17 +409,17 @@ namespace ClipBox2
         {
             // Set the list name in the combo box
             cboList.Text = listName;
-            
+
             // Populate the columns list box
             lboColumns.Items.Clear();
             foreach (var col in data.cols)
             {
                 lboColumns.Items.Add(col);
             }
-            
+
             // Set the password checkbox
             chkPswd.Checked = data.pswd;
-            
+
             // Set the font size combo box
             SelectFontSizeInComboBox(data.size);
         }
@@ -305,20 +441,5 @@ namespace ClipBox2
         }
     }
 
-    private int GetSelectedFontSize()
-    {
-        if (fontSizeComboBox.SelectedIndex >= 0)
-        {
-            string selectedText = fontSizeComboBox.SelectedItem.ToString();
-            foreach (var pair in App.FontSizes)
-            {
-                if (pair.Value == selectedText)
-                {
-                    return pair.Key;
-                }
-            }
-        }
-        return 9; // Default size
-    }
-  }
+
 }

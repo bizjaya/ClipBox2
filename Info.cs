@@ -21,6 +21,7 @@ namespace ClipBox2
         public string cbname { get; set; }
         public DateTime cbdate { get; set; }
         public bool pswd { get; set; } = false;
+        public bool multi { get; set; } = false;
         public int size { get; set; } = 9;
 
     }

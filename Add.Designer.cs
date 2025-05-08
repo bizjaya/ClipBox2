@@ -57,6 +57,8 @@ namespace ClipBox2
             this.tbListName.Size = new Size(130, 20);
             this.tbListName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
+
+
             // tbColumn
             this.tbColumn.Location = new Point(85, 38);
             this.tbColumn.Name = "tbColumn";
