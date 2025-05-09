@@ -168,9 +168,9 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             // Configure DataGridView appearance
             dgv1.BackgroundColor = Color.White;
             dgv1.DefaultCellStyle.BackColor = Color.White;
-            dgv1.GridColor = Color.LightGray;
+            dgv1.GridColor = Color.Gray;
             dgv1.BorderStyle = BorderStyle.Fixed3D;
-            dgv1.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv1.CellBorderStyle = DataGridViewCellBorderStyle.Single;
             dgv1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dgv1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dgv1.EnableHeadersVisualStyles = false;

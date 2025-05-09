@@ -45,7 +45,7 @@ namespace ClipBox2
             dgvColumns.DefaultCellStyle.BackColor = System.Drawing.Color.White;
             dgvColumns.GridColor = System.Drawing.Color.LightGray;
             dgvColumns.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dgvColumns.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvColumns.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Single;
             dgvColumns.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dgvColumns.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dgvColumns.EnableHeadersVisualStyles = false;
