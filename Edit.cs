@@ -541,9 +541,42 @@ namespace ClipBox2
         }
 
 
+        // Update the columnData collection from the DataGridView
+        private void UpdateColumnDataFromGrid()
+        {
+            // Only process if we have rows
+            if (dgvColumns.Rows.Count == 0 || columnData.Count == 0)
+                return;
+                
+            // Update each ColumnDisplayItem with values from the grid
+            for (int i = 0; i < Math.Min(dgvColumns.Rows.Count, columnData.Count); i++)
+            {
+                DataGridViewRow row = dgvColumns.Rows[i];
+                ColumnDisplayItem item = columnData[i];
+                
+                // Update the Name if it's changed
+                if (row.Cells["colName"].Value != null)
+                    item.Name = row.Cells["colName"].Value.ToString();
+                
+                // Update IsPassword from checkbox
+                if (row.Cells["colPswd"].Value != null)
+                    item.IsPassword = Convert.ToBoolean(row.Cells["colPswd"].Value);
+                
+                // Update IsMultiLine from checkbox
+                if (row.Cells["colMulti"].Value != null)
+                    item.IsMultiLine = Convert.ToBoolean(row.Cells["colMulti"].Value);
+                
+                // Debug info
+                Console.WriteLine($"Updated item {i+1}: {item.Name}, Pswd: {item.IsPassword}, Multi: {item.IsMultiLine}");
+            }
+        }
+        
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            // Get the selected item and the new name from the text box
+            // Update the columnData collection from the DataGridView
+            UpdateColumnDataFromGrid();
+            
+            // Get the new list name from the text box
             string newListName = tbxListName.Text.Trim();
 
             // In edit mode, we need to get the key from the selected item

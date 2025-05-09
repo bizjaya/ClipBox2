@@ -513,12 +513,15 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 dgv1.RowTemplate.Height = 50; // Fixed height for rows with multiline content
             }
 
-            // Configure column for password if needed
-            if (isPassword)
+            // Store column settings in the Tag property using a dictionary
+            var columnSettings = new Dictionary<string, bool>
             {
-                // Tag the column as password protected for reference
-                dgv1.Columns[columnIndex].Tag = "password";
-            }
+                { "IsPassword", isPassword },
+                { "IsMultiLine", isMultiLine }
+            };
+            
+            // Set the tag with our settings dictionary
+            dgv1.Columns[columnIndex].Tag = columnSettings;
         }
 
         // Add the rows
@@ -573,7 +576,10 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                     dgv1.Rows[newRowIndex].Cells[i + 1].Value = displayData[i];
 
                     // Store the original value in the Tag property for password cells
-                    if (dgv1.Columns[i + 1].Tag != null && dgv1.Columns[i + 1].Tag.ToString() == "password" && !string.IsNullOrEmpty(rowData[i]))
+                    if (dgv1.Columns[i + 1].Tag is Dictionary<string, bool> tagData && 
+                        tagData.TryGetValue("IsPassword", out bool isPasswordColumn) && 
+                        isPasswordColumn && 
+                        !string.IsNullOrEmpty(rowData[i]))
                     {
                         dgv1.Rows[newRowIndex].Cells[i + 1].Tag = rowData[i];
                     }
@@ -783,9 +789,31 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
 
             // Gather columns
             info.cols = new List<string>();
+            info.colIsPassword = new List<bool>();
+            info.colIsMultiLine = new List<bool>();
+            
             foreach (DataGridViewColumn column in dgv1.Columns)
             {
-                info.cols.Add(column.Name);
+                // Skip the ID column (first column) to prevent duplicate ID columns when reloading
+                if (column.Index > 0) // Skip the first column (ID column)
+                {
+                    info.cols.Add(column.Name);
+                    
+                    // Get the tag data for password and multiline settings
+                    bool isPassword = false;
+                    bool isMultiLine = false;
+                    
+                    // Check if column has tag data
+                    if (column.Tag is Dictionary<string, bool> tagData)
+                    {
+                        tagData.TryGetValue("IsPassword", out isPassword);
+                        tagData.TryGetValue("IsMultiLine", out isMultiLine);
+                    }
+                    
+                    // Save the password and multiline settings
+                    info.colIsPassword.Add(isPassword);
+                    info.colIsMultiLine.Add(isMultiLine);
+                }
             }
 
             // Gather rows
@@ -797,7 +825,11 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 var rowData = new List<string>();
                 foreach (DataGridViewCell cell in row.Cells)
                 {
-                    rowData.Add(cell.Value?.ToString() ?? "");
+                    // Skip the ID column (first column) to match the column structure
+                    if (cell.ColumnIndex > 0) // Skip the first column (ID column)
+                    {
+                        rowData.Add(cell.Value?.ToString() ?? "");
+                    }
                 }
                 info.strs.Add(rowData);
             }

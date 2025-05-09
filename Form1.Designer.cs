@@ -108,7 +108,7 @@ namespace ClipBox2
             cbxListName.Location = new Point(0, 0);
             cbxListName.Margin = new Padding(4, 3, 4, 3);
             cbxListName.Name = "cbxListName";
-            cbxListName.Size = new Size(191, 23);
+            cbxListName.Size = new Size(208, 23);
             cbxListName.TabIndex = 1;
             cbxListName.SelectedIndexChanged += cbxListName_SelectedIndexChanged;
             // 
@@ -125,7 +125,7 @@ namespace ClipBox2
             // 
             cb2.DropDownStyle = ComboBoxStyle.DropDownList;
             cb2.FormattingEnabled = true;
-            cb2.Location = new Point(54, 3);
+            cb2.Location = new Point(85, 3);
             cb2.Margin = new Padding(4, 3, 4, 3);
             cb2.Name = "cb2";
             cb2.Size = new Size(56, 23);
@@ -137,7 +137,7 @@ namespace ClipBox2
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new Padding(7, 2, 0, 2);
-            menuStrip1.Size = new Size(197, 24);
+            menuStrip1.Size = new Size(214, 24);
             menuStrip1.TabIndex = 4;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -263,13 +263,36 @@ namespace ClipBox2
             dgv1.RowHeadersVisible = false;
             dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dgv1.ShowCellErrors = false;
-            dgv1.Size = new Size(522, 364);
+            dgv1.Size = new Size(570, 481);
             dgv1.StandardTab = true;
             dgv1.TabIndex = 0;
             dgv1.TabStop = false;
             dgv1.CellContentClick += dgv1_CellClick;
             dgv1.LostFocus += dgv1_LostFocus;
-
+            // 
+            // dnBtn
+            // 
+            dnBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            dnBtn.Location = new Point(149, 0);
+            dnBtn.Margin = new Padding(0);
+            dnBtn.Name = "dnBtn";
+            dnBtn.Size = new Size(24, 24);
+            dnBtn.TabIndex = 9;
+            dnBtn.Text = "▼";
+            dnBtn.UseVisualStyleBackColor = true;
+            dnBtn.Click += d_Click;
+            // 
+            // upBtn
+            // 
+            upBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            upBtn.Location = new Point(173, 0);
+            upBtn.Margin = new Padding(0);
+            upBtn.Name = "upBtn";
+            upBtn.Size = new Size(24, 24);
+            upBtn.TabIndex = 8;
+            upBtn.Text = "▲";
+            upBtn.UseVisualStyleBackColor = true;
+            upBtn.Click += u_Click;
             // 
             // editBtn
             // 
@@ -314,18 +337,14 @@ namespace ClipBox2
             editChk.TabIndex = 6;
             editChk.UseVisualStyleBackColor = false;
             editChk.CheckedChanged += chk1_CheckedChanged;
-
-            var btnSize = new Size(24, 24);
-            var btnMrgn = new Padding(0);
-
             // 
             // topBtn
             // 
             topBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            //topBtn.Location = new Point(218, 3);
-            topBtn.Margin = btnMrgn;
+            topBtn.Location = new Point(221, 0);
+            topBtn.Margin = new Padding(0);
             topBtn.Name = "topBtn";
-            topBtn.Size = btnSize;
+            topBtn.Size = new Size(24, 24);
             topBtn.TabIndex = 10;
             topBtn.Text = "🔼";
             topBtn.UseVisualStyleBackColor = true;
@@ -334,11 +353,10 @@ namespace ClipBox2
             // botBtn
             // 
             botBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            //botBtn.Location = new Point(188, 3);
-            botBtn.Margin = btnMrgn;
-
+            botBtn.Location = new Point(197, 0);
+            botBtn.Margin = new Padding(0);
             botBtn.Name = "botBtn";
-            botBtn.Size = btnSize;
+            botBtn.Size = new Size(24, 24);
             botBtn.TabIndex = 11;
             botBtn.Text = "🔽";
             botBtn.UseVisualStyleBackColor = true;
@@ -347,9 +365,10 @@ namespace ClipBox2
             // lefBtn
             // 
             lefBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lefBtn.Margin = btnMrgn;
+            lefBtn.Location = new Point(101, 0);
+            lefBtn.Margin = new Padding(0);
             lefBtn.Name = "lefBtn";
-            lefBtn.Size = btnSize;
+            lefBtn.Size = new Size(24, 24);
             lefBtn.TabIndex = 12;
             lefBtn.Text = "◀";
             lefBtn.UseVisualStyleBackColor = true;
@@ -358,37 +377,14 @@ namespace ClipBox2
             // rigBtn
             // 
             rigBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            rigBtn.Margin = btnMrgn;
+            rigBtn.Location = new Point(125, 0);
+            rigBtn.Margin = new Padding(0);
             rigBtn.Name = "rigBtn";
-            rigBtn.Size = btnSize;
+            rigBtn.Size = new Size(24, 24);
             rigBtn.TabIndex = 13;
             rigBtn.Text = "▶";
             rigBtn.UseVisualStyleBackColor = true;
             rigBtn.Click += rightButton_Click;
-
-            // 
-            // dnBtn
-            // 
-            dnBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            dnBtn.Margin = btnMrgn;
-            dnBtn.Name = "dnBtn";
-            dnBtn.Size = btnSize;
-            dnBtn.TabIndex = 9;
-            dnBtn.Text = "▼";
-            dnBtn.UseVisualStyleBackColor = true;
-            dnBtn.Click += d_Click;
-            // 
-            // upBtn
-            // 
-            upBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            upBtn.Margin = btnMrgn;
-            upBtn.Name = "upBtn";
-            upBtn.Size = btnSize;
-            upBtn.TabIndex = 8;
-            upBtn.Text = "▲";
-            upBtn.UseVisualStyleBackColor = true;
-            upBtn.Click += u_Click;
-
             // 
             // fontSizeComboBox
             // 
@@ -396,7 +392,7 @@ namespace ClipBox2
             fontSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             fontSizeComboBox.FormattingEnabled = true;
             fontSizeComboBox.Items.AddRange(new object[] { "Size 7", "Size 8", "Size 9", "Size 10", "Size 11", "Size 12", "Size 13", "Size 14", "Size 15" });
-            fontSizeComboBox.Location = new Point(5, 3);
+            fontSizeComboBox.Location = new Point(41, 3);
             fontSizeComboBox.Margin = new Padding(4, 3, 4, 3);
             fontSizeComboBox.Name = "fontSizeComboBox";
             fontSizeComboBox.Size = new Size(56, 23);
@@ -434,7 +430,7 @@ namespace ClipBox2
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(530, 434);
+            tableLayoutPanel1.Size = new Size(578, 551);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // toolbarPanel0
@@ -452,7 +448,7 @@ namespace ClipBox2
             toolbarPanel0.Controls.Add(fontSizeComboBox);
             toolbarPanel0.Dock = DockStyle.Right;
             toolbarPanel0.FlowDirection = FlowDirection.RightToLeft;
-            toolbarPanel0.Location = new Point(200, 3);
+            toolbarPanel0.Location = new Point(248, 3);
             toolbarPanel0.Name = "toolbarPanel0";
             toolbarPanel0.Size = new Size(327, 26);
             toolbarPanel0.TabIndex = 6;
@@ -464,14 +460,14 @@ namespace ClipBox2
             toolbarPanel2.Controls.Add(cb2);
             toolbarPanel2.Dock = DockStyle.Fill;
             toolbarPanel2.FlowDirection = FlowDirection.RightToLeft;
-            toolbarPanel2.Location = new Point(200, 35);
+            toolbarPanel2.Location = new Point(217, 35);
             toolbarPanel2.Name = "toolbarPanel2";
-            toolbarPanel2.Size = new Size(327, 26);
+            toolbarPanel2.Size = new Size(358, 26);
             toolbarPanel2.TabIndex = 7;
             // 
             // clrBtn
             // 
-            clrBtn.Location = new Point(300, 3);
+            clrBtn.Location = new Point(331, 3);
             clrBtn.Name = "clrBtn";
             clrBtn.Size = new Size(24, 24);
             clrBtn.TabIndex = 16;
@@ -482,7 +478,7 @@ namespace ClipBox2
             // 
             tbxSrch.BackColor = SystemColors.Control;
             tbxSrch.Dock = DockStyle.Fill;
-            tbxSrch.Location = new Point(117, 3);
+            tbxSrch.Location = new Point(148, 3);
             tbxSrch.Name = "tbxSrch";
             tbxSrch.Size = new Size(177, 23);
             tbxSrch.TabIndex = 15;
@@ -493,14 +489,14 @@ namespace ClipBox2
             panel.Dock = DockStyle.Fill;
             panel.Location = new Point(3, 35);
             panel.Name = "panel";
-            panel.Size = new Size(191, 26);
+            panel.Size = new Size(208, 26);
             panel.TabIndex = 17;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(538, 457);
+            ClientSize = new Size(586, 574);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 3, 4, 3);
