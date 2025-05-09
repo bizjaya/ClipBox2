@@ -88,7 +88,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             e.SuppressKeyPress = true; // Suppress the key press to prevent it from being processed elsewhere
 
             // Toggle the edit mode checkbox
-            chk1.Checked = !chk1.Checked;
+            editChk.Checked = !editChk.Checked;
 
             // The chk1_CheckedChanged event will handle the actual toggling of edit mode
             return;
@@ -602,7 +602,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
     private void dgv1_CellClick(object sender, DataGridViewCellEventArgs e)
     {
         // "Copy" or "Point" logic
-        if (chk1.Checked) return;
+        if (editChk.Checked) return;
         if (e.RowIndex < 0) return;
 
         // Get the value, checking first if it's a password field (has Tag property set)
@@ -676,7 +676,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
     {
         try
         {
-            if (chk1.Checked)
+            if (editChk.Checked)
             {
                 dgv1.ReadOnly = false;
                 dgv1.AllowUserToAddRows = true;
@@ -738,7 +738,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             {
                 MessageBox.Show("Please select a list to save.", "Save", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 // Hide the indicator if save is canceled
-                if (!chk1.Checked) editModeLabel.Visible = false;
+                if (!editChk.Checked) editModeLabel.Visible = false;
                 return;
             }
 
@@ -798,7 +798,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             //populateDGV1(listKey, false);  // Don't save changes when reloading
 
             // If we're not in edit mode, hide the indicator
-            if (!chk1.Checked)
+            if (!editChk.Checked)
             {
                 editModeLabel.Visible = false;
 
@@ -820,7 +820,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             MessageBox.Show($"Error saving changes: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // Reset the indicator
-            if (chk1.Checked)
+            if (editChk.Checked)
             {
                 editModeLabel.Text = "E";
             }
