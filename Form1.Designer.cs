@@ -89,8 +89,9 @@ namespace ClipBox2
             editModeLabel = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
             toolbarPanel = new FlowLayoutPanel();
-            toolbarPanel2 = new FlowLayoutPanel();
             tbxSrch = new TextBox();
+            clrBtn = new Button();
+            toolbarPanel2 = new FlowLayoutPanel();
             menuStrip1.SuspendLayout();
             ((ISupportInitialize)dgv1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
@@ -134,7 +135,7 @@ namespace ClipBox2
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new Padding(7, 2, 0, 2);
-            menuStrip1.Size = new Size(297, 24);
+            menuStrip1.Size = new Size(355, 24);
             menuStrip1.TabIndex = 4;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -261,7 +262,7 @@ namespace ClipBox2
             dgv1.RowHeadersVisible = false;
             dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dgv1.ShowCellErrors = false;
-            dgv1.Size = new Size(586, 352);
+            dgv1.Size = new Size(702, 443);
             dgv1.StandardTab = true;
             dgv1.TabIndex = 0;
             dgv1.TabStop = false;
@@ -421,7 +422,7 @@ namespace ClipBox2
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(594, 428);
+            tableLayoutPanel1.Size = new Size(710, 519);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // toolbarPanel
@@ -433,13 +434,31 @@ namespace ClipBox2
             toolbarPanel.Controls.Add(lefBtn);
             toolbarPanel.Controls.Add(rigBtn);
             toolbarPanel.Controls.Add(tbxSrch);
+            toolbarPanel.Controls.Add(clrBtn);
             toolbarPanel.Dock = DockStyle.Fill;
             toolbarPanel.Location = new Point(0, 38);
             toolbarPanel.Margin = new Padding(0);
             toolbarPanel.Name = "toolbarPanel";
             toolbarPanel.Padding = new Padding(4, 1, 4, 1);
-            toolbarPanel.Size = new Size(594, 32);
+            toolbarPanel.Size = new Size(710, 32);
             toolbarPanel.TabIndex = 5;
+            // 
+            // tbxSrch
+            // 
+            tbxSrch.Dock = DockStyle.Fill;
+            tbxSrch.Location = new Point(372, 4);
+            tbxSrch.Name = "tbxSrch";
+            tbxSrch.Size = new Size(173, 23);
+            tbxSrch.TabIndex = 15;
+            // 
+            // clrBtn
+            // 
+            clrBtn.Location = new Point(551, 4);
+            clrBtn.Name = "clrBtn";
+            clrBtn.Size = new Size(24, 24);
+            clrBtn.TabIndex = 16;
+            clrBtn.Text = "🗙";
+            clrBtn.UseVisualStyleBackColor = true;
             // 
             // toolbarPanel2
             // 
@@ -452,24 +471,16 @@ namespace ClipBox2
             toolbarPanel2.Controls.Add(upBtn);
             toolbarPanel2.Controls.Add(dnBtn);
             toolbarPanel2.FlowDirection = FlowDirection.RightToLeft;
-            toolbarPanel2.Location = new Point(300, 3);
+            toolbarPanel2.Location = new Point(358, 3);
             toolbarPanel2.Name = "toolbarPanel2";
             toolbarPanel2.Size = new Size(291, 32);
             toolbarPanel2.TabIndex = 6;
-            // 
-            // tbxSrch
-            // 
-            tbxSrch.Dock = DockStyle.Fill;
-            tbxSrch.Location = new Point(372, 4);
-            tbxSrch.Name = "tbxSrch";
-            tbxSrch.Size = new Size(204, 23);
-            tbxSrch.TabIndex = 15;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(602, 451);
+            ClientSize = new Size(718, 542);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 3, 4, 3);
@@ -495,5 +506,6 @@ namespace ClipBox2
         private ToolStripLabel titleLabel;
         private FlowLayoutPanel toolbarPanel2;
         private TextBox tbxSrch;
+        private Button clrBtn;
     }
 }
