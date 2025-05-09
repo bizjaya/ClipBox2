@@ -63,7 +63,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         btnMinus.TabIndex = 14;
         btnMinus.Text = "➖";
         btnMinus.UseVisualStyleBackColor = true;
-        btnMinus.Click += btnMinus_Click;
+        //btnMinus.Click += btnMinus_Click;
         // 
         // btnPlus
         // 
@@ -74,7 +74,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         btnPlus.TabIndex = 13;
         btnPlus.Text = "➕";
         btnPlus.UseVisualStyleBackColor = true;
-        btnPlus.Click += btnPlus_Click;
+        //btnPlus.Click += btnPlus_Click;
         // 
         // btnEdit
         // 
@@ -86,7 +86,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         btnEdit.TabIndex = 12;
         btnEdit.Text = "Edit";
         btnEdit.UseVisualStyleBackColor = true;
-        btnEdit.Click += btnEdit_Click;
+       // btnEdit.Click += btnEdit_Click;
         // 
         // dgvColumns
         // 
@@ -222,6 +222,7 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         Name = "Edit";
         Padding = new Padding(4, 20, 4, 3);
         Text = "Edit";
+        TopMost = true;
         Load += Edit_Load;
         ((ISupportInitialize)dgvColumns).EndInit();
         tableLayoutPanel1.ResumeLayout(false);

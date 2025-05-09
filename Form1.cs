@@ -1218,6 +1218,72 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         }
     }
 
+    /// <summary>
+    /// Updates the combo box with list names and selects the specified list
+    /// </summary>
+    /// <param name="listNameToSelect">The name of the list to select after populating</param>
+    //public void popCbxListName(string listNameToSelect = null)
+    //{
+    //    // Save the current selection if no specific selection is requested
+    //    string currentSelection = listNameToSelect ?? cbxListName.Text;
+
+    //    // Clear and repopulate the combo box
+    //    cbxListName.Items.Clear();
+
+    //    // Load the master data
+    //    MasterData master = SaveJSON.LoadMasterData();
+
+    //    // Add each list to the combo box
+    //    foreach (var kvp in master.Lists)
+    //    {
+    //        string key = kvp.Key;
+    //        Info info = kvp.Value;
+
+    //        // For display in the combo box, use the Name property if available, otherwise use the key
+    //        string displayName = string.IsNullOrEmpty(info.Name) ? key : info.Name;
+
+    //        // Add a CbxItem with display name and key value to the combo box
+    //        cbxListName.Items.Add(new CbxItem<string>(displayName, key));
+    //    }
+
+    //    // Try to select the requested list
+    //    if (!string.IsNullOrEmpty(listNameToSelect))
+    //    {
+    //        // Try to find the item by name
+    //        for (int i = 0; i < cbxListName.Items.Count; i++)
+    //        {
+    //            if (cbxListName.Items[i] is CbxItem<string> item &&
+    //                (string.Equals(item.Name, listNameToSelect, StringComparison.OrdinalIgnoreCase) ||
+    //                 string.Equals(item.Value, listNameToSelect, StringComparison.OrdinalIgnoreCase)))
+    //            {
+    //                cbxListName.SelectedIndex = i;
+    //                return;
+    //            }
+    //        }
+    //    }
+    //    else if (!string.IsNullOrEmpty(currentSelection))
+    //    {
+    //        // Try to reselect the previous selection
+    //        for (int i = 0; i < cbxListName.Items.Count; i++)
+    //        {
+    //            if (cbxListName.Items[i] is CbxItem<string> item &&
+    //                (string.Equals(item.Name, currentSelection, StringComparison.OrdinalIgnoreCase) ||
+    //                 string.Equals(item.Value, currentSelection, StringComparison.OrdinalIgnoreCase)))
+    //            {
+    //                cbxListName.SelectedIndex = i;
+    //                return;
+    //            }
+    //        }
+    //    }
+
+    //    // If no match found and there are items, select the first one
+    //    if (cbxListName.Items.Count > 0 && cbxListName.SelectedIndex < 0)
+    //    {
+    //        cbxListName.SelectedIndex = 0;
+    //    }
+    //}
+
+
     //private void editListToolStripMenuItem_Click(object sender, EventArgs e)
     //{
     //    string listName = cbxListName.Text;

@@ -286,112 +286,6 @@ namespace ClipBox2
             }
         }
 
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            // Get the selected item and the new name from the text box
-            string newListName = tbxListName.Text.Trim();
-
-            // In edit mode, we need to get the key from the selected item
-            string keyToUse = this.listName;
-            string originalName = null;
-
-            if (isEditMode && cbxListName.SelectedItem is CbxItem<string> selectedItem)
-            {
-                keyToUse = selectedItem.Value;
-                originalName = selectedItem.Name;
-            }
-
-            // Validation
-            if (string.IsNullOrWhiteSpace(newListName))
-            {
-                MessageBox.Show("List name cannot be empty.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (columnData.Count == 0)
-            {
-                MessageBox.Show("A list must have at least one column.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            // Check if we're trying to use a name that already exists (but not our own list)
-            bool nameExists = false;
-            foreach (var kvp in master.Lists)
-            {
-                // Skip our own list
-                if (kvp.Key == keyToUse) continue;
-
-                // Check if the new name matches any existing list name
-                if (string.Equals(kvp.Value.Name, newListName, StringComparison.OrdinalIgnoreCase))
-                {
-                    nameExists = true;
-                    break;
-                }
-            }
-
-            if (nameExists)
-            {
-                MessageBox.Show($"A list with the name '{newListName}' already exists.", "Duplicate Name", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            // Get the Info object for our list
-            Info infoToSave;
-
-            if (isEditMode && master.Lists.ContainsKey(keyToUse))
-            {
-                // We're editing an existing list
-                infoToSave = master.Lists[keyToUse];
-
-                // Update the Name property with the new name from the text box
-                infoToSave.Name = newListName;
-            }
-            else
-            {
-                // We're creating a new list
-                infoToSave = new Info
-                {
-                    Name = newListName
-                };
-            }
-
-            // Update the Info object with current data
-            infoToSave.cols = new List<string>();
-            infoToSave.colIsPassword = new List<bool>();
-            infoToSave.colIsMultiLine = new List<bool>();
-
-            foreach (ColumnDisplayItem item in columnData)
-            {
-                infoToSave.cols.Add(item.Name);
-                infoToSave.colIsPassword.Add(item.IsPassword);
-                infoToSave.colIsMultiLine.Add(item.IsMultiLine);
-            }
-
-            // Set other properties
-            // Set the font size from the combo box
-            if (fontSizeComboBox.SelectedItem != null)
-            {
-                infoToSave.size = GetSelectedFontSize();
-            }
-
-            // Save the updated list
-            if (isEditMode)
-            {
-                // Update the existing list
-                master.Lists[keyToUse] = infoToSave;
-            }
-            else
-            {
-                // Add the new list
-                master.AddOrUpdateList(infoToSave);
-            }
-
-            // Save the master data
-            master.Save();
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
         //private void PopulateDataGridViewForSelectedList(string listNameKey)
         //{
         //    columnData.Clear(); // Clear existing items
@@ -629,5 +523,135 @@ namespace ClipBox2
             // Reselect the item that was moved
             cbxListName.SelectedItem = currentItem;
         }
+
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            // Get the selected item and the new name from the text box
+            string newListName = tbxListName.Text.Trim();
+
+            // In edit mode, we need to get the key from the selected item
+            string keyToUse = this.listName;
+            string originalName = null;
+
+            if (isEditMode && cbxListName.SelectedItem is CbxItem<string> selectedItem)
+            {
+                keyToUse = selectedItem.Value;
+                originalName = selectedItem.Name;
+            }
+
+            // Validation
+            if (string.IsNullOrWhiteSpace(newListName))
+            {
+                MessageBox.Show("List name cannot be empty.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (columnData.Count == 0)
+            {
+                MessageBox.Show("A list must have at least one column.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Check if we're trying to use a name that already exists (but not our own list)
+            bool nameExists = false;
+            foreach (var kvp in master.Lists)
+            {
+                // Skip our own list
+                if (kvp.Key == keyToUse) continue;
+
+                // Check if the new name matches any existing list name
+                if (string.Equals(kvp.Value.Name, newListName, StringComparison.OrdinalIgnoreCase))
+                {
+                    nameExists = true;
+                    break;
+                }
+            }
+
+            if (nameExists)
+            {
+                MessageBox.Show($"A list with the name '{newListName}' already exists.", "Duplicate Name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Get the Info object for our list
+            Info infoToSave;
+
+            if (isEditMode && master.Lists.ContainsKey(keyToUse))
+            {
+                // We're editing an existing list
+                infoToSave = master.Lists[keyToUse];
+
+                // Update the Name property with the new name from the text box
+                infoToSave.Name = newListName;
+            }
+            else
+            {
+                // We're creating a new list
+                infoToSave = new Info
+                {
+                    Name = newListName
+                };
+            }
+
+            // Update the Info object with current data
+            infoToSave.cols = new List<string>();
+            infoToSave.colIsPassword = new List<bool>();
+            infoToSave.colIsMultiLine = new List<bool>();
+
+            foreach (ColumnDisplayItem item in columnData)
+            {
+                infoToSave.cols.Add(item.Name);
+                infoToSave.colIsPassword.Add(item.IsPassword);
+                infoToSave.colIsMultiLine.Add(item.IsMultiLine);
+            }
+
+            // Set other properties
+            // Set the font size from the combo box
+            if (fontSizeComboBox.SelectedItem != null)
+            {
+                infoToSave.size = GetSelectedFontSize();
+            }
+
+            // Save the updated list
+            if (isEditMode)
+            {
+                // First remove the old list entry
+                if (master.Lists.ContainsKey(keyToUse))
+                {
+                    // Store the ID from the original list if it exists
+                    if (master.Lists[keyToUse].Id != 0)
+                    {
+                        infoToSave.Id = master.Lists[keyToUse].Id;
+                    }
+
+                    // Remove the old entry
+                    master.Lists.Remove(keyToUse);
+                }
+
+                // Add the updated list using the AddOrUpdateList method
+                // This ensures it's properly added with the correct key
+                master.AddOrUpdateList(infoToSave);
+            }
+            else
+            {
+                // Add the new list
+                master.AddOrUpdateList(infoToSave);
+            }
+
+            // Save the master data
+            master.Save();
+            
+            // Update the parent form's combo box with the new list name
+            if (this.Owner is Form1 parentForm)
+            {
+                parentForm.popCbxListName(newListName);
+            }
+            
+            // Close the form
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
     }
 }
