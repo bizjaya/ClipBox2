@@ -110,7 +110,7 @@ namespace ClipBox2
             cbxListName.Location = new Point(0, 0);
             cbxListName.Margin = new Padding(4, 3, 4, 3);
             cbxListName.Name = "cbxListName";
-            cbxListName.Size = new Size(254, 23);
+            cbxListName.Size = new Size(262, 23);
             cbxListName.TabIndex = 1;
             cbxListName.SelectedIndexChanged += cbxListName_SelectedIndexChanged;
             // 
@@ -127,28 +127,12 @@ namespace ClipBox2
             // 
             cb2.DropDownStyle = ComboBoxStyle.DropDownList;
             cb2.FormattingEnabled = true;
-            cb2.Location = new Point(188, 3);
+            cb2.Location = new Point(196, 3);
             cb2.Margin = new Padding(4, 3, 4, 3);
             cb2.Name = "cb2";
             cb2.Size = new Size(62, 23);
             cb2.TabIndex = 3;
-            // 
-            // menuStrip1
-            // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, aboutToolStripMenuItem, titleLabel });
-            menuStrip1.Location = new Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Padding = new Padding(7, 2, 0, 2);
-            menuStrip1.Size = new Size(114, 24);
-            menuStrip1.TabIndex = 4;
-            menuStrip1.Text = "menuStrip1";
-            // 
-            // fileToolStripMenuItem
-            // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addListToolStripMenuItem, editListToolStripMenuItem, deleteListToolStripMenuItem });
-            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            fileToolStripMenuItem.Size = new Size(37, 20);
-            fileToolStripMenuItem.Text = "File";
+
             // 
             // addListToolStripMenuItem
             // 
@@ -234,6 +218,34 @@ namespace ClipBox2
             optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             optionsToolStripMenuItem.Size = new Size(61, 20);
             optionsToolStripMenuItem.Text = "Options";
+
+
+            // 
+            // menuStrip1
+            // 
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, aboutToolStripMenuItem, titleLabel });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Padding = new Padding(7, 2, 0, 2);
+            menuStrip1.Size = new Size(122, 24);
+            menuStrip1.TabIndex = 4;
+            menuStrip1.Text = "menuStrip1";
+
+
+
+
+            // 
+            // fileToolStripMenuItem
+            // 
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { 
+                addListToolStripMenuItem, editListToolStripMenuItem, deleteListToolStripMenuItem,
+              passwordGeneratorToolStripMenuItem, migrateXmlToolStripMenuItem, openDataFolderToolStripMenuItem,
+              saveAsEncryptedToolStripMenuItem, saveAsNormalToolStripMenuItem,
+
+            });
+            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            fileToolStripMenuItem.Size = new Size(37, 20);
+            fileToolStripMenuItem.Text = "File";
             // 
             // dgv1
             // 
@@ -248,8 +260,7 @@ namespace ClipBox2
             tableLayoutPanel1.SetColumnSpan(dgv1, 2);
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = SystemColors.Window;
-            dataGridViewCellStyle1.Font = new Font("Arial", 11, FontStyle.Regular, GraphicsUnit.Pixel);
-            // dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle1.Font = new Font("Arial", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
             dataGridViewCellStyle1.ForeColor = Color.Black;
             dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(173, 216, 230);
             dataGridViewCellStyle1.SelectionForeColor = Color.Black;
@@ -266,7 +277,7 @@ namespace ClipBox2
             dgv1.RowHeadersVisible = false;
             dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dgv1.ShowCellErrors = false;
-            dgv1.Size = new Size(493, 381);
+            dgv1.Size = new Size(509, 420);
             dgv1.StandardTab = true;
             dgv1.TabIndex = 0;
             dgv1.TabStop = false;
@@ -396,7 +407,7 @@ namespace ClipBox2
             fontSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             fontSizeComboBox.FormattingEnabled = true;
             fontSizeComboBox.Items.AddRange(new object[] { "Size 7", "Size 8", "Size 9", "Size 10", "Size 11", "Size 12", "Size 13", "Size 14", "Size 15" });
-            fontSizeComboBox.Location = new Point(128, 3);
+            fontSizeComboBox.Location = new Point(136, 3);
             fontSizeComboBox.Margin = new Padding(4, 3, 4, 3);
             fontSizeComboBox.Name = "fontSizeComboBox";
             fontSizeComboBox.Size = new Size(52, 23);
@@ -434,7 +445,7 @@ namespace ClipBox2
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(501, 459);
+            tableLayoutPanel1.Size = new Size(517, 498);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // titleStripTable
@@ -451,7 +462,7 @@ namespace ClipBox2
             titleStripTable.Name = "titleStripTable";
             titleStripTable.RowCount = 1;
             titleStripTable.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            titleStripTable.Size = new Size(254, 30);
+            titleStripTable.Size = new Size(262, 30);
             titleStripTable.TabIndex = 18;
             // 
             // toolbarPanel0
@@ -468,7 +479,7 @@ namespace ClipBox2
             toolbarPanel0.Controls.Add(lefBtn);
             toolbarPanel0.Dock = DockStyle.Right;
             toolbarPanel0.FlowDirection = FlowDirection.RightToLeft;
-            toolbarPanel0.Location = new Point(270, 3);
+            toolbarPanel0.Location = new Point(286, 3);
             toolbarPanel0.Name = "toolbarPanel0";
             toolbarPanel0.Size = new Size(228, 30);
             toolbarPanel0.TabIndex = 6;
@@ -479,7 +490,7 @@ namespace ClipBox2
             panel.Dock = DockStyle.Fill;
             panel.Location = new Point(3, 39);
             panel.Name = "panel";
-            panel.Size = new Size(254, 30);
+            panel.Size = new Size(262, 30);
             panel.TabIndex = 17;
             // 
             // tableLayoutPanel2
@@ -490,12 +501,12 @@ namespace ClipBox2
             tableLayoutPanel2.Controls.Add(tbxSrch, 0, 0);
             tableLayoutPanel2.Controls.Add(clrBtn, 1, 0);
             tableLayoutPanel2.Dock = DockStyle.Fill;
-            tableLayoutPanel2.Location = new Point(263, 39);
+            tableLayoutPanel2.Location = new Point(271, 39);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel2.Size = new Size(235, 30);
+            tableLayoutPanel2.Size = new Size(243, 30);
             tableLayoutPanel2.TabIndex = 17;
             // 
             // tbxSrch
@@ -504,12 +515,12 @@ namespace ClipBox2
             tbxSrch.Dock = DockStyle.Fill;
             tbxSrch.Location = new Point(3, 3);
             tbxSrch.Name = "tbxSrch";
-            tbxSrch.Size = new Size(199, 23);
+            tbxSrch.Size = new Size(207, 23);
             tbxSrch.TabIndex = 15;
             // 
             // clrBtn
             // 
-            clrBtn.Location = new Point(208, 3);
+            clrBtn.Location = new Point(216, 3);
             clrBtn.Name = "clrBtn";
             clrBtn.Size = new Size(24, 24);
             clrBtn.TabIndex = 16;
@@ -520,7 +531,7 @@ namespace ClipBox2
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(509, 482);
+            ClientSize = new Size(525, 521);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 3, 4, 3);
