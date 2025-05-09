@@ -202,6 +202,9 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 master.Save();
             }
 
+            // Migrate legacy password settings to column-specific settings
+           // MigrateLegacyPasswordSettings(master);
+
             // Now populate the combo & show the first list
             popCbxListName();
         }
@@ -210,6 +213,43 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             MessageBox.Show($"Error loading lists: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
+
+    ///// <summary>
+    ///// Migrates legacy password settings to column-specific settings.
+    ///// For any list with the legacy pswd flag set to true, this will set the second column (index 1)
+    ///// to have its column-specific password flag set to true.
+    ///// </summary>
+    //private void MigrateLegacyPasswordSettings(MasterData master)
+    //{
+    //    bool anyChanges = false;
+        
+    //    foreach (var kvp in master.Lists)
+    //    {
+    //        Info info = kvp.Value;
+            
+    //        // Check if this list uses the legacy password flag
+    //        if (info.pswd && info.cols != null && info.cols.Count > 1)
+    //        {
+    //            // Initialize colIsPassword list if it doesn't exist
+    //            if (info.colIsPassword == null)
+    //                info.colIsPassword = new List<bool>();
+                
+    //            // Ensure the colIsPassword list has enough entries
+    //            while (info.colIsPassword.Count < info.cols.Count)
+    //                info.colIsPassword.Add(false);
+                
+    //            // Set the second column (index 1) to be a password column
+    //            if (info.colIsPassword.Count > 1)
+    //                info.colIsPassword[1] = true;
+                
+    //            anyChanges = true;
+    //        }
+    //    }
+        
+    //    // Save changes if any were made
+    //    if (anyChanges)
+    //        master.Save();
+    //}
 
     private void cbxListName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -553,7 +593,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 }
 
                 // If this is a password column, mask the data with asterisks
-                if (isColumnPassword || (data.pswd && i == 1)) // Check both column-specific and legacy password flag
+                if (isColumnPassword) // Only use column-specific password flag
                 {
                     displayData[i] = !string.IsNullOrEmpty(rowData[i]) ? "***" : "";
                 }
@@ -842,6 +882,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             {
                 info.cbmz = existing.cbmz;
                 info.cbname = existing.cbname;
+                // Keep legacy pswd flag for backward compatibility, but it's not used for display logic anymore
                 info.pswd = existing.pswd;
                 info.size = existing.size;
             }

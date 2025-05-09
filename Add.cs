@@ -158,14 +158,33 @@ namespace ClipBox2
             {
                 cols = new List<string>(),
                 strs = new List<List<string>>(),
-                pswd = chkPswd.Checked,
+                // Legacy pswd property is no longer used, but kept for backward compatibility
+                pswd = false,
                 size = GetSelectedFontSize()
             };
+            
+            // Initialize column-specific settings lists
+            info.colIsPassword = new List<bool>();
+            info.colIsMultiLine = new List<bool>();
             
             // Add the columns
             foreach (var item in lboColumns.Items)
             {
                 info.cols.Add(item.ToString());
+                
+                // If this is the first column and the password checkbox is checked,
+                // mark it as a password column (migration from legacy behavior)
+                if (info.cols.Count == 1 && chkPswd.Checked)
+                {
+                    info.colIsPassword.Add(true);
+                }
+                else
+                {
+                    info.colIsPassword.Add(false);
+                }
+                
+                // Default all columns to non-multiline
+                info.colIsMultiLine.Add(false);
             }
             
             // Add the list to the master data
