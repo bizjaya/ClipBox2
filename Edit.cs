@@ -39,8 +39,18 @@ namespace ClipBox2
             // Set background colors to white
             tbxListName.BackColor = System.Drawing.Color.White;
             cbxListName.BackColor = System.Drawing.Color.White;
+            
+            // Configure DataGridView appearance - matching Form1 styling
             dgvColumns.BackgroundColor = System.Drawing.Color.White;
             dgvColumns.DefaultCellStyle.BackColor = System.Drawing.Color.White;
+            dgvColumns.GridColor = System.Drawing.Color.LightGray;
+            dgvColumns.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            dgvColumns.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvColumns.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dgvColumns.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dgvColumns.EnableHeadersVisualStyles = false;
+            dgvColumns.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.WhiteSmoke;
+            dgvColumns.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.DarkSlateGray;
             
             if (this.master == null)
             {

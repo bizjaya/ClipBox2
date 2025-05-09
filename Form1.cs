@@ -16,7 +16,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
     // Context menu for right-clicking on multiline cells
     private ContextMenuStrip cellContextMenu;
     private ToolStripMenuItem editTextMenuItem;
-    
+
     // Search functionality
     private System.Windows.Forms.Timer searchTimer;
     private string lastSearchText = string.Empty;
@@ -83,11 +83,11 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         // Add cell mouse event handlers
         dgv1.CellMouseDown += Dgv1_CellMouseDown;
         dgv1.CellMouseDoubleClick += Dgv1_CellMouseDoubleClick;
-        
+
         // Set up search functionality
         tbxSrch.KeyUp += TbxSrch_KeyUp;
         clrBtn.Click += ClrBtn_Click;
-        
+
         // Initialize search timer to reduce UI lag
         searchTimer = new System.Windows.Forms.Timer();
         searchTimer.Interval = 300; // 300ms delay
@@ -164,14 +164,24 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             cbxListName.BackColor = Color.White;
             cb2.BackColor = Color.White;
             fontSizeComboBox.BackColor = Color.White;
+
+            // Configure DataGridView appearance
             dgv1.BackgroundColor = Color.White;
             dgv1.DefaultCellStyle.BackColor = Color.White;
-            
+            dgv1.GridColor = Color.LightGray;
+            dgv1.BorderStyle = BorderStyle.Fixed3D;
+            dgv1.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgv1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgv1.EnableHeadersVisualStyles = false;
+            dgv1.ColumnHeadersDefaultCellStyle.BackColor = Color.WhiteSmoke;
+            dgv1.ColumnHeadersDefaultCellStyle.ForeColor = Color.DarkSlateGray;
+
             // Setup combo box style and autocomplete
             cbxListName.DropDownStyle = ComboBoxStyle.DropDown;
             cbxListName.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             cbxListName.AutoCompleteSource = AutoCompleteSource.ListItems;
-            
+
             MasterData master = SaveJSON.LoadMasterData();
 
             // If empty, maybe we create a default list
@@ -206,23 +216,23 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         try
         {
             if (cbxListName.SelectedIndex == -1) return;
-            
+
             // Get the selected item from the combo box
             if (cbxListName.SelectedItem is CbxItem<string> selectedItem)
             {
                 // Get the key value directly from the selected item
                 string key = selectedItem.Value;
-                
+
                 // Load the master data
                 MasterData master = SaveJSON.LoadMasterData();
-                
+
                 // Check if the key exists in the master data
                 if (master.Lists.ContainsKey(key))
                 {
                     populateDGV1(key);
                     return;
                 }
-                
+
                 // If we get here, the key doesn't exist in the master data
                 // This shouldn't happen if the combo box is properly populated
                 MessageBox.Show($"List not found: {selectedItem.Name} (Key: {key})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -251,11 +261,11 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         {
             // Select the cell that was right-clicked
             dgv1.CurrentCell = dgv1.Rows[e.RowIndex].Cells[e.ColumnIndex];
-            
+
             // Check if this column is multiline
             string columnName = dgv1.Columns[e.ColumnIndex].Name;
             int columnIndex = GetColumnIndexInData(columnName);
-            
+
             if (IsMultiLineColumn(columnIndex))
             {
                 // Show context menu
@@ -264,7 +274,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             }
         }
     }
-    
+
     // Handle double-click on multiline cell to open text editor
     private void Dgv1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
     {
@@ -273,46 +283,46 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             // Check if this column is multiline
             string columnName = dgv1.Columns[e.ColumnIndex].Name;
             int columnIndex = GetColumnIndexInData(columnName);
-            
+
             if (IsMultiLineColumn(columnIndex))
             {
                 OpenTextEditor(e.RowIndex, e.ColumnIndex);
             }
         }
     }
-    
+
     // Helper method to get the index of a column in the data
     private int GetColumnIndexInData(string columnName)
     {
         string listName = cbxListName.Text;
         if (string.IsNullOrEmpty(listName)) return -1;
-        
+
         MasterData master = SaveJSON.LoadMasterData();
         if (!master.Lists.ContainsKey(listName)) return -1;
-        
+
         Info data = master.Lists[listName];
         if (data.cols == null) return -1;
-        
+
         return data.cols.IndexOf(columnName);
     }
-    
+
     // Helper method to check if a column is multiline
     private bool IsMultiLineColumn(int columnIndex)
     {
         if (columnIndex < 0) return false;
-        
+
         string listName = cbxListName.Text;
         if (string.IsNullOrEmpty(listName)) return false;
-        
+
         MasterData master = SaveJSON.LoadMasterData();
         if (!master.Lists.ContainsKey(listName)) return false;
-        
+
         Info data = master.Lists[listName];
         if (data.colIsMultiLine == null || columnIndex >= data.colIsMultiLine.Count) return false;
-        
+
         return data.colIsMultiLine[columnIndex];
     }
-    
+
     // Open the text editor for a cell
     private void EditTextMenuItem_Click(object sender, EventArgs e)
     {
@@ -321,15 +331,15 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             OpenTextEditor(dgv1.CurrentCell.RowIndex, dgv1.CurrentCell.ColumnIndex);
         }
     }
-    
+
     // Open the text editor for a cell
     private void OpenTextEditor(int rowIndex, int columnIndex)
     {
         if (rowIndex < 0 || columnIndex < 0) return;
-        
+
         // Get the current value
         string currentValue = dgv1.Rows[rowIndex].Cells[columnIndex].Value?.ToString() ?? "";
-        
+
         // Open the text editor form
         using (var editor = new TextEditorForm())
         {
@@ -338,24 +348,24 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             {
                 // Update the cell value
                 dgv1.Rows[rowIndex].Cells[columnIndex].Value = editor.CellValue;
-                
+
                 // Save the changes to the data
                 SaveCellValue(rowIndex, columnIndex, editor.CellValue);
             }
         }
     }
-    
+
     // Save a cell value to the data
     private void SaveCellValue(int rowIndex, int columnIndex, string value)
     {
         // Get the display name from the combo box
         string displayName = cbxListName.Text;
         if (string.IsNullOrEmpty(displayName)) return;
-        
+
         MasterData master = SaveJSON.LoadMasterData();
         string actualKey = null;
         Info data = null;
-        
+
         // First try direct key lookup
         if (master.Lists.ContainsKey(displayName))
         {
@@ -376,27 +386,27 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 }
             }
         }
-        
+
         // If we couldn't find the list, return
         if (data == null || actualKey == null) return;
-        
+
         // Update the data
         if (data.strs == null || rowIndex >= data.strs.Count) return;
-        
+
         List<string> row = data.strs[rowIndex];
         if (columnIndex >= row.Count) return;
-        
+
         row[columnIndex] = value;
         master.Lists[actualKey] = data;
         master.Save();
     }
-    
+
     public void populateDGV1(string listKey, bool saveChanges = false)
     {
         if (string.IsNullOrEmpty(listKey)) return;
 
         MasterData master = SaveJSON.LoadMasterData();
-        
+
         // First try direct key lookup
         if (master.Lists.ContainsKey(listKey))
         {
@@ -404,7 +414,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             PopulateGridWithData(data, listKey, saveChanges);
             return;
         }
-        
+
         // Try case-insensitive key lookup
         foreach (var kvp in master.Lists)
         {
@@ -418,11 +428,11 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 return;
             }
         }
-        
+
         // If we get here, the list wasn't found
         MessageBox.Show($"List '{listKey}' not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
-    
+
 
     private void PopulateGridWithData(Info data, string listKey, bool saveChanges = false)
     {
@@ -430,7 +440,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         dgv1.SuspendLayout();
         dgv1.Rows.Clear();
         dgv1.Columns.Clear();
-        
+
         // Add ID column
         DataGridViewTextBoxColumn idColumn = new DataGridViewTextBoxColumn();
         idColumn.Name = "ID";
@@ -472,24 +482,24 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             column.Name = uniqueColumns[i];
             column.HeaderText = uniqueColumns[i];
             dgv1.Columns.Add(column);
-            
+
             // Check if this column is password protected
             bool isPassword = false;
             if (data.colIsPassword != null && i < data.colIsPassword.Count)
             {
                 isPassword = data.colIsPassword[i];
             }
-            
+
             // Check if this column is multiline
             bool isMultiLine = false;
             if (data.colIsMultiLine != null && i < data.colIsMultiLine.Count)
             {
                 isMultiLine = data.colIsMultiLine[i];
             }
-            
+
             // Get the index of the column we just added (ID column + i)
             int columnIndex = i + 1; // +1 for the ID column
-            
+
             // Configure column for multiline if needed
             if (isMultiLine)
             {
@@ -497,12 +507,12 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 DataGridViewCellStyle multilineStyle = new DataGridViewCellStyle();
                 multilineStyle.WrapMode = DataGridViewTriState.True;
                 dgv1.Columns[columnIndex].DefaultCellStyle = multilineStyle;
-                
+
                 // Set fixed row height instead of auto-sizing
                 dgv1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
                 dgv1.RowTemplate.Height = 50; // Fixed height for rows with multiline content
             }
-            
+
             // Configure column for password if needed
             if (isPassword)
             {
@@ -535,7 +545,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 {
                     isColumnPassword = data.colIsPassword[i];
                 }
-                
+
                 // If this is a password column, mask the data with asterisks
                 if (isColumnPassword || (data.pswd && i == 1)) // Check both column-specific and legacy password flag
                 {
@@ -550,10 +560,10 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             // Create a new row with the right number of cells
             dgv1.Rows.Add();
             int newRowIndex = dgv1.Rows.Count - 1;
-            
+
             // Set the ID column value (row number)
             dgv1.Rows[newRowIndex].Cells[0].Value = (rowIndex + 1).ToString();
-            
+
             // Set the data for the other columns (offset by 1 for the ID column)
             for (int i = 0; i < displayData.Length; i++)
             {
@@ -561,7 +571,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 if (i + 1 < dgv1.Columns.Count)
                 {
                     dgv1.Rows[newRowIndex].Cells[i + 1].Value = displayData[i];
-                    
+
                     // Store the original value in the Tag property for password cells
                     if (dgv1.Columns[i + 1].Tag != null && dgv1.Columns[i + 1].Tag.ToString() == "password" && !string.IsNullOrEmpty(rowData[i]))
                     {
@@ -569,7 +579,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                     }
                 }
             }
-            
+
             rowIndex++;
 
             // We've already handled storing original values for password cells above
@@ -599,10 +609,10 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         // Use the Edit form with isEditMode set to false instead of the old Add form
         MasterData master = SaveJSON.LoadMasterData();
         Edit addForm = new Edit(false, null, master);
-        
+
         // Show as dialog to block until user finishes
         DialogResult result = addForm.ShowDialog(this);
-        
+
         if (result == DialogResult.OK)
         {
             // Refresh the combo box and select the newly added list if possible
@@ -808,7 +818,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             info.Name = listName;
             info.cbdate = DateTime.Now;
 
-          //  var key = master.Lists.Where(x => x.Value.Name == listName).FirstOrDefault().Key;
+            //  var key = master.Lists.Where(x => x.Value.Name == listName).FirstOrDefault().Key;
 
             // Update the list
             master.Lists[listKey] = info;
@@ -817,7 +827,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             master.Save();
 
             // Reload the grid with saved data
-            
+
             //populateDGV1(listKey, false);  // Don't save changes when reloading
 
             // If we're not in edit mode, hide the indicator
@@ -1152,7 +1162,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         {
             // Load the entire MasterData once
             MasterData master = SaveJSON.LoadMasterData();
-            
+
             // Ensure all lists have Names (but don't change keys)
             master.EnsureListsHaveNames();
 
@@ -1162,19 +1172,19 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             {
                 currentKey = selectedItem.Value;
             }
-            
+
             cbxListName.BeginUpdate();
             cbxListName.Items.Clear();
-            
+
             // Add all list names to the combo box using CbxItem<string>
             foreach (var kvp in master.Lists)
             {
                 string key = kvp.Key;
                 Info info = kvp.Value;
-                
+
                 // For display in the combo box, use the Name property if available, otherwise use the key
                 string displayName = string.IsNullOrEmpty(info.Name) ? key : info.Name;
-                
+
                 // Add a CbxItem with display name and key value to the combo box
                 cbxListName.Items.Add(new CbxItem<string>(displayName, key));
             }
@@ -1197,7 +1207,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                             index = i;
                             break;
                         }
-                        
+
                         // Check if the name matches (case-insensitive)
                         if (string.Equals(item.Name, selectListVal, StringComparison.OrdinalIgnoreCase))
                         {
@@ -1206,7 +1216,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                         }
                     }
                 }
-                
+
                 if (index >= 0)
                 {
                     cbxListName.SelectedIndex = index;
@@ -1232,7 +1242,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                         break;
                     }
                 }
-                
+
                 if (index >= 0)
                 {
                     cbxListName.SelectedIndex = index;
@@ -1344,46 +1354,46 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         searchTimer.Stop();
         searchTimer.Start();
     }
-    
+
     private void SearchTimer_Tick(object sender, EventArgs e)
     {
         // Stop the timer since we're processing now
         searchTimer.Stop();
-        
+
         // Get the search text
         string searchText = tbxSrch.Text.Trim().ToLower();
-        
+
         // If search text hasn't changed, don't reprocess
         if (searchText == lastSearchText) return;
-        
+
         // Update last search text
         lastSearchText = searchText;
-        
+
         // If search text is empty, show all rows
         if (string.IsNullOrWhiteSpace(searchText))
         {
             ClearSearch();
             return;
         }
-        
+
         // Set search active flag
         isSearchActive = true;
-        
+
         // Filter the DataGridView
         FilterDataGridView(searchText);
     }
-    
+
     private void FilterDataGridView(string searchText)
     {
         // Clear previous filtered rows
         filteredRows.Clear();
-        
+
         // Show the processing indicator
         Cursor.Current = Cursors.WaitCursor;
-        
+
         // Suspend layout to prevent flickering
         dgv1.SuspendLayout();
-        
+
         try
         {
             // First pass: Find all rows that match the search text
@@ -1391,15 +1401,15 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             {
                 // Skip the new row at the end
                 if (dgv1.Rows[rowIndex].IsNewRow) continue;
-                
+
                 bool rowMatches = false;
-                
+
                 // Check each cell in the row
                 foreach (DataGridViewCell cell in dgv1.Rows[rowIndex].Cells)
                 {
                     // Skip null values
                     if (cell.Value == null) continue;
-                    
+
                     // Get cell value (handle password cells)
                     string cellValue;
                     if (cell.Tag != null)
@@ -1411,7 +1421,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                     {
                         cellValue = cell.Value.ToString().ToLower();
                     }
-                    
+
                     // Check if the cell contains the search text
                     if (cellValue.Contains(searchText))
                     {
@@ -1419,65 +1429,65 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                         break;
                     }
                 }
-                
+
                 // If the row matches, add it to the filtered rows
                 if (rowMatches)
                 {
                     filteredRows.Add(rowIndex);
                 }
             }
-            
+
             // Second pass: Hide rows that don't match
             for (int rowIndex = 0; rowIndex < dgv1.Rows.Count; rowIndex++)
             {
                 // Skip the new row at the end
                 if (dgv1.Rows[rowIndex].IsNewRow) continue;
-                
+
                 // Show or hide the row based on whether it's in the filtered rows
                 dgv1.Rows[rowIndex].Visible = filteredRows.Contains(rowIndex);
             }
-            
+
             // If no rows match, show a message
             if (filteredRows.Count == 0 && dgv1.Rows.Count > 1) // > 1 to account for the new row
             {
-              //  MessageBox.Show($"No matches found for '{searchText}'.", "Search Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //  MessageBox.Show($"No matches found for '{searchText}'.", "Search Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         finally
         {
             // Resume layout
             dgv1.ResumeLayout();
-            
+
             // Reset cursor
             Cursor.Current = Cursors.Default;
         }
     }
-    
+
     private void ClrBtn_Click(object sender, EventArgs e)
     {
         // Clear the search text box
         tbxSrch.Clear();
-        
+
         // Clear the search filter
         ClearSearch();
-        
+
         // Set focus back to the search text box
         tbxSrch.Focus();
     }
-    
+
     private void ClearSearch()
     {
         // If search is not active, nothing to do
         if (!isSearchActive) return;
-        
+
         // Reset search state
         isSearchActive = false;
         lastSearchText = string.Empty;
         filteredRows.Clear();
-        
+
         // Show all rows
         dgv1.SuspendLayout();
-        
+
         try
         {
             foreach (DataGridViewRow row in dgv1.Rows)
@@ -1499,20 +1509,20 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             MessageBox.Show("Please select a list to edit.", "Edit List", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
-        
+
         // Get the selected item from the combo box
         if (!(cbxListName.SelectedItem is CbxItem<string> selectedItem))
         {
             MessageBox.Show("Invalid selection", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
-        
+
         // Get the key value directly from the selected item
         string key = selectedItem.Value;
-        
+
         // Load the master data
         MasterData master = SaveJSON.LoadMasterData();
-        
+
         // Check if the key exists in the master data
         if (!master.Lists.ContainsKey(key))
         {
@@ -1527,9 +1537,11 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
 
         // Refresh the current list
         //populateDGV1(key);
-        
+
         // Note: We're not calling popCbxListName here because the Edit form will handle refreshing the list
         // If you want to refresh the combo box after editing, you can uncomment the line below
         // popCbxListName(key);
     }
+
+
 }

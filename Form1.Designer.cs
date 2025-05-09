@@ -38,7 +38,6 @@ namespace ClipBox2
         private ComboBox fontSizeComboBox;
         private Label editModeLabel;
         private TableLayoutPanel tableLayoutPanel1;
-        private FlowLayoutPanel toolbarPanel1;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -66,13 +65,13 @@ namespace ClipBox2
             addListToolStripMenuItem = new ToolStripMenuItem();
             editListToolStripMenuItem = new ToolStripMenuItem();
             deleteListToolStripMenuItem = new ToolStripMenuItem();
+            aboutToolStripMenuItem = new ToolStripMenuItem();
+            titleLabel = new ToolStripLabel();
             passwordGeneratorToolStripMenuItem = new ToolStripMenuItem();
             migrateXmlToolStripMenuItem = new ToolStripMenuItem();
             openDataFolderToolStripMenuItem = new ToolStripMenuItem();
             saveAsEncryptedToolStripMenuItem = new ToolStripMenuItem();
             saveAsNormalToolStripMenuItem = new ToolStripMenuItem();
-            aboutToolStripMenuItem = new ToolStripMenuItem();
-            titleLabel = new ToolStripLabel();
             toolsToolStripMenuItem = new ToolStripMenuItem();
             optionsToolStripMenuItem = new ToolStripMenuItem();
             dgv1 = new DataGridView();
@@ -88,27 +87,28 @@ namespace ClipBox2
             fontSizeComboBox = new ComboBox();
             editModeLabel = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
-            toolbarPanel1 = new FlowLayoutPanel();
             toolbarPanel0 = new FlowLayoutPanel();
             toolbarPanel2 = new FlowLayoutPanel();
             clrBtn = new Button();
             tbxSrch = new TextBox();
+            panel = new Panel();
             menuStrip1.SuspendLayout();
             ((ISupportInitialize)dgv1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
-            toolbarPanel1.SuspendLayout();
             toolbarPanel0.SuspendLayout();
             toolbarPanel2.SuspendLayout();
+            panel.SuspendLayout();
             SuspendLayout();
             // 
             // cbxListName
             // 
+            cbxListName.Dock = DockStyle.Fill;
             cbxListName.DropDownStyle = ComboBoxStyle.DropDownList;
             cbxListName.FormattingEnabled = true;
-            cbxListName.Location = new Point(8, 4);
+            cbxListName.Location = new Point(0, 0);
             cbxListName.Margin = new Padding(4, 3, 4, 3);
             cbxListName.Name = "cbxListName";
-            cbxListName.Size = new Size(156, 23);
+            cbxListName.Size = new Size(191, 23);
             cbxListName.TabIndex = 1;
             cbxListName.SelectedIndexChanged += cbxListName_SelectedIndexChanged;
             // 
@@ -125,7 +125,7 @@ namespace ClipBox2
             // 
             cb2.DropDownStyle = ComboBoxStyle.DropDownList;
             cb2.FormattingEnabled = true;
-            cb2.Location = new Point(172, 4);
+            cb2.Location = new Point(54, 3);
             cb2.Margin = new Padding(4, 3, 4, 3);
             cb2.Name = "cb2";
             cb2.Size = new Size(56, 23);
@@ -137,7 +137,7 @@ namespace ClipBox2
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new Padding(7, 2, 0, 2);
-            menuStrip1.Size = new Size(467, 24);
+            menuStrip1.Size = new Size(197, 24);
             menuStrip1.TabIndex = 4;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -151,22 +151,36 @@ namespace ClipBox2
             // addListToolStripMenuItem
             // 
             addListToolStripMenuItem.Name = "addListToolStripMenuItem";
-            addListToolStripMenuItem.Size = new Size(179, 22);
+            addListToolStripMenuItem.Size = new Size(128, 22);
             addListToolStripMenuItem.Text = "Add List";
             addListToolStripMenuItem.Click += addListToolStripMenuItem_Click;
             // 
             // editListToolStripMenuItem
             // 
             editListToolStripMenuItem.Name = "editListToolStripMenuItem";
-            editListToolStripMenuItem.Size = new Size(179, 22);
+            editListToolStripMenuItem.Size = new Size(128, 22);
             editListToolStripMenuItem.Text = "Edit List";
             editListToolStripMenuItem.Click += editListToolStripMenuItem_Click;
             // 
             // deleteListToolStripMenuItem
             // 
             deleteListToolStripMenuItem.Name = "deleteListToolStripMenuItem";
-            deleteListToolStripMenuItem.Size = new Size(179, 22);
+            deleteListToolStripMenuItem.Size = new Size(128, 22);
             deleteListToolStripMenuItem.Text = "Delete List";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            aboutToolStripMenuItem.Size = new Size(52, 20);
+            aboutToolStripMenuItem.Text = "About";
+            aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
+            // 
+            // titleLabel
+            // 
+            titleLabel.Alignment = ToolStripItemAlignment.Right;
+            titleLabel.Font = new Font("Georgia", 9F);
+            titleLabel.Name = "titleLabel";
+            titleLabel.Size = new Size(0, 17);
             // 
             // passwordGeneratorToolStripMenuItem
             // 
@@ -204,20 +218,6 @@ namespace ClipBox2
             saveAsNormalToolStripMenuItem.Size = new Size(168, 22);
             saveAsNormalToolStripMenuItem.Text = "Save as Normal";
             saveAsNormalToolStripMenuItem.Click += saveAsNormalToolStripMenuItem_Click;
-            // 
-            // aboutToolStripMenuItem
-            // 
-            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(52, 20);
-            aboutToolStripMenuItem.Text = "About";
-            aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
-            // 
-            // titleLabel
-            // 
-            titleLabel.Alignment = ToolStripItemAlignment.Right;
-            titleLabel.Font = new Font("Georgia", 9F);
-            titleLabel.Name = "titleLabel";
-            titleLabel.Size = new Size(0, 17);
             // 
             // toolsToolStripMenuItem
             // 
@@ -263,34 +263,13 @@ namespace ClipBox2
             dgv1.RowHeadersVisible = false;
             dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dgv1.ShowCellErrors = false;
-            dgv1.Size = new Size(926, 995);
+            dgv1.Size = new Size(522, 364);
             dgv1.StandardTab = true;
             dgv1.TabIndex = 0;
             dgv1.TabStop = false;
             dgv1.CellContentClick += dgv1_CellClick;
             dgv1.LostFocus += dgv1_LostFocus;
-            // 
-            // dnBtn
-            // 
-            dnBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            dnBtn.Location = new Point(158, 3);
-            dnBtn.Name = "dnBtn";
-            dnBtn.Size = new Size(24, 24);
-            dnBtn.TabIndex = 9;
-            dnBtn.Text = "▼";
-            dnBtn.UseVisualStyleBackColor = true;
-            dnBtn.Click += d_Click;
-            // 
-            // upBtn
-            // 
-            upBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            upBtn.Location = new Point(188, 3);
-            upBtn.Name = "upBtn";
-            upBtn.Size = new Size(24, 24);
-            upBtn.TabIndex = 8;
-            upBtn.Text = "▲";
-            upBtn.UseVisualStyleBackColor = true;
-            upBtn.Click += u_Click;
+
             // 
             // editBtn
             // 
@@ -298,7 +277,7 @@ namespace ClipBox2
             editBtn.FlatAppearance.BorderSize = 0;
             editBtn.FlatStyle = FlatStyle.Flat;
             editBtn.Image = (Image)resources.GetObject("editBtn.Image");
-            editBtn.Location = new Point(279, 3);
+            editBtn.Location = new Point(249, 3);
             editBtn.Margin = new Padding(4, 3, 4, 3);
             editBtn.Name = "editBtn";
             editBtn.Size = new Size(24, 24);
@@ -312,7 +291,7 @@ namespace ClipBox2
             saveBtn.FlatAppearance.BorderSize = 0;
             saveBtn.FlatStyle = FlatStyle.Flat;
             saveBtn.Image = (Image)resources.GetObject("saveBtn.Image");
-            saveBtn.Location = new Point(311, 3);
+            saveBtn.Location = new Point(281, 3);
             saveBtn.Margin = new Padding(4, 3, 4, 3);
             saveBtn.Name = "saveBtn";
             saveBtn.Size = new Size(24, 24);
@@ -328,20 +307,25 @@ namespace ClipBox2
             editChk.BackColor = SystemColors.ButtonFace;
             editChk.BackgroundImageLayout = ImageLayout.Center;
             editChk.ForeColor = SystemColors.Desktop;
-            editChk.Location = new Point(343, 3);
+            editChk.Location = new Point(313, 3);
             editChk.Margin = new Padding(4, 3, 4, 3);
             editChk.Name = "editChk";
             editChk.Size = new Size(6, 6);
             editChk.TabIndex = 6;
             editChk.UseVisualStyleBackColor = false;
             editChk.CheckedChanged += chk1_CheckedChanged;
+
+            var btnSize = new Size(24, 24);
+            var btnMrgn = new Padding(0);
+
             // 
             // topBtn
             // 
             topBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            topBtn.Location = new Point(248, 3);
+            //topBtn.Location = new Point(218, 3);
+            topBtn.Margin = btnMrgn;
             topBtn.Name = "topBtn";
-            topBtn.Size = new Size(24, 24);
+            topBtn.Size = btnSize;
             topBtn.TabIndex = 10;
             topBtn.Text = "🔼";
             topBtn.UseVisualStyleBackColor = true;
@@ -350,9 +334,11 @@ namespace ClipBox2
             // botBtn
             // 
             botBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            botBtn.Location = new Point(218, 3);
+            //botBtn.Location = new Point(188, 3);
+            botBtn.Margin = btnMrgn;
+
             botBtn.Name = "botBtn";
-            botBtn.Size = new Size(24, 24);
+            botBtn.Size = btnSize;
             botBtn.TabIndex = 11;
             botBtn.Text = "🔽";
             botBtn.UseVisualStyleBackColor = true;
@@ -361,9 +347,9 @@ namespace ClipBox2
             // lefBtn
             // 
             lefBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lefBtn.Location = new Point(98, 3);
+            lefBtn.Margin = btnMrgn;
             lefBtn.Name = "lefBtn";
-            lefBtn.Size = new Size(24, 24);
+            lefBtn.Size = btnSize;
             lefBtn.TabIndex = 12;
             lefBtn.Text = "◀";
             lefBtn.UseVisualStyleBackColor = true;
@@ -372,13 +358,37 @@ namespace ClipBox2
             // rigBtn
             // 
             rigBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            rigBtn.Location = new Point(128, 3);
+            rigBtn.Margin = btnMrgn;
             rigBtn.Name = "rigBtn";
-            rigBtn.Size = new Size(24, 24);
+            rigBtn.Size = btnSize;
             rigBtn.TabIndex = 13;
             rigBtn.Text = "▶";
             rigBtn.UseVisualStyleBackColor = true;
             rigBtn.Click += rightButton_Click;
+
+            // 
+            // dnBtn
+            // 
+            dnBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            dnBtn.Margin = btnMrgn;
+            dnBtn.Name = "dnBtn";
+            dnBtn.Size = btnSize;
+            dnBtn.TabIndex = 9;
+            dnBtn.Text = "▼";
+            dnBtn.UseVisualStyleBackColor = true;
+            dnBtn.Click += d_Click;
+            // 
+            // upBtn
+            // 
+            upBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            upBtn.Margin = btnMrgn;
+            upBtn.Name = "upBtn";
+            upBtn.Size = btnSize;
+            upBtn.TabIndex = 8;
+            upBtn.Text = "▲";
+            upBtn.UseVisualStyleBackColor = true;
+            upBtn.Click += u_Click;
+
             // 
             // fontSizeComboBox
             // 
@@ -386,10 +396,10 @@ namespace ClipBox2
             fontSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             fontSizeComboBox.FormattingEnabled = true;
             fontSizeComboBox.Items.AddRange(new object[] { "Size 7", "Size 8", "Size 9", "Size 10", "Size 11", "Size 12", "Size 13", "Size 14", "Size 15" });
-            fontSizeComboBox.Location = new Point(236, 4);
+            fontSizeComboBox.Location = new Point(5, 3);
             fontSizeComboBox.Margin = new Padding(4, 3, 4, 3);
             fontSizeComboBox.Name = "fontSizeComboBox";
-            fontSizeComboBox.Size = new Size(69, 23);
+            fontSizeComboBox.Size = new Size(56, 23);
             fontSizeComboBox.TabIndex = 14;
             fontSizeComboBox.SelectedIndexChanged += fontSizeComboBox_SelectedIndexChanged;
             // 
@@ -399,7 +409,7 @@ namespace ClipBox2
             editModeLabel.AutoSize = true;
             editModeLabel.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             editModeLabel.ForeColor = Color.Red;
-            editModeLabel.Location = new Point(353, 6);
+            editModeLabel.Location = new Point(323, 6);
             editModeLabel.Margin = new Padding(0, 6, 4, 3);
             editModeLabel.Name = "editModeLabel";
             editModeLabel.Size = new Size(0, 13);
@@ -409,13 +419,13 @@ namespace ClipBox2
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 2;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 37.1913567F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 62.8086433F));
             tableLayoutPanel1.Controls.Add(menuStrip1, 0, 0);
-            tableLayoutPanel1.Controls.Add(toolbarPanel1, 0, 1);
             tableLayoutPanel1.Controls.Add(dgv1, 0, 2);
             tableLayoutPanel1.Controls.Add(toolbarPanel0, 1, 0);
             tableLayoutPanel1.Controls.Add(toolbarPanel2, 1, 1);
+            tableLayoutPanel1.Controls.Add(panel, 0, 1);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(4, 20);
             tableLayoutPanel1.Margin = new Padding(4, 3, 4, 3);
@@ -424,21 +434,8 @@ namespace ClipBox2
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(934, 1065);
+            tableLayoutPanel1.Size = new Size(530, 434);
             tableLayoutPanel1.TabIndex = 0;
-            // 
-            // toolbarPanel1
-            // 
-            toolbarPanel1.Controls.Add(cbxListName);
-            toolbarPanel1.Controls.Add(cb2);
-            toolbarPanel1.Controls.Add(fontSizeComboBox);
-            toolbarPanel1.Dock = DockStyle.Fill;
-            toolbarPanel1.Location = new Point(0, 32);
-            toolbarPanel1.Margin = new Padding(0);
-            toolbarPanel1.Name = "toolbarPanel1";
-            toolbarPanel1.Padding = new Padding(4, 1, 4, 1);
-            toolbarPanel1.Size = new Size(467, 32);
-            toolbarPanel1.TabIndex = 5;
             // 
             // toolbarPanel0
             // 
@@ -452,27 +449,29 @@ namespace ClipBox2
             toolbarPanel0.Controls.Add(dnBtn);
             toolbarPanel0.Controls.Add(rigBtn);
             toolbarPanel0.Controls.Add(lefBtn);
+            toolbarPanel0.Controls.Add(fontSizeComboBox);
             toolbarPanel0.Dock = DockStyle.Right;
             toolbarPanel0.FlowDirection = FlowDirection.RightToLeft;
-            toolbarPanel0.Location = new Point(574, 3);
+            toolbarPanel0.Location = new Point(200, 3);
             toolbarPanel0.Name = "toolbarPanel0";
-            toolbarPanel0.Size = new Size(357, 26);
+            toolbarPanel0.Size = new Size(327, 26);
             toolbarPanel0.TabIndex = 6;
             // 
             // toolbarPanel2
             // 
             toolbarPanel2.Controls.Add(clrBtn);
             toolbarPanel2.Controls.Add(tbxSrch);
+            toolbarPanel2.Controls.Add(cb2);
             toolbarPanel2.Dock = DockStyle.Fill;
             toolbarPanel2.FlowDirection = FlowDirection.RightToLeft;
-            toolbarPanel2.Location = new Point(470, 35);
+            toolbarPanel2.Location = new Point(200, 35);
             toolbarPanel2.Name = "toolbarPanel2";
-            toolbarPanel2.Size = new Size(461, 26);
+            toolbarPanel2.Size = new Size(327, 26);
             toolbarPanel2.TabIndex = 7;
             // 
             // clrBtn
             // 
-            clrBtn.Location = new Point(434, 3);
+            clrBtn.Location = new Point(300, 3);
             clrBtn.Name = "clrBtn";
             clrBtn.Size = new Size(24, 24);
             clrBtn.TabIndex = 16;
@@ -483,16 +482,25 @@ namespace ClipBox2
             // 
             tbxSrch.BackColor = SystemColors.Control;
             tbxSrch.Dock = DockStyle.Fill;
-            tbxSrch.Location = new Point(255, 3);
+            tbxSrch.Location = new Point(117, 3);
             tbxSrch.Name = "tbxSrch";
-            tbxSrch.Size = new Size(173, 23);
+            tbxSrch.Size = new Size(177, 23);
             tbxSrch.TabIndex = 15;
+            // 
+            // panel
+            // 
+            panel.Controls.Add(cbxListName);
+            panel.Dock = DockStyle.Fill;
+            panel.Location = new Point(3, 35);
+            panel.Name = "panel";
+            panel.Size = new Size(191, 26);
+            panel.TabIndex = 17;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(942, 1088);
+            ClientSize = new Size(538, 457);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 3, 4, 3);
@@ -506,11 +514,11 @@ namespace ClipBox2
             ((ISupportInitialize)dgv1).EndInit();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
-            toolbarPanel1.ResumeLayout(false);
             toolbarPanel0.ResumeLayout(false);
             toolbarPanel0.PerformLayout();
             toolbarPanel2.ResumeLayout(false);
             toolbarPanel2.PerformLayout();
+            panel.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -521,5 +529,6 @@ namespace ClipBox2
         private TextBox tbxSrch;
         private Button clrBtn;
         private FlowLayoutPanel toolbarPanel2;
+        private Panel panel;
     }
 }
