@@ -36,6 +36,12 @@ namespace ClipBox2
 
         private void Edit_Load(object sender, EventArgs e)
         {
+            // Set background colors to white
+            tbxListName.BackColor = System.Drawing.Color.White;
+            cbxListName.BackColor = System.Drawing.Color.White;
+            dgvColumns.BackgroundColor = System.Drawing.Color.White;
+            dgvColumns.DefaultCellStyle.BackColor = System.Drawing.Color.White;
+            
             if (this.master == null)
             {
                 this.master = SaveJSON.LoadMasterData();

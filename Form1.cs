@@ -16,6 +16,12 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
     // Context menu for right-clicking on multiline cells
     private ContextMenuStrip cellContextMenu;
     private ToolStripMenuItem editTextMenuItem;
+    
+    // Search functionality
+    private System.Windows.Forms.Timer searchTimer;
+    private string lastSearchText = string.Empty;
+    private List<int> filteredRows = new List<int>();
+    private bool isSearchActive = false;
 
     public Form1()
     {
@@ -77,6 +83,15 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         // Add cell mouse event handlers
         dgv1.CellMouseDown += Dgv1_CellMouseDown;
         dgv1.CellMouseDoubleClick += Dgv1_CellMouseDoubleClick;
+        
+        // Set up search functionality
+        tbxSrch.KeyUp += TbxSrch_KeyUp;
+        clrBtn.Click += ClrBtn_Click;
+        
+        // Initialize search timer to reduce UI lag
+        searchTimer = new System.Windows.Forms.Timer();
+        searchTimer.Interval = 300; // 300ms delay
+        searchTimer.Tick += SearchTimer_Tick;
     }
 
     private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -144,6 +159,14 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
     {
         try
         {
+            // Set background colors to white
+            tbxSrch.BackColor = Color.White;
+            cbxListName.BackColor = Color.White;
+            cb2.BackColor = Color.White;
+            fontSizeComboBox.BackColor = Color.White;
+            dgv1.BackgroundColor = Color.White;
+            dgv1.DefaultCellStyle.BackColor = Color.White;
+            
             // Setup combo box style and autocomplete
             cbxListName.DropDownStyle = ComboBoxStyle.DropDown;
             cbxListName.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
@@ -1313,6 +1336,160 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
     //    // Refresh the current list after editing
     //    populateDGV1(listName);
     //}
+
+    // Search functionality methods
+    private void TbxSrch_KeyUp(object sender, KeyEventArgs e)
+    {
+        // Reset and restart the timer on each key press
+        searchTimer.Stop();
+        searchTimer.Start();
+    }
+    
+    private void SearchTimer_Tick(object sender, EventArgs e)
+    {
+        // Stop the timer since we're processing now
+        searchTimer.Stop();
+        
+        // Get the search text
+        string searchText = tbxSrch.Text.Trim().ToLower();
+        
+        // If search text hasn't changed, don't reprocess
+        if (searchText == lastSearchText) return;
+        
+        // Update last search text
+        lastSearchText = searchText;
+        
+        // If search text is empty, show all rows
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            ClearSearch();
+            return;
+        }
+        
+        // Set search active flag
+        isSearchActive = true;
+        
+        // Filter the DataGridView
+        FilterDataGridView(searchText);
+    }
+    
+    private void FilterDataGridView(string searchText)
+    {
+        // Clear previous filtered rows
+        filteredRows.Clear();
+        
+        // Show the processing indicator
+        Cursor.Current = Cursors.WaitCursor;
+        
+        // Suspend layout to prevent flickering
+        dgv1.SuspendLayout();
+        
+        try
+        {
+            // First pass: Find all rows that match the search text
+            for (int rowIndex = 0; rowIndex < dgv1.Rows.Count; rowIndex++)
+            {
+                // Skip the new row at the end
+                if (dgv1.Rows[rowIndex].IsNewRow) continue;
+                
+                bool rowMatches = false;
+                
+                // Check each cell in the row
+                foreach (DataGridViewCell cell in dgv1.Rows[rowIndex].Cells)
+                {
+                    // Skip null values
+                    if (cell.Value == null) continue;
+                    
+                    // Get cell value (handle password cells)
+                    string cellValue;
+                    if (cell.Tag != null)
+                    {
+                        // Use the original value stored in Tag for password fields
+                        cellValue = cell.Tag.ToString().ToLower();
+                    }
+                    else
+                    {
+                        cellValue = cell.Value.ToString().ToLower();
+                    }
+                    
+                    // Check if the cell contains the search text
+                    if (cellValue.Contains(searchText))
+                    {
+                        rowMatches = true;
+                        break;
+                    }
+                }
+                
+                // If the row matches, add it to the filtered rows
+                if (rowMatches)
+                {
+                    filteredRows.Add(rowIndex);
+                }
+            }
+            
+            // Second pass: Hide rows that don't match
+            for (int rowIndex = 0; rowIndex < dgv1.Rows.Count; rowIndex++)
+            {
+                // Skip the new row at the end
+                if (dgv1.Rows[rowIndex].IsNewRow) continue;
+                
+                // Show or hide the row based on whether it's in the filtered rows
+                dgv1.Rows[rowIndex].Visible = filteredRows.Contains(rowIndex);
+            }
+            
+            // If no rows match, show a message
+            if (filteredRows.Count == 0 && dgv1.Rows.Count > 1) // > 1 to account for the new row
+            {
+              //  MessageBox.Show($"No matches found for '{searchText}'.", "Search Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        finally
+        {
+            // Resume layout
+            dgv1.ResumeLayout();
+            
+            // Reset cursor
+            Cursor.Current = Cursors.Default;
+        }
+    }
+    
+    private void ClrBtn_Click(object sender, EventArgs e)
+    {
+        // Clear the search text box
+        tbxSrch.Clear();
+        
+        // Clear the search filter
+        ClearSearch();
+        
+        // Set focus back to the search text box
+        tbxSrch.Focus();
+    }
+    
+    private void ClearSearch()
+    {
+        // If search is not active, nothing to do
+        if (!isSearchActive) return;
+        
+        // Reset search state
+        isSearchActive = false;
+        lastSearchText = string.Empty;
+        filteredRows.Clear();
+        
+        // Show all rows
+        dgv1.SuspendLayout();
+        
+        try
+        {
+            foreach (DataGridViewRow row in dgv1.Rows)
+            {
+                row.Visible = true;
+            }
+        }
+        finally
+        {
+            dgv1.ResumeLayout();
+        }
+    }
 
     private void editListToolStripMenuItem_Click(object sender, EventArgs e)
     {
