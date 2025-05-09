@@ -97,6 +97,18 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         dgvColumns.Size = new Size(523, 664);
         dgvColumns.TabIndex = 100;
 
+        DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+
+        dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        dataGridViewCellStyle1.BackColor = SystemColors.Window;
+        dataGridViewCellStyle1.Font = new Font("Arial", 10F, FontStyle.Regular, GraphicsUnit.Pixel);
+        dataGridViewCellStyle1.ForeColor = Color.Black;
+        dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(173, 216, 230);
+        dataGridViewCellStyle1.SelectionForeColor = Color.Black;
+
+        dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+        dgvColumns.DefaultCellStyle = dataGridViewCellStyle1;
+
         // 
         // tbxListName
         // 
@@ -200,15 +212,15 @@ partial class Edit : MaterialSkin.Controls.MaterialForm
         btnTop.Text = "▲";
         btnTop.UseVisualStyleBackColor = true;
         btnTop.Click += btnTop_Click;
-        // 
-        // dataGridView1
-        // 
-        dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-        dataGridView1.Dock = DockStyle.Fill;
-        dataGridView1.Location = new Point(3, 118);
-        dataGridView1.Name = "dataGridView1";
-        dataGridView1.Size = new Size(615, 330);
-        dataGridView1.TabIndex = 26;
+        //// 
+        //// dataGridView1
+        //// 
+        //dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        //dataGridView1.Dock = DockStyle.Fill;
+        //dataGridView1.Location = new Point(3, 118);
+        //dataGridView1.Name = "dataGridView1";
+        //dataGridView1.Size = new Size(615, 330);
+        //dataGridView1.TabIndex = 26;
         // 
         // Edit
         // 

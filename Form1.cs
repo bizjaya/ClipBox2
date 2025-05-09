@@ -510,7 +510,10 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
 
                 // Set fixed row height instead of auto-sizing
                 dgv1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-                dgv1.RowTemplate.Height = 50; // Fixed height for rows with multiline content
+                dgv1.RowTemplate.Height = 22; // Normal height for rows, will show scrollbar when needed
+
+                // Prevent the column from auto-sizing to fit all content
+                dgv1.Columns[columnIndex].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             }
 
             // Store column settings in the Tag property using a dictionary
@@ -519,7 +522,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 { "IsPassword", isPassword },
                 { "IsMultiLine", isMultiLine }
             };
-            
+
             // Set the tag with our settings dictionary
             dgv1.Columns[columnIndex].Tag = columnSettings;
         }
@@ -576,9 +579,9 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                     dgv1.Rows[newRowIndex].Cells[i + 1].Value = displayData[i];
 
                     // Store the original value in the Tag property for password cells
-                    if (dgv1.Columns[i + 1].Tag is Dictionary<string, bool> tagData && 
-                        tagData.TryGetValue("IsPassword", out bool isPasswordColumn) && 
-                        isPasswordColumn && 
+                    if (dgv1.Columns[i + 1].Tag is Dictionary<string, bool> tagData &&
+                        tagData.TryGetValue("IsPassword", out bool isPasswordColumn) &&
+                        isPasswordColumn &&
                         !string.IsNullOrEmpty(rowData[i]))
                     {
                         dgv1.Rows[newRowIndex].Cells[i + 1].Tag = rowData[i];
@@ -791,25 +794,25 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             info.cols = new List<string>();
             info.colIsPassword = new List<bool>();
             info.colIsMultiLine = new List<bool>();
-            
+
             foreach (DataGridViewColumn column in dgv1.Columns)
             {
                 // Skip the ID column (first column) to prevent duplicate ID columns when reloading
                 if (column.Index > 0) // Skip the first column (ID column)
                 {
                     info.cols.Add(column.Name);
-                    
+
                     // Get the tag data for password and multiline settings
                     bool isPassword = false;
                     bool isMultiLine = false;
-                    
+
                     // Check if column has tag data
                     if (column.Tag is Dictionary<string, bool> tagData)
                     {
                         tagData.TryGetValue("IsPassword", out isPassword);
                         tagData.TryGetValue("IsMultiLine", out isMultiLine);
                     }
-                    
+
                     // Save the password and multiline settings
                     info.colIsPassword.Add(isPassword);
                     info.colIsMultiLine.Add(isMultiLine);
@@ -1148,6 +1151,61 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             if (App.FontSizes.TryGetValue(9, out string defaultSizeText))
             {
                 fontSizeComboBox.SelectedItem = defaultSizeText;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Handles double-click events on DataGridView cells
+    /// Opens the TextEditorForm for multiline cells to allow easier editing
+    /// </summary>
+    private void dgv1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+        // Ignore header clicks
+        if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
+
+        // Get the clicked cell
+        DataGridViewCell cell = dgv1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+        // Check if the column is a multiline column
+        bool isMultiLine = false;
+        if (e.ColumnIndex > 0 && e.ColumnIndex < dgv1.Columns.Count) // Skip ID column
+        {
+            DataGridViewColumn column = dgv1.Columns[e.ColumnIndex];
+            if (column.Tag is Dictionary<string, bool> tagData)
+            {
+                tagData.TryGetValue("IsMultiLine", out isMultiLine);
+            }
+        }
+
+        // Only open the editor for multiline cells
+        if (isMultiLine)
+        {
+            // Get the cell value (use the original value if it's a password cell)
+            string cellValue = cell.Value?.ToString() ?? "";
+            if (cell.Tag != null)
+            {
+                cellValue = cell.Tag.ToString();
+            }
+
+            // Create and show the TextEditorForm
+            using (var editorForm = new TextEditorForm())
+            {
+                editorForm.CellValue = cellValue;
+                editorForm.Text = $"Editing {dgv1.Columns[e.ColumnIndex].HeaderText}";
+
+                // Show the form as a dialog
+                if (editorForm.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Update the cell value when the form closes
+                    cell.Value = editorForm.CellValue;
+
+                    // If we're in edit mode, mark the cell as dirty
+                    if (editChk.Checked)
+                    {
+                        dgv1.InvalidateCell(cell);
+                    }
+                }
             }
         }
     }
