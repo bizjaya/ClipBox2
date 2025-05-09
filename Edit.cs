@@ -555,24 +555,24 @@ namespace ClipBox2
 
             // Check if we're trying to use a name that already exists (but not our own list)
             bool nameExists = false;
-            foreach (var kvp in master.Lists)
-            {
-                // Skip our own list
-                if (kvp.Key == keyToUse) continue;
+            //foreach (var kvp in master.Lists)
+            //{
+            //    // Skip our own list
+            //    if (kvp.Key == keyToUse) continue;
 
-                // Check if the new name matches any existing list name
-                if (string.Equals(kvp.Value.Name, newListName, StringComparison.OrdinalIgnoreCase))
-                {
-                    nameExists = true;
-                    break;
-                }
-            }
+            //    // Check if the new name matches any existing list name
+            //    if (string.Equals(kvp.Value.Name, newListName, StringComparison.OrdinalIgnoreCase))
+            //    {
+            //        nameExists = true;
+            //        break;
+            //    }
+            //}
 
-            if (nameExists)
-            {
-                MessageBox.Show($"A list with the name '{newListName}' already exists.", "Duplicate Name", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            //if (nameExists)
+            //{
+            //    MessageBox.Show($"A list with the name '{newListName}' already exists.", "Duplicate Name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
+            //}
 
             // Get the Info object for our list
             Info infoToSave;

@@ -15,5 +15,10 @@ namespace ClipBox2
         {
             return Name;
         }
+
+        public T ToValue()
+        {
+            return Value;
+        }
     };
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ClipBox2;
 
@@ -10,7 +11,7 @@ namespace ClipBox2;
 public class MasterData
 {
     // Track the next available ID for new lists
-    public int NextListId { get; set; } = 1;
+  //  public int NextListId { get; set; } = 1;
     
     public Dictionary<string, Info> Lists { get; set; } = new Dictionary<string, Info>(StringComparer.OrdinalIgnoreCase);
     
@@ -42,28 +43,35 @@ public class MasterData
     {
         // Create a temporary dictionary to hold the updated lists
         var updatedLists = new Dictionary<string, Info>(StringComparer.OrdinalIgnoreCase);
-        
+
         // Process each list
+        int keyIdx = 0;
+
         foreach (var kvp in Lists)
         {
             string key = kvp.Key;
             Info info = kvp.Value;
             
-            // If Name is not set, use the dictionary key
+            
+            // backwardcomp -previouslift
             if (string.IsNullOrEmpty(info.Name))
             {
                 info.Name = key;
             }
-            
+
+            info.Id = keyIdx;
+
             // If ID is not set (0 is default value), assign a new ID
-            if (info.Id == 0)
-            {
-                info.Id = NextListId++;
-            }
+            //if (info.Id == 0)
+            //{
+            //    info.Id = NextListId++;
+            //}
             
             // Use the ID as the new key
             string newKey = info.Id.ToString();
+
             updatedLists[newKey] = info;
+            keyIdx++;
         }
         
         // Replace the old dictionary with the updated one
@@ -84,11 +92,19 @@ public class MasterData
     public void AddOrUpdateList(Info info)
     {
         // Ensure the list has an ID
-        if (info.Id == 0)
-        {
-            info.Id = NextListId++;
-        }
-        
+
+
+        //if (info.Id == 0)
+        //{
+        //    info.Id = NextListId++;
+        //}
+
+        var last = Lists.LastOrDefault();
+
+        var lastKey= last.Key.RgxInt(0);
+        lastKey++;
+        info.Id = lastKey;
+
         // Use the ID as the key
         Lists[info.Id.ToString()] = info;
     }

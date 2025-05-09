@@ -156,15 +156,16 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             {
                 Info info = new Info
                 {
+                    Name = "TestList",
                     cols = new List<string> { "Col1", "Col2", "Col3" },
                     strs = new List<List<string>>
-                {
-                    new List<string> { "Text1", "Text2", "Text3" },
-                    new List<string> { "Tezt1", "Tezt2", "Tezt3" }
-                }
+                    {
+                        new List<string> { "Text1", "Text2", "Text3" },
+                        new List<string> { "Tezt1", "Tezt2", "Tezt3" }
+                    }
                 };
 
-                master.Lists["TestList"] = info;
+                master.Lists["0"] = info;
                 master.Save();
             }
 
@@ -177,7 +178,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         }
     }
 
-    private void cb1_SelectedIndexChanged(object sender, EventArgs e)
+    private void cbxListName_SelectedIndexChanged(object sender, EventArgs e)
     {
         try
         {
@@ -367,25 +368,27 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         master.Save();
     }
     
-    public void populateDGV1(string listName, bool saveChanges = false)
+    public void populateDGV1(string listKey, bool saveChanges = false)
     {
-        if (string.IsNullOrEmpty(listName)) return;
+        if (string.IsNullOrEmpty(listKey)) return;
 
         MasterData master = SaveJSON.LoadMasterData();
         
         // First try direct key lookup
-        if (master.Lists.ContainsKey(listName))
+        if (master.Lists.ContainsKey(listKey))
         {
-            Info data = master.Lists[listName];
-            PopulateGridWithData(data, listName, saveChanges);
+            Info data = master.Lists[listKey];
+            PopulateGridWithData(data, listKey, saveChanges);
             return;
         }
         
         // Try case-insensitive key lookup
         foreach (var kvp in master.Lists)
         {
-            if (string.Equals(kvp.Key, listName, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(kvp.Value.Name, listName, StringComparison.OrdinalIgnoreCase))
+            if (
+                string.Equals(kvp.Key, listKey, StringComparison.OrdinalIgnoreCase)
+                //||string.Equals(kvp.Value.Name, listName, StringComparison.OrdinalIgnoreCase))
+                )
             {
                 Info data = kvp.Value;
                 PopulateGridWithData(data, kvp.Key, saveChanges);
@@ -394,9 +397,10 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         }
         
         // If we get here, the list wasn't found
-        MessageBox.Show($"List '{listName}' not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show($"List '{listKey}' not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
     
+
     private void PopulateGridWithData(Info data, string listKey, bool saveChanges = false)
     {
         this.SuspendLayout();
@@ -723,6 +727,13 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             Application.DoEvents();
 
             string listName = cbxListName.Items[cbxListName.SelectedIndex].ToString();
+
+            string listKey = null;
+            if (cbxListName.SelectedIndex >= 0 && cbxListName.SelectedItem is CbxItem<string> selectedItem)
+            {
+                listKey = selectedItem.Value;
+            }
+
             if (string.IsNullOrEmpty(listName))
             {
                 MessageBox.Show("Please select a list to save.", "Save", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -759,7 +770,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             }
 
             // Copy metadata from existing list if it exists
-            if (master.Lists.TryGetValue(listName, out Info existing))
+            if (master.Lists.TryGetValue(listKey, out Info existing))
             {
                 info.cbmz = existing.cbmz;
                 info.cbname = existing.cbname;
@@ -771,16 +782,20 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                 info.cbmz = "cbmz";
                 info.cbname = listName;
             }
+            info.Name = listName;
             info.cbdate = DateTime.Now;
 
+          //  var key = master.Lists.Where(x => x.Value.Name == listName).FirstOrDefault().Key;
+
             // Update the list
-            master.Lists[listName] = info;
+            master.Lists[listKey] = info;
 
             // Save back to file
             master.Save();
 
             // Reload the grid with saved data
-            populateDGV1(listName, false);  // Don't save changes when reloading
+            
+            //populateDGV1(listKey, false);  // Don't save changes when reloading
 
             // If we're not in edit mode, hide the indicator
             if (!chk1.Checked)
@@ -1108,7 +1123,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
         }
     }
 
-    public void popCbxListName(string selectList = null)
+    public void popCbxListName(string selectListVal = null)
     {
         try
         {
@@ -1145,7 +1160,7 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
             dgv1.SuspendLayout();
 
             // If a specific list was requested, select it
-            if (!string.IsNullOrEmpty(selectList))
+            if (!string.IsNullOrEmpty(selectListVal))
             {
                 // Find the index of the item with matching key or name
                 int index = -1;
@@ -1154,14 +1169,14 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                     if (cbxListName.Items[i] is CbxItem<string> item)
                     {
                         // Check if the key matches
-                        if (item.Value == selectList)
+                        if (item.Value == selectListVal)
                         {
                             index = i;
                             break;
                         }
                         
                         // Check if the name matches (case-insensitive)
-                        if (string.Equals(item.Name, selectList, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(item.Name, selectListVal, StringComparison.OrdinalIgnoreCase))
                         {
                             index = i;
                             break;
@@ -1175,10 +1190,10 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
                     var selectedListItem = (CbxItem<string>)cbxListName.SelectedItem;
                     populateDGV1(selectedListItem.Value, false);  // Don't save changes when just displaying
                 }
-                else if (master.Lists.ContainsKey(selectList))
+                else if (master.Lists.ContainsKey(selectListVal))
                 {
                     // If we couldn't find the item but the key exists, populate the grid directly
-                    populateDGV1(selectList, false);
+                    populateDGV1(selectListVal, false);
                 }
             }
             // Otherwise try to keep the current selection if it exists
@@ -1330,10 +1345,11 @@ public partial class Form1 : MaterialSkin.Controls.MaterialForm
 
         // Open the Edit form with the selected list
         var form = new Edit(true, key, master);
-        form.Show(this);
+        form.Owner = this; // Set the Owner property so Edit.cs can call back to Form1
+        form.Show();
 
         // Refresh the current list
-        populateDGV1(key);
+        //populateDGV1(key);
         
         // Note: We're not calling popCbxListName here because the Edit form will handle refreshing the list
         // If you want to refresh the combo box after editing, you can uncomment the line below

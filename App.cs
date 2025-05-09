@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace ClipBox2
 {
@@ -54,5 +55,18 @@ namespace ClipBox2
             //     Directory.CreateDirectory(AppDataPath);
             // }
         }
+
+
+       // public static int? RgxInt(this string input, int def=0) => string.IsNullOrWhiteSpace(input) ? null : (int.TryParse(Regex.Match(input, @"-?\d+").Value, out int result) ? result : default);
+
+        // 1) Extract first integer or return the provided default (0 if none supplied)
+        public static int RgxInt(this string input, int def = 0)
+            => string.IsNullOrWhiteSpace(input)
+               ? def
+               : (int.TryParse(Regex.Match(input, @"-?\d+").Value, out var result)
+                   ? result
+                   : def);
+
+
     }
 }

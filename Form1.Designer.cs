@@ -104,7 +104,7 @@ namespace ClipBox2
             cbxListName.Name = "cbxListName";
             cbxListName.Size = new Size(156, 23);
             cbxListName.TabIndex = 1;
-            cbxListName.SelectedIndexChanged += cb1_SelectedIndexChanged;
+            cbxListName.SelectedIndexChanged += cbxListName_SelectedIndexChanged;
             // 
             // listlbl
             // 

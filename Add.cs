@@ -141,15 +141,15 @@ namespace ClipBox2
                 return;
             }
 
-            string listName = tbListName.Text;
+            string keyName = tbListName.Text;
             
             // Create a new list with the columns
             MasterData master = SaveJSON.LoadMasterData();
             
             // Check if the list name already exists
-            if (master.Lists.ContainsKey(listName))
+            if (master.Lists.ContainsKey(keyName))
             {
-                MessageBox.Show($"A list with the name '{listName}' already exists.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"A list with the name '{keyName}' already exists.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             
@@ -169,16 +169,16 @@ namespace ClipBox2
             }
             
             // Add the list to the master data
-            master.Lists[listName] = info;
+            master.Lists[keyName] = info;
             master.Save();
             
             // Refresh the main form's combo box
-            if (mainForm != null)
-            {
-                mainForm.populateDGV1(listName);
-            }
+            //if (mainForm != null)
+            //{
+            //    mainForm.populateDGV1(keyName);
+            //}
             
-            MessageBox.Show($"List '{listName}' added successfully.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"List '{keyName}' added successfully.", "Add List", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
         }
     }
