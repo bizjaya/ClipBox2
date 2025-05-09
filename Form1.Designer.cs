@@ -66,13 +66,13 @@ namespace ClipBox2
             addListToolStripMenuItem = new ToolStripMenuItem();
             editListToolStripMenuItem = new ToolStripMenuItem();
             deleteListToolStripMenuItem = new ToolStripMenuItem();
-            aboutToolStripMenuItem = new ToolStripMenuItem();
-            titleLabel = new ToolStripLabel();
             passwordGeneratorToolStripMenuItem = new ToolStripMenuItem();
             migrateXmlToolStripMenuItem = new ToolStripMenuItem();
             openDataFolderToolStripMenuItem = new ToolStripMenuItem();
             saveAsEncryptedToolStripMenuItem = new ToolStripMenuItem();
             saveAsNormalToolStripMenuItem = new ToolStripMenuItem();
+            aboutToolStripMenuItem = new ToolStripMenuItem();
+            titleLabel = new ToolStripLabel();
             toolsToolStripMenuItem = new ToolStripMenuItem();
             optionsToolStripMenuItem = new ToolStripMenuItem();
             dgv1 = new DataGridView();
@@ -130,7 +130,20 @@ namespace ClipBox2
             cb2.Name = "cb2";
             cb2.Size = new Size(56, 23);
             cb2.TabIndex = 3;
-
+            // 
+            // menuStrip1
+            // 
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, aboutToolStripMenuItem, titleLabel });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Padding = new Padding(7, 2, 0, 2);
+            menuStrip1.Size = new Size(467, 24);
+            menuStrip1.TabIndex = 4;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addListToolStripMenuItem, editListToolStripMenuItem, deleteListToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
@@ -138,36 +151,22 @@ namespace ClipBox2
             // addListToolStripMenuItem
             // 
             addListToolStripMenuItem.Name = "addListToolStripMenuItem";
-            addListToolStripMenuItem.Size = new Size(128, 22);
+            addListToolStripMenuItem.Size = new Size(179, 22);
             addListToolStripMenuItem.Text = "Add List";
             addListToolStripMenuItem.Click += addListToolStripMenuItem_Click;
             // 
             // editListToolStripMenuItem
             // 
             editListToolStripMenuItem.Name = "editListToolStripMenuItem";
-            editListToolStripMenuItem.Size = new Size(128, 22);
+            editListToolStripMenuItem.Size = new Size(179, 22);
             editListToolStripMenuItem.Text = "Edit List";
             editListToolStripMenuItem.Click += editListToolStripMenuItem_Click;
             // 
             // deleteListToolStripMenuItem
             // 
             deleteListToolStripMenuItem.Name = "deleteListToolStripMenuItem";
-            deleteListToolStripMenuItem.Size = new Size(128, 22);
+            deleteListToolStripMenuItem.Size = new Size(179, 22);
             deleteListToolStripMenuItem.Text = "Delete List";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(52, 20);
-            aboutToolStripMenuItem.Text = "About";
-            aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
-            // 
-            // titleLabel
-            // 
-            titleLabel.Alignment = ToolStripItemAlignment.Right;
-            titleLabel.Font = new Font("Georgia", 9F);
-            titleLabel.Name = "titleLabel";
-            titleLabel.Size = new Size(0, 17);
             // 
             // passwordGeneratorToolStripMenuItem
             // 
@@ -206,6 +205,20 @@ namespace ClipBox2
             saveAsNormalToolStripMenuItem.Text = "Save as Normal";
             saveAsNormalToolStripMenuItem.Click += saveAsNormalToolStripMenuItem_Click;
             // 
+            // aboutToolStripMenuItem
+            // 
+            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            aboutToolStripMenuItem.Size = new Size(52, 20);
+            aboutToolStripMenuItem.Text = "About";
+            aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
+            // 
+            // titleLabel
+            // 
+            titleLabel.Alignment = ToolStripItemAlignment.Right;
+            titleLabel.Font = new Font("Georgia", 9F);
+            titleLabel.Name = "titleLabel";
+            titleLabel.Size = new Size(0, 17);
+            // 
             // toolsToolStripMenuItem
             // 
             toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { passwordGeneratorToolStripMenuItem, migrateXmlToolStripMenuItem, openDataFolderToolStripMenuItem });
@@ -219,31 +232,6 @@ namespace ClipBox2
             optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             optionsToolStripMenuItem.Size = new Size(61, 20);
             optionsToolStripMenuItem.Text = "Options";
-
-
-
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
-                addListToolStripMenuItem, editListToolStripMenuItem, deleteListToolStripMenuItem,
-                passwordGeneratorToolStripMenuItem,
-                migrateXmlToolStripMenuItem,
-                openDataFolderToolStripMenuItem,
-                saveAsEncryptedToolStripMenuItem,
-                saveAsNormalToolStripMenuItem,
-
-            });
-            // 
-            // menuStrip1
-            // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, aboutToolStripMenuItem, titleLabel });
-            menuStrip1.Location = new Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Padding = new Padding(7, 2, 0, 2);
-            menuStrip1.Size = new Size(459, 24);
-            menuStrip1.TabIndex = 4;
-            menuStrip1.Text = "menuStrip1";
-            // 
-            // fileToolStripMenuItem
-            // 
             // 
             // dgv1
             // 
@@ -275,7 +263,7 @@ namespace ClipBox2
             dgv1.RowHeadersVisible = false;
             dgv1.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dgv1.ShowCellErrors = false;
-            dgv1.Size = new Size(910, 956);
+            dgv1.Size = new Size(926, 995);
             dgv1.StandardTab = true;
             dgv1.TabIndex = 0;
             dgv1.TabStop = false;
@@ -436,7 +424,7 @@ namespace ClipBox2
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(918, 1026);
+            tableLayoutPanel1.Size = new Size(934, 1065);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // toolbarPanel1
@@ -449,7 +437,7 @@ namespace ClipBox2
             toolbarPanel1.Margin = new Padding(0);
             toolbarPanel1.Name = "toolbarPanel1";
             toolbarPanel1.Padding = new Padding(4, 1, 4, 1);
-            toolbarPanel1.Size = new Size(459, 32);
+            toolbarPanel1.Size = new Size(467, 32);
             toolbarPanel1.TabIndex = 5;
             // 
             // toolbarPanel0
@@ -466,7 +454,7 @@ namespace ClipBox2
             toolbarPanel0.Controls.Add(lefBtn);
             toolbarPanel0.Dock = DockStyle.Right;
             toolbarPanel0.FlowDirection = FlowDirection.RightToLeft;
-            toolbarPanel0.Location = new Point(558, 3);
+            toolbarPanel0.Location = new Point(574, 3);
             toolbarPanel0.Name = "toolbarPanel0";
             toolbarPanel0.Size = new Size(357, 26);
             toolbarPanel0.TabIndex = 6;
@@ -477,14 +465,14 @@ namespace ClipBox2
             toolbarPanel2.Controls.Add(tbxSrch);
             toolbarPanel2.Dock = DockStyle.Fill;
             toolbarPanel2.FlowDirection = FlowDirection.RightToLeft;
-            toolbarPanel2.Location = new Point(462, 35);
+            toolbarPanel2.Location = new Point(470, 35);
             toolbarPanel2.Name = "toolbarPanel2";
-            toolbarPanel2.Size = new Size(453, 26);
+            toolbarPanel2.Size = new Size(461, 26);
             toolbarPanel2.TabIndex = 7;
             // 
             // clrBtn
             // 
-            clrBtn.Location = new Point(426, 3);
+            clrBtn.Location = new Point(434, 3);
             clrBtn.Name = "clrBtn";
             clrBtn.Size = new Size(24, 24);
             clrBtn.TabIndex = 16;
@@ -495,7 +483,7 @@ namespace ClipBox2
             // 
             tbxSrch.BackColor = SystemColors.Control;
             tbxSrch.Dock = DockStyle.Fill;
-            tbxSrch.Location = new Point(247, 3);
+            tbxSrch.Location = new Point(255, 3);
             tbxSrch.Name = "tbxSrch";
             tbxSrch.Size = new Size(173, 23);
             tbxSrch.TabIndex = 15;
@@ -504,7 +492,7 @@ namespace ClipBox2
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(926, 1049);
+            ClientSize = new Size(942, 1088);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 3, 4, 3);
