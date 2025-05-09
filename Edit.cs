@@ -444,20 +444,15 @@ namespace ClipBox2
 
         private void btnPlus_Click(object sender, EventArgs e)
         {
-            // Prompt the user for a column name
-            string newColName = Microsoft.VisualBasic.Interaction.InputBox("Enter column name:", "Add Column", "Column" + (columnData.Count + 1));
+            // Auto-generate a column name
+            string newColName = "Col" + (columnData.Count + 1);
             
-            // If the user cancels or enters an empty name, abort
-            if (string.IsNullOrWhiteSpace(newColName))
+            // Make sure the name is unique
+            int counter = 1;
+            while (columnData.Any(cd => cd.Name.Equals(newColName, StringComparison.OrdinalIgnoreCase)))
             {
-                return;
-            }
-            
-            // Check if the column name already exists
-            if (columnData.Any(cd => cd.Name.Equals(newColName, StringComparison.OrdinalIgnoreCase)))
-            {
-                MessageBox.Show("Column name already exists.", "Duplicate Column", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                newColName = "Col" + (columnData.Count + counter);
+                counter++;
             }
             
             // Add the new column
